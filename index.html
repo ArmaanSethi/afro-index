@@ -431,7 +431,7 @@
                 const achievedDate = new Date(team.streak_achieved_date);
                 const daysSinceStart = Math.floor((achievedDate - START_DATE) / (1000 * 60 * 60 * 24));
                 const formattedDate = achievedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                dayBadge = `<span class="px-3 py-1 rounded-full text-sm font-bold bg-blue-500/20 text-blue-300" title="Achieved on ${formattedDate}">📅 Day ${daysSinceStart}</span>`;
+                dayBadge = `<span class="px-3 py-1 rounded-full text-base font-bold bg-blue-500/20 text-blue-300" title="Achieved on ${formattedDate}">📅 Day ${daysSinceStart}</span>`;
             }
 
             return `
