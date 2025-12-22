@@ -214,6 +214,7 @@ export default async function handler(req, res) {
 
             teamsToUpsert.push({
                 team_id: parseInt(teamId),
+                sport: 'football',
                 name: team.name,
                 logo: team.logo,
                 country_name: countryName,
@@ -232,7 +233,7 @@ export default async function handler(req, res) {
             const { error } = await supabase
                 .from('teams')
                 .upsert(teamsToUpsert, {
-                    onConflict: 'team_id',
+                    onConflict: 'team_id,sport',
                     ignoreDuplicates: false
                 });
 
@@ -243,6 +244,7 @@ export default async function handler(req, res) {
 
         // Log the scan
         await supabase.from('scan_log').insert({
+            sport: 'football',
             league_id: targetLeague.id,
             league_name: leagueName,
             teams_scanned: Object.keys(teamResults).length,

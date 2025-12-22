@@ -6,23 +6,26 @@ Run this in your Supabase SQL Editor:
 -- Create teams table (tracks ALL teams scanned, not just winners)
 CREATE TABLE teams (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  team_id INT UNIQUE NOT NULL,
+  team_id INT NOT NULL,
+  sport TEXT DEFAULT 'football',           -- 'football', 'basketball', 'american-football', 'hockey', 'baseball'
   name TEXT NOT NULL,
   logo TEXT,
   country_name TEXT,
   country_flag TEXT,
   league_id INT,
   league_name TEXT,
-  form TEXT,                    -- Full result sequence since Oct 5 (e.g., "WWLWWWWWDL")
-  has_5_wins BOOLEAN DEFAULT FALSE,  -- True if achieved 5+ consecutive wins at ANY point
-  max_streak INT DEFAULT 0,     -- Longest win streak achieved
+  form TEXT,                               -- Full result sequence since Oct 5 (e.g., "WWLWWWWWDL")
+  has_5_wins BOOLEAN DEFAULT FALSE,        -- True if achieved 5+ consecutive wins at ANY point
+  max_streak INT DEFAULT 0,                -- Longest win streak achieved
   first_detected TIMESTAMPTZ DEFAULT NOW(),
-  last_checked TIMESTAMPTZ DEFAULT NOW()
+  last_checked TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(team_id, sport)                   -- Same team ID can exist in different sports
 );
 
 -- Create scan_log to track which leagues we've scanned
 CREATE TABLE scan_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  sport TEXT DEFAULT 'football',
   league_id INT NOT NULL,
   league_name TEXT,
   teams_scanned INT DEFAULT 0,
