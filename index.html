@@ -623,11 +623,24 @@
 
             } catch (error) {
                 console.error('Failed to load United status:', error);
-                if (retryCount < 2) {
-                    console.log(`Retrying United status load (${retryCount + 1}/2)...`);
+
+                // Retry logic (only retry once)
+                if (retryCount < 1) {
+                    console.log(`Retrying United status load (${retryCount + 1}/1)...`);
                     setTimeout(() => loadUnitedStatus(retryCount + 1), 2000);
-                } else {
-                    if (unitedFormEl) unitedFormEl.innerHTML = '<span class="text-gray-600">Sync Error</span>';
+                    return;
+                }
+
+                // Graceful Error State
+                if (unitedAnswerEl) unitedAnswerEl.textContent = '...';
+
+                // Show "Safe Mode" or cached state if possible, otherwise placeholder
+                if (unitedFormEl) {
+                    unitedFormEl.innerHTML = '<span class="text-gray-500 text-sm">Offline</span>';
+                }
+
+                if (unitedStreakEl) {
+                    unitedStreakEl.textContent = '-';
                 }
             }
         }
