@@ -600,110 +600,74 @@
             }
         }
 
-        // Load United's current status (with optional retry)
-        async function loadUnitedStatus(retryCount = 0) {
-            // Circuit Breaker: Don't hammer the API if it's down/limited
-            const lastFailure = localStorage.getItem('united_api_failure');
-            if (lastFailure) {
-                const diff = (new Date() - new Date(lastFailure)) / 1000; // seconds
-                if (diff < 300) { // 5 minutes cool-off
-                    console.log(`United API in cool-off mode (${Math.round(300 - diff)}s remaining).`);
+        // Load United's current status (Stale-While-Revalidate Pattern)
+        async function loadUnitedStatus() {
+            // 1. Try to load from local cache IMMEDIATELY
+            const cachedData = localStorage.getItem('united_data_cache');
+            let hasCachedData = false;
 
-                    // Try to serve from cache during cool-off
-                    const cachedData = localStorage.getItem('united_data_cache');
-                    if (cachedData) {
-                        try {
-                            const data = JSON.parse(cachedData);
-                            renderUnitedData(data);
-                            return;
-                        } catch (e) {
-                            console.error('Cache parse error', e);
-                        }
-                    }
-
-                    // No cache + Cool-off = Offline State
-                    if (unitedFormEl) {
-                        unitedFormEl.innerHTML = `
-                            <div class="flex items-center gap-2">
-                                 <span class="text-gray-500 text-sm">Offline</span>
-                                 <button onclick="localStorage.removeItem('united_api_failure'); loadUnitedStatus()" class="text-[10px] uppercase tracking-wider text-white/50 hover:text-white border border-white/10 px-2 py-0.5 rounded transition-colors">
-                                    Retry
-                                 </button>
-                            </div>
-                        `;
-                    }
-                    if (unitedAnswerEl) unitedAnswerEl.textContent = '...';
-                    if (unitedStreakEl) unitedStreakEl.textContent = '-';
-                    return;
+            if (cachedData) {
+                try {
+                    const data = JSON.parse(cachedData);
+                    renderUnitedData(data);
+                    hasCachedData = true;
+                    console.log('United Status: Loaded from cache');
+                } catch (e) {
+                    console.error('Cache parse error', e);
                 }
             }
 
+            // 2. Fetch fresh data from API
             try {
-                const res = await fetch(`${API_BASE}/united`);
-                if (!res.ok) {
-                    const error = await res.json();
-                    throw new Error(error.details || `API error ${res.status}`);
-                }
-                const data = await res.json();
-
-                // Clear failure record on success
-                localStorage.removeItem('united_api_failure');
-                // Save successful data for fallback
-                localStorage.setItem('united_data_cache', JSON.stringify(data));
-
-                renderUnitedData(data);
-
-                // Update United status in Live Coverage
-                if (unitedStatusEl) {
-                    unitedStatusEl.innerHTML = `
-                        <div class="glass p-4 rounded-xl flex items-center justify-between border border-united-red/30">
-                            <div class="flex items-center gap-3">
-                                <img src="https://crests.football-data.org/66.png" class="w-8 h-8 object-contain">
-                                <div>
-                                    <div class="font-bold text-sm text-united-red">Manchester United</div>
-                                    <div class="text-xs text-gray-500">Live Status Check</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs font-mono text-white">${data.currentStreak}W Streak</div>
-                                <div class="text-[10px] text-gray-400">Checked just now</div>
-                            </div>
-                        </div>
-                    `;
-                }
-
-            } catch (error) {
-                console.error('Failed to load United status:', error);
-
-                // Trip the Circuit Breaker
-                localStorage.setItem('united_api_failure', new Date().toISOString());
-
-                // Fallback: Try to load from local cache
-                const cachedData = localStorage.getItem('united_data_cache');
-                if (cachedData) {
-                    console.log('Serving United data from local cache due to API error');
-                    try {
-                        const data = JSON.parse(cachedData);
-                        renderUnitedData(data);
-                        return;
-                    } catch (e) {
-                        console.error('Cache parse error', e);
+                // Determine if we should cool off (prevent spamming failed API)
+                const lastFailure = localStorage.getItem('united_api_failure');
+                if (lastFailure) {
+                    const diff = (new Date() - new Date(lastFailure)) / 1000;
+                    if (diff < 60) { // 1 minute cool-off is sufficient if we have cache
+                        console.log('United API cooling off...');
+                        return; // Skip network call, keep showing cache
                     }
                 }
 
-                // Final Fallback: Offline State (Honest UI)
-                if (unitedAnswerEl) unitedAnswerEl.textContent = '...';
-                if (unitedFormEl) {
-                    unitedFormEl.innerHTML = `
-                        <div class="flex items-center gap-2">
-                             <span class="text-gray-500 text-sm">Offline</span>
-                             <button onclick="localStorage.removeItem('united_api_failure'); loadUnitedStatus()" class="text-[10px] uppercase tracking-wider text-white/50 hover:text-white border border-white/10 px-2 py-0.5 rounded transition-colors">
-                                Retry
-                             </button>
-                        </div>
-                    `;
+                const res = await fetch(`${API_BASE}/united`);
+
+                if (!res.ok) {
+                    // Mark failure for cool-off
+                    localStorage.setItem('united_api_failure', new Date().toISOString());
+                    throw new Error(`API error ${res.status}`);
                 }
-                if (unitedStreakEl) unitedStreakEl.textContent = '-';
+
+                const data = await res.json();
+
+                // 3. On success: Update UI + Update Cache
+                localStorage.removeItem('united_api_failure');
+                localStorage.setItem('united_data_cache', JSON.stringify(data));
+                renderUnitedData(data);
+                console.log('United Status: Updated from API');
+
+                // Update "Live" indicator
+                if (unitedStatusEl) {
+                    unitedStatusEl.querySelector('.text-gray-400').textContent = 'Just now';
+                }
+
+            } catch (error) {
+                console.error('Failed to refresh United status:', error);
+
+                // If we have NO cache and the API failed, we must show Offline state
+                if (!hasCachedData) {
+                    if (unitedAnswerEl) unitedAnswerEl.textContent = '...';
+                    if (unitedFormEl) {
+                        unitedFormEl.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-500 text-sm">Offline</span>
+                                <button onclick="localStorage.removeItem('united_api_failure'); loadUnitedStatus()" class="text-[10px] uppercase tracking-wider text-white/50 hover:text-white border border-white/10 px-2 py-0.5 rounded transition-colors">
+                                Retry
+                                </button>
+                            </div>
+                        `;
+                    }
+                    if (unitedStreakEl) unitedStreakEl.textContent = '-';
+                }
             }
         }
 
