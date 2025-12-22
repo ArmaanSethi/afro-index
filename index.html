@@ -657,7 +657,7 @@
                     if (unitedStatusEl) {
                         unitedStatusEl.innerHTML = getUnitedStatusHTML(data);
                     }
-                    console.log('United Status: Loaded from cache');
+                    // console.log('United Status: Loaded from cache');
                 } catch (e) {
                     console.error('Cache parse error', e);
                 }
@@ -670,7 +670,7 @@
                 if (lastFailure) {
                     const diff = (new Date() - new Date(lastFailure)) / 1000;
                     if (diff < 60) { // 1 minute cool-off is sufficient if we have cache
-                        console.log('United API cooling off...');
+                        // console.log('United API cooling off...');
                         return; // Skip network call, keep showing cache
                     }
                 }
@@ -744,7 +744,6 @@
             return SHORT_LEAGUE_NAMES[name] || name;
         }
 
-        // Render team card
         // Render team card
         function renderTeamCard(team) {
             const maxStreak = team.max_streak || 5;
@@ -931,7 +930,7 @@
                 console.log('Data is stale, triggering background scan for oldest/priority league...');
                 triggerBackgroundScan();
             } else {
-                console.log('Data is fresh enough, skipping scan.');
+                // Data is fresh enough
             }
         }
 
@@ -1050,7 +1049,7 @@
                     }
                 } else {
                     // No scans yet
-                    console.log('No recent scans, waiting for Cron job...');
+                    // No scans yet
                 }
             } catch (error) {
                 console.error('Failed to load teams:', error);
