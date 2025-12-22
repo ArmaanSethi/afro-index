@@ -1004,13 +1004,15 @@
                         leaguesStatusEl.innerHTML = data.recentScans.map(scan => {
                             const date = new Date(scan.scanned_at);
                             const flag = leagueFlags[scan.league_id] || '⚽';
+                            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
                             return `
                         <div class="glass p-4 rounded-xl flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <span class="text-xl">${flag}</span>
                                 <div>
                                     <div class="font-bold text-sm text-neon-green">${scan.league_name || scan.league_id}</div>
-                                    <div class="text-xs text-gray-500">${timeAgo(scan.scanned_at)}</div>
+                                    <div class="text-xs text-gray-500">${timeStr} <span class="opacity-75">(${timeAgo(scan.scanned_at)})</span></div>
                                 </div>
                             </div>
                             <div class="text-right">
