@@ -764,8 +764,8 @@
             // Extract unique leagues
             let leagues = [...new Set(teams.map(t => t.league_id))];
 
-            // Sort by Priority
-            const PRIORITY = ['CL', 'PL', 'PD', 'BL1', 'SA', 'FL1', 'WC', 'EC', 'ELC', 'DED', 'PPL', 'BSA'];
+            // Sort by Priority (Domestic Leagues First)
+            const PRIORITY = ['PL', 'PD', 'BL1', 'SA', 'FL1', 'ELC', 'DED', 'PPL', 'BSA', 'CL', 'WC', 'EC'];
             leagues.sort((a, b) => {
                 const idxA = PRIORITY.indexOf(a);
                 const idxB = PRIORITY.indexOf(b);
