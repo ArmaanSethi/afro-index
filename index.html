@@ -598,6 +598,9 @@
                         // Empty form (0 matches found)
                         unitedFormEl.innerHTML = '<span class="text-xs text-gray-500">No recent matches</span>';
                     }
+                } else {
+                    // Fallback if form data is completely missing/malformed
+                    unitedFormEl.innerHTML = '<span class="text-xs text-gray-500">N/A</span>';
                 }
             }
 
