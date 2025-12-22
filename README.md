@@ -1,6 +1,6 @@
 # The Afro Index 🔴
 
-**[afro-index.vercel.app](https://afro-index.vercel.app)**
+**The "Has United Won 5?" Tracker**
 
 ## The Story
 

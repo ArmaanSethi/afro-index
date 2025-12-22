@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+
 
 // Manchester United team ID in football-data.org
 const UNITED_TEAM_ID = 66;
