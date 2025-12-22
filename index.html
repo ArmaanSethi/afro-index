@@ -256,7 +256,8 @@
             </h1>
 
             <!-- The Answer -->
-            <div id="united-answer" class="text-8xl md:text-[12rem] font-black text-united-red glow-red mb-4">
+            <div id="united-answer"
+                class="text-8xl md:text-[12rem] lg:text-[14rem] font-black text-united-red glow-red mb-4">
                 NO
             </div>
 
@@ -273,7 +274,7 @@
             </div>
 
             <!-- Stats Row -->
-            <div class="flex flex-wrap justify-center gap-8 md:gap-16 mb-6">
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 mb-8">
                 <div class="text-center">
                     <div id="united-streak" class="text-3xl md:text-4xl font-black text-white font-mono">
                         --
@@ -284,27 +285,34 @@
                     <div id="days-count" class="text-3xl md:text-4xl font-black text-united-red font-mono">
                         --
                     </div>
-                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Days without a haircut</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1 text-balance">Days without a haircut
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div id="leagues-count" class="text-3xl md:text-4xl font-black text-white font-mono">
+                        --
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Leagues Scanned</div>
                 </div>
             </div>
 
-            <!-- Link to Frank -->
-            <a href="https://instagram.com/theunitedstrand" target="_blank"
-                class="text-sm text-gray-600 hover:text-united-red transition-colors mb-4">
+            <!-- Link to context -->
+            <a href="https://www.google.com/search?q=frank+ilett+hair+manchester+united" target="_blank"
+                class="text-xs text-gray-600 hover:text-united-red transition-colors mb-6 uppercase tracking-[0.2em]">
                 The Vow: Oct 5, 2024 → ???
             </a>
 
             <!-- Teaser for leaderboard -->
-            <div class="mt-8 flex flex-col items-center gap-4">
-                <div class="text-gray-500 font-medium">
-                    Meanwhile, <span id="team-count" class="text-neon-green font-bold">--</span> teams have shown them
-                    how it's done
+            <div class="mt-12 flex flex-col items-center gap-8">
+                <div class="text-2xl md:text-4xl font-black tracking-tight text-white glow-green">
+                    Meanwhile, <span id="team-count" class="text-neon-green">--</span> teams have shown them how it's
+                    done
                 </div>
                 <a href="#leaderboard"
-                    class="bounce-down p-4 rounded-full glass hover:bg-white/10 transition-all group">
-                    <svg class="w-6 h-6 text-united-red group-hover:text-neon-green transition-colors" fill="none"
+                    class="bounce-down p-6 rounded-full glass hover:bg-white/10 transition-all group scale-125 border-2 border-united-red/30">
+                    <svg class="w-8 h-8 text-united-red group-hover:text-neon-green transition-colors" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
                             d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                     </svg>
                 </a>
@@ -512,10 +520,14 @@
             }).join('');
         }
 
-        // Load United's current status
-        async function loadUnitedStatus() {
+        // Load United's current status (with optional retry)
+        async function loadUnitedStatus(retryCount = 0) {
             try {
                 const res = await fetch(`${API_BASE}/united`);
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.details || `API error ${res.status}`);
+                }
                 const data = await res.json();
 
                 if (data.hasWon5) {
@@ -563,7 +575,12 @@
 
             } catch (error) {
                 console.error('Failed to load United status:', error);
-                unitedFormEl.innerHTML = '<span class="text-gray-600">Error loading</span>';
+                if (retryCount < 2) {
+                    console.log(`Retrying United status load (${retryCount + 1}/2)...`);
+                    setTimeout(() => loadUnitedStatus(retryCount + 1), 2000);
+                } else {
+                    if (unitedFormEl) unitedFormEl.innerHTML = '<span class="text-gray-600">Sync Error</span>';
+                }
             }
         }
 
@@ -789,7 +806,9 @@
         // Init
         updateDays();
         loadTeams();
-        loadUnitedStatus();
+
+        // Slight delay for United status to avoid any initial load race conditions
+        setTimeout(loadUnitedStatus, 500);
     </script>
 </body>
 
