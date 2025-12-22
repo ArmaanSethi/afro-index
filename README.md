@@ -18,7 +18,9 @@ This website tracks every football team that has achieved what United hasn't —
 
 - 📊 **Live Leaderboard** — 50+ teams sorted by who achieved 5 wins first
 - ⚽ **12 Competitions** — Top 5 European leagues, Champions League, Brasileirão, and more
-- 🔄 **Auto-Scan** — Refreshes data automatically when you visit
+- 🔄 **Distributed Cron** — Visitors automatically trigger updates for "Big 5" leagues every 2 mins
+- ⏰ **Daily Maintenance** — Automated full-scan at 06:00 UTC (Post-matches) to ensure data consistency
+- 🔍 **Search & Filter** — Instant multi-select filtering by league and team name
 - 🎉 **Easter Egg** — A special celebration awaits when United finally makes it
 - 📅 **Day Tracking** — See how many days into Frank's vow each team achieved the streak
 
@@ -27,8 +29,8 @@ This website tracks every football team that has achieved what United hasn't —
 ## Roadmap
 
 - [ ] 🐦 **Twitter Bot** — Auto-tweet when a new team achieves 5+ wins
-- [ ] ⏰ **Cron Jobs** — Scheduled daily scans instead of visitor-triggered
-- [ ] 🔍 **Search & Filter** — Filter by country, league, or streak length
+- [x] ⏰ **Cron Jobs** — Daily scheduled maintenance scans
+- [x] 🔍 **Search & Filter** — Multi-select filtering and instant search
 - [ ] 🏀 **NBA / 🏈 NFL** — Expand to other sports
 - [ ] 📈 **Historical Charts** — Visualize when streaks started/ended
 
