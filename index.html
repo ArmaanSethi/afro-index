@@ -636,7 +636,7 @@
             return `
         <div class="glass-card rounded-2xl p-6 cursor-default hover:scale-[1.02] transition-transform flex flex-col">
           <div class="flex items-start justify-between mb-4">
-            <img src="${team.logo}" alt="${team.name}" 
+            <img src="${team.logo}" alt="${team.name}" loading="lazy"
                  class="w-16 h-16 object-contain bg-white/5 rounded-xl p-2"
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>⚽</text></svg>'">
             ${dayBadge}
