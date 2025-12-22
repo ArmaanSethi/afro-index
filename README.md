@@ -1,135 +1,85 @@
 # The Afro Index 🔴
 
-> **Tracking every team that achieved 5+ consecutive wins since Frank Ilett's hair vow on October 5, 2024.**
+**Every team that's done what United can't.**
 
-A meme leaderboard documenting all the teams doing what Manchester United can't.
+A meme leaderboard tracking football teams that have achieved 5+ consecutive wins since October 5, 2024 — the day Manchester United fan Frank Ilett vowed not to cut his hair until United won 5 in a row.
 
-## 🎯 The Story
+**Live site:** [afro-index.vercel.app](https://afro-index.vercel.app)
 
-On **October 5, 2024**, Manchester United fan **Frank Ilett** made a bold vow: he wouldn't cut his hair until United won 5 games in a row.
+## The Story
 
-He's still waiting.
+On October 5, 2024, Manchester United fan **Frank Ilett** made a bold vow: he would not cut his hair until United won 5 games in a row. As of today, Frank is still waiting. His hair grows longer with each disappointing result.
 
-This site tracks every other team in the world that has achieved this feat while Frank waits.
+Meanwhile, we've been tracking every other team in the world that has managed to achieve this seemingly impossible feat. Spoiler alert: it's a lot of teams.
 
----
+## Tech Stack
 
-## 🚀 Live Site
+- **Frontend:** Single HTML file with Tailwind CSS (via CDN)
+- **Backend:** Vercel Serverless Functions
+- **Database:** Supabase (PostgreSQL)
+- **API:** [football-data.org](https://www.football-data.org) (free tier)
 
-**[afro-index.vercel.app](https://afro-index.vercel.app)** *(after deployment)*
+## Features
 
----
+- 📊 **Live Leaderboard** - Teams sorted by longest win streak
+- ⚽ **12 Competitions** - Premier League, La Liga, Bundesliga, Serie A, Ligue 1, and more
+- 🔄 **Auto-updating** - Scan leagues to find new qualifying teams
+- 📱 **Responsive** - Dark theme with glassmorphism design
 
-## ⚡ How It Works
+## Setup
 
-1. **Fixtures API** - Fetches all match results since Oct 5, 2024 for each league
-2. **Streak Detection** - Analyzes each team's match history for any 5+ consecutive wins
-3. **Historical Tracking** - If a team had WWWWW at ANY point, they qualify
-4. **Priority Queue** - Scans top leagues first (Premier League, La Liga, etc.)
+### 1. Database (Supabase)
 
-**API Economics:**
-- 1 API call = 1 league = ~20 teams = full history since Oct 5
-- Free tier = 100 calls/day = can scan all major leagues daily
+1. Create a project at [supabase.com](https://supabase.com)
+2. Run the SQL in `supabase-setup.sql`
+3. Copy your **Project URL** and **service_role key**
 
----
+### 2. API Key (football-data.org)
 
-## 🛠️ Setup
+1. Register at [football-data.org](https://www.football-data.org)
+2. Copy your API key from the dashboard
 
-### 1. Supabase Database
+### 3. Deploy (Vercel)
 
-1. Create account at [supabase.com](https://supabase.com)
-2. Create new project
-3. Go to **SQL Editor** and run the contents of `supabase-setup.sql`
-4. Get credentials from **Settings > API**:
-   - `Project URL` → `SUPABASE_URL`
-   - `service_role` secret → `SUPABASE_SERVICE_KEY`
+1. Import this repo to [vercel.com](https://vercel.com)
+2. Add environment variables:
+   - `SUPABASE_URL` - Your Supabase project URL
+   - `SUPABASE_SERVICE_KEY` - Your Supabase service_role key  
+   - `FOOTBALL_DATA_API_KEY` - Your football-data.org API key
+3. Deploy!
 
-### 2. API-Football
+### 4. Populate Data
 
-1. Sign up at [api-sports.io](https://api-sports.io)
-2. Subscribe to API-Football (free tier: 100 req/day)
-3. Copy your API key → `API_FOOTBALL_KEY`
+Visit `/api/scan` to scan one competition at a time. Each scan:
+- Fetches all matches since Oct 5, 2024
+- Analyzes each team for 5+ consecutive wins
+- Saves qualifying teams to the database
 
-### 3. Vercel Deployment
+Free tier allows 10 calls/minute, 12 competitions total.
 
-1. Push this repo to GitHub
-2. Connect to [Vercel](https://vercel.com)
-3. Add environment variables:
+## API Endpoints
 
-| Variable | Value |
-|----------|-------|
-| `API_FOOTBALL_KEY` | Your API-Football key |
-| `SUPABASE_URL` | Your Supabase project URL |
-| `SUPABASE_SERVICE_KEY` | Your Supabase service role key |
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/teams` | Returns all qualifying teams, sorted by max streak |
+| `GET /api/scan` | Scans the next unscanned competition |
+| `GET /api/scan?competition=PL` | Scans a specific competition |
 
-4. Deploy!
+## Competitions (Free Tier)
 
-### 4. Whitelist Domain
+| Code | League |
+|------|--------|
+| PL | Premier League |
+| PD | La Liga |
+| BL1 | Bundesliga |
+| SA | Serie A |
+| FL1 | Ligue 1 |
+| DED | Eredivisie |
+| PPL | Primeira Liga |
+| ELC | Championship |
+| CL | Champions League |
+| BSA | Brasileirão |
 
-After deployment, go to [API-Sports Dashboard](https://dashboard.api-football.com):
-- **My Access > Authorized Domains**
-- Add your `*.vercel.app` domain
+## License
 
----
-
-## 📁 Project Structure
-
-```
-afro-index/
-├── index.html          # Frontend: hero, leaderboard, about section
-├── api/
-│   ├── scan.js         # Scan league fixtures, detect 5-win streaks
-│   └── teams.js        # Fetch qualifying teams from database
-├── supabase-setup.sql  # Database schema
-├── package.json
-├── vercel.json
-└── README.md
-```
-
----
-
-## 🗄️ Database Schema
-
-**teams** - All scanned teams
-| Column | Description |
-|--------|-------------|
-| `team_id` | API-Football team ID |
-| `name` | Team name |
-| `form` | Full result sequence since Oct 5 (e.g., "WWLWWWWWDL") |
-| `has_5_wins` | True if achieved 5+ consecutive wins at ANY point |
-| `max_streak` | Longest win streak achieved |
-
-**scan_log** - Tracking scan history
-| Column | Description |
-|--------|-------------|
-| `league_id` | League scanned |
-| `teams_scanned` | Number of teams in league |
-| `teams_qualified` | Teams with 5+ win streak |
-
----
-
-## 🎮 Usage
-
-- Click **"Scan Random League"** to analyze a league's fixtures
-- Priority leagues (PL, La Liga, etc.) are scanned first
-- Teams with 5+ consecutive wins appear on the leaderboard
-- Check Supabase dashboard for full scan history
-
----
-
-## 🏆 Leagues Tracked
-
-Premier League, La Liga, Bundesliga, Serie A, Ligue 1, Eredivisie, Primeira Liga, Belgian Pro League, Turkish Süper Lig, Greek Super League, Brasileirão, MLS, Saudi Pro League
-
----
-
-## � Cost
-
-**$0** - All free tiers:
-- Vercel: 100GB bandwidth
-- Supabase: 500MB database
-- API-Football: 100 requests/day
-
----
-
-Made with ❤️ and frustration for **The United Strand** 🔴
+MIT - Built with ❤️ and frustration for The United Strand.
