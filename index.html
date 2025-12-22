@@ -746,16 +746,15 @@
                 const league = btn.dataset.league;
                 const isActive = activeFilters.has(league);
 
-                // Reset classes
-                btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all border';
+                // Reset classes with better flex alignment
+                btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1.5';
 
                 if (isActive) {
-                    // Active State: White background, Black text, light grey hover
-                    // Important: hover:bg-gray-200 prevents it from becoming transparent/dark on hover
-                    btn.classList.add('bg-white', 'text-black', 'border-white', 'hover:bg-gray-200');
+                    // Active State: White, Black text, Scale on hover (don't dim)
+                    btn.classList.add('bg-white', 'text-black', 'border-white', 'hover:scale-105', 'shadow-lg');
                 } else {
-                    // Inactive State: Glassy dark, Gray text, brighter hover
-                    btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10', 'hover:bg-white/20', 'hover:text-white');
+                    // Inactive State: Glassy, Gray text, brighten on hover
+                    btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10', 'hover:bg-white/10', 'hover:text-white', 'hover:border-white/30');
                 }
             });
         }
