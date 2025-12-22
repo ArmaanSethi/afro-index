@@ -206,12 +206,22 @@
             <span class="inline-block px-4 py-2 rounded-full glass text-sm font-mono text-gray-400 mb-4">
                 🔴 LIVE TRACKING
             </span>
+
+            <!-- Man United Crest -->
+            <img src="https://crests.football-data.org/66.png" alt="Manchester United"
+                class="w-20 h-20 mb-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-pointer"
+                title="Still waiting...">
+
             <h1 class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-3 glow-red">
                 THE <span class="text-united-red">AFRO</span> INDEX
             </h1>
-            <p class="text-lg md:text-xl text-gray-400 max-w-xl mx-auto mb-8">
+            <p class="text-lg md:text-xl text-gray-400 max-w-xl mx-auto mb-2">
                 Every team that's done what United can't
             </p>
+            <a href="https://twitter.com/search?q=frank%20ilett%20hair" target="_blank"
+                class="text-xs text-gray-600 hover:text-united-red transition-colors mb-8 inline-block">
+                The Vow: Oct 5, 2024 → ???
+            </a>
 
             <!-- Stats -->
             <div class="flex flex-wrap justify-center gap-8 md:gap-16">
@@ -457,6 +467,24 @@
                     }
                     teamsGridEl.innerHTML = data.teams.map(renderTeamCard).join('');
                     emptyStateEl.classList.add('hidden');
+
+                    // 🎉 Easter egg: Check if Manchester United made it!
+                    const unitedMadeIt = data.teams.find(t => t.team_id === 66 || t.name.includes('Manchester United'));
+                    if (unitedMadeIt) {
+                        document.body.innerHTML = `
+                            <div class="fixed inset-0 bg-united-red flex items-center justify-center z-50">
+                                <div class="text-center text-white p-8">
+                                    <div class="text-9xl mb-8">🎉✂️🎉</div>
+                                    <h1 class="text-6xl font-black mb-4">FRANK CAN CUT HIS HAIR!</h1>
+                                    <p class="text-2xl mb-8">Manchester United finally won 5 in a row!</p>
+                                    <p class="text-xl opacity-75">It only took ${calculateDays()} days...</p>
+                                    <button onclick="location.reload()" class="mt-8 px-8 py-4 bg-white text-united-red font-bold rounded-xl hover:scale-105 transition-transform">
+                                        View The Leaderboard
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
                 } else {
                     teamsGridEl.innerHTML = '';
                     teamCountEl.textContent = '0';
