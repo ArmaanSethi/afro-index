@@ -238,7 +238,7 @@ export default async function handler(req, res) {
             const { error } = await supabase
                 .from('teams')
                 .upsert(teamsToUpsert, {
-                    onConflict: 'team_id,sport',
+                    onConflict: 'team_id,league_id,sport',
                     ignoreDuplicates: false
                 });
 

@@ -16,21 +16,21 @@ CREATE TABLE teams (
   logo TEXT,
   country_name TEXT,
   country_flag TEXT,
-  league_id TEXT,                          -- Changed to TEXT for codes like "PL", "PD"
+  league_id TEXT,
   league_name TEXT,
   form TEXT,
   has_5_wins BOOLEAN DEFAULT FALSE,
   max_streak INT DEFAULT 0,
   first_detected TIMESTAMPTZ DEFAULT NOW(),
   last_checked TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(team_id, sport)
+  UNIQUE(team_id, league_id, sport)  -- Teams can appear in multiple competitions
 );
 
 -- Create scan_log to track which leagues we've scanned
 CREATE TABLE scan_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   sport TEXT DEFAULT 'football',
-  league_id TEXT NOT NULL,                 -- Changed to TEXT for codes like "PL", "PD"
+  league_id TEXT NOT NULL,
   league_name TEXT,
   teams_scanned INT DEFAULT 0,
   teams_qualified INT DEFAULT 0,
@@ -51,10 +51,10 @@ CREATE POLICY "Service update teams" ON teams FOR UPDATE USING (true);
 CREATE POLICY "Service insert scan_log" ON scan_log FOR INSERT WITH CHECK (true);
 ```
 
-## If you already created the tables, run this to fix:
+## To update existing table's unique constraint:
 
 ```sql
--- Fix existing tables
-ALTER TABLE teams ALTER COLUMN league_id TYPE TEXT;
-ALTER TABLE scan_log ALTER COLUMN league_id TYPE TEXT;
+-- Drop old constraint and add new one
+ALTER TABLE teams DROP CONSTRAINT IF EXISTS teams_team_id_sport_key;
+ALTER TABLE teams ADD CONSTRAINT teams_team_id_league_id_sport_key UNIQUE (team_id, league_id, sport);
 ```
