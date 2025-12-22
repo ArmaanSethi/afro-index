@@ -421,27 +421,26 @@
         }
 
         // Render team card
+        // Render team card
         function renderTeamCard(team) {
             const maxStreak = team.max_streak || 5;
 
             // Calculate days since Frank's vow when streak was achieved
-            let achievedDayText = '';
+            let dayBadge = '';
             if (team.streak_achieved_date) {
                 const achievedDate = new Date(team.streak_achieved_date);
                 const daysSinceStart = Math.floor((achievedDate - START_DATE) / (1000 * 60 * 60 * 24));
                 const formattedDate = achievedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                achievedDayText = `<div class="text-xs text-neon-green mt-2" title="Achieved on ${formattedDate}">✨ Day ${daysSinceStart}</div>`;
+                dayBadge = `<span class="text-xs text-gray-400" title="Achieved on ${formattedDate}">Day ${daysSinceStart}</span>`;
             }
 
             return `
-        <div class="glass-card rounded-2xl p-6 cursor-default hover:scale-[1.02] transition-transform">
+        <div class="glass-card rounded-2xl p-6 cursor-default hover:scale-[1.02] transition-transform flex flex-col">
           <div class="flex items-start justify-between mb-4">
             <img src="${team.logo}" alt="${team.name}" 
                  class="w-16 h-16 object-contain bg-white/5 rounded-xl p-2"
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>⚽</text></svg>'">
-            <span class="streak-badge px-3 py-1 rounded-full text-sm font-bold text-black">
-              ${maxStreak}W 🔥
-            </span>
+            ${dayBadge}
           </div>
           
           <h3 class="font-bold text-lg mb-2 truncate" title="${team.name}">${team.name}</h3>
@@ -451,10 +450,14 @@
             <span>${team.country_name || 'Unknown'}</span>
           </div>
           
-          <div class="text-xs text-gray-500">
-            ${team.league_name || 'Unknown League'}
+          <div class="flex justify-between items-end mt-auto">
+            <div class="text-xs text-gray-500">
+              ${team.league_name || 'Unknown League'}
+            </div>
+            <span class="streak-badge px-3 py-1 rounded-full text-sm font-bold text-black">
+              ${maxStreak}W 🔥
+            </span>
           </div>
-          ${achievedDayText}
         </div>
       `;
         }
