@@ -427,6 +427,17 @@
             'WC': '🌍', 'BSA': '🇧🇷'
         };
 
+        // Short league names for display
+        const SHORT_LEAGUE_NAMES = {
+            'Campeonato Brasileiro Série A': 'Brasileirão',
+            'UEFA Champions League': 'Champions League',
+            'European Championship': 'Euro Championship'
+        };
+
+        function getShortLeagueName(name) {
+            return SHORT_LEAGUE_NAMES[name] || name;
+        }
+
         // Render team card
         // Render team card
         function renderTeamCard(team) {
@@ -460,7 +471,7 @@
           <div class="flex justify-between items-end mt-auto">
             <div class="flex items-center gap-2 text-xs text-gray-500">
               <span>${LEAGUE_FLAGS[team.league_id] || '⚽'}</span>
-              <span>${team.league_name || 'Unknown League'}</span>
+              <span>${getShortLeagueName(team.league_name) || 'Unknown League'}</span>
             </div>
             <span class="streak-badge px-3 py-1 rounded-full text-sm font-bold text-black">
               ${maxStreak}W 🔥
