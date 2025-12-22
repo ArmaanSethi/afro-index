@@ -20,12 +20,12 @@ export default async function handler(req, res) {
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
-    // Get teams with 5+ wins (for display), sorted by longest streak
+    // Get teams with 5+ wins (for display), sorted by earliest achievement date
     const { data: winners, error: winnersError } = await supabase
       .from('teams')
       .select('*')
       .eq('has_5_wins', true)
-      .order('max_streak', { ascending: false });
+      .order('streak_achieved_date', { ascending: true, nullsFirst: false });
 
     if (winnersError) throw winnersError;
 
