@@ -8,7 +8,7 @@ A meme leaderboard tracking football teams that have achieved 5+ consecutive win
 
 ## The Story
 
-On October 5, 2024, Manchester United fan **Frank Ilett** made a bold vow: he would not cut his hair until United won 5 games in a row. As of today, Frank is still waiting. His hair grows longer with each disappointing result.
+On October 5, 2024, Manchester United fan **Frank Ilett** made a bold vow: he would not cut his hair until United won 5 games in a row. As of today, **443+ days later**, Frank is still waiting. His hair grows longer with each disappointing result.
 
 Meanwhile, we've been tracking every other team in the world that has managed to achieve this seemingly impossible feat. Spoiler alert: it's a lot of teams.
 
@@ -23,8 +23,19 @@ Meanwhile, we've been tracking every other team in the world that has managed to
 
 - 📊 **Live Leaderboard** - Teams sorted by longest win streak
 - ⚽ **12 Competitions** - Premier League, La Liga, Bundesliga, Serie A, Ligue 1, and more
-- 🔄 **Auto-updating** - Scan leagues to find new qualifying teams
+- 🔄 **Auto-Scan** - Automatically scans leagues when visitors load the page (if data is stale)
+- 🎯 **Smart Priority Queue** - Scans unscanned leagues first, then oldest-scanned
 - 📱 **Responsive** - Dark theme with glassmorphism design
+
+## How Auto-Scan Works
+
+Every time someone visits the site:
+1. Frontend checks when the last scan happened
+2. If it's been more than 5 minutes, triggers a background scan
+3. Picks the highest priority league (unscanned first, then oldest)
+4. Updates the leaderboard automatically
+
+This means the site essentially "scans itself" as people visit it!
 
 ## Setup
 
@@ -48,37 +59,54 @@ Meanwhile, we've been tracking every other team in the world that has managed to
    - `FOOTBALL_DATA_API_KEY` - Your football-data.org API key
 3. Deploy!
 
-### 4. Populate Data
+### 4. Local Development
 
-Visit `/api/scan` to scan one competition at a time. Each scan:
-- Fetches all matches since Oct 5, 2024
-- Analyzes each team for 5+ consecutive wins
-- Saves qualifying teams to the database
+```bash
+# Install Vercel CLI
+npm i -g vercel
 
-Free tier allows 10 calls/minute, 12 competitions total.
+# Create .env.local with your keys
+echo "SUPABASE_URL=your_url" > .env.local
+echo "SUPABASE_SERVICE_KEY=your_key" >> .env.local
+echo "FOOTBALL_DATA_API_KEY=your_key" >> .env.local
+
+# Run locally
+vercel dev
+```
 
 ## API Endpoints
 
 | Endpoint | Description |
 |----------|-------------|
 | `GET /api/teams` | Returns all qualifying teams, sorted by max streak |
-| `GET /api/scan` | Scans the next unscanned competition |
+| `GET /api/scan` | Scans the highest priority competition |
 | `GET /api/scan?competition=PL` | Scans a specific competition |
 
 ## Competitions (Free Tier)
 
 | Code | League |
 |------|--------|
-| PL | Premier League |
-| PD | La Liga |
-| BL1 | Bundesliga |
-| SA | Serie A |
-| FL1 | Ligue 1 |
-| DED | Eredivisie |
-| PPL | Primeira Liga |
-| ELC | Championship |
-| CL | Champions League |
-| BSA | Brasileirão |
+| PL | Premier League 🏴󠁧󠁢󠁥󠁮󠁧󠁿 |
+| PD | La Liga 🇪🇸 |
+| BL1 | Bundesliga 🇩🇪 |
+| SA | Serie A 🇮🇹 |
+| FL1 | Ligue 1 🇫🇷 |
+| DED | Eredivisie 🇳🇱 |
+| PPL | Primeira Liga 🇵🇹 |
+| ELC | Championship 🏴󠁧󠁢󠁥󠁮󠁧󠁿 |
+| CL | Champions League 🏆 |
+| EC | Euro Championship 🇪🇺 |
+| WC | World Cup 🌍 |
+| BSA | Brasileirão 🇧🇷 |
+
+## Other Sports?
+
+The architecture supports multiple sports (database has a `sport` field). To add NBA, NFL, etc., you'd need:
+1. A free/cheap API for that sport
+2. Update `scan.js` to handle the new sport
+3. Update the frontend to display it
+
+Let me know if you want to help!
 
 ## License
 
