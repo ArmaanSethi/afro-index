@@ -120,15 +120,28 @@ export default async function handler(req, res) {
         const aIsPriority = isPriority(a.code);
         const bIsPriority = isPriority(b.code);
 
-        // Check staleness (10 minutes)
-        const aStale = (now - aTime) > 10 * 60 * 1000;
-        const bStale = (now - bTime) > 10 * 60 * 1000;
+        // Thresholds
+        const SUPER_STALE = 12 * 60 * 60 * 1000; // 12 Hours
+        const LIVE_STALE = 20 * 60 * 1000;       // 20 Minutes
 
-        // If 'a' is a priority league and is stale, push it up
-        if (aIsPriority && aStale && (!bIsPriority || !bStale)) return -1;
-        if (bIsPriority && bStale && (!aIsPriority || !aStale)) return 1;
+        const aDiff = now - aTime;
+        const bDiff = now - bTime;
 
-        // If both are priority and stale (or neither is significant), sort by oldest time
+        const aSuperStale = aDiff > SUPER_STALE;
+        const bSuperStale = bDiff > SUPER_STALE;
+
+        // 2a. Super Stale override (prevent starvation of minor leagues)
+        if (aSuperStale && !bSuperStale) return -1;
+        if (bSuperStale && !aSuperStale) return 1;
+
+        // 2b. Priority Live Updates (only if not super stale)
+        const aLiveStale = aDiff > LIVE_STALE;
+        const bLiveStale = bDiff > LIVE_STALE;
+
+        if (aIsPriority && aLiveStale && (!bIsPriority || !bLiveStale)) return -1;
+        if (bIsPriority && bLiveStale && (!aIsPriority || !aLiveStale)) return 1;
+
+        // 3. Fallback: Oldest first
         return aTime.getTime() - bTime.getTime();
     });
 
