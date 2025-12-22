@@ -148,6 +148,24 @@ export default async function handler(req, res) {
     // Pick the highest priority competition
     let targetComp = sortedCompetitions[0];
 
+    // Strict Throttling Guard: Prevent over-scanning if the "oldest" league is still fresh
+    const lastScanTime = lastScanMap.get(targetComp.code);
+    if (lastScanTime && !req.query.competition) { // Don't block manual overrides
+        const diff = new Date() - lastScanTime;
+        const isPrio = isPriority(targetComp.code);
+        const limit = isPrio ? (15 * 60 * 1000) : (60 * 60 * 1000);
+
+        if (diff < limit) {
+            console.log(`[Scan Skipped] Best candidate ${targetComp.name} is only ${Math.round(diff / 60000)}m old (Limit: ${Math.round(limit / 60000)}m)`);
+            return res.status(200).json({
+                skipped: true,
+                message: 'Data is fresh enough',
+                scanned: false,
+                nextScanIn: Math.round((limit - diff) / 1000) + 's'
+            });
+        }
+    }
+
     // Calculate remaining unscanned competitions
     const unscannedCount = COMPETITIONS.filter(c => !lastScanMap.has(c.code)).length;
 
