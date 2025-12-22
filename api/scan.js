@@ -70,20 +70,41 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Check which competitions haven't been scanned yet
+    // Get latest scan timestamp for each competition
     const { data: scanLogs } = await supabase
         .from('scan_log')
-        .select('league_id');
+        .select('league_id, scanned_at')
+        .order('scanned_at', { ascending: false });
 
-    const scannedCodes = new Set((scanLogs || []).map(l => l.league_id));
-
-    // Find unscanned competition, or pick random
-    let targetComp = COMPETITIONS.find(c => !scannedCodes.has(c.code));
-
-    if (!targetComp) {
-        // All scanned, pick random for re-scan
-        targetComp = COMPETITIONS[Math.floor(Math.random() * COMPETITIONS.length)];
+    // Build a map of league_id -> most recent scan time
+    const lastScanMap = new Map();
+    for (const log of (scanLogs || [])) {
+        if (!lastScanMap.has(log.league_id)) {
+            lastScanMap.set(log.league_id, new Date(log.scanned_at));
+        }
     }
+
+    // Sort competitions by priority:
+    // 1. Never scanned (no entry in map) - highest priority
+    // 2. Oldest scanned - next priority
+    const sortedCompetitions = [...COMPETITIONS].sort((a, b) => {
+        const aTime = lastScanMap.get(a.code);
+        const bTime = lastScanMap.get(b.code);
+
+        // Never scanned = highest priority (return -1 to sort first)
+        if (!aTime && bTime) return -1;
+        if (aTime && !bTime) return 1;
+        if (!aTime && !bTime) return 0;
+
+        // Both have been scanned, oldest first
+        return aTime.getTime() - bTime.getTime();
+    });
+
+    // Pick the highest priority competition
+    let targetComp = sortedCompetitions[0];
+
+    // Calculate remaining unscanned competitions
+    const unscannedCount = COMPETITIONS.filter(c => !lastScanMap.has(c.code)).length;
 
     // Allow override via query param
     if (req.query.competition) {
@@ -235,9 +256,6 @@ export default async function handler(req, res) {
             teams_qualified: teamsQualified
         });
 
-        // Get remaining unscanned competitions
-        const remainingComps = COMPETITIONS.filter(c => !scannedCodes.has(c.code) && c.code !== targetComp.code);
-
         return res.status(200).json({
             success: true,
             competition: {
@@ -248,8 +266,9 @@ export default async function handler(req, res) {
             matchesAnalyzed: matches.length,
             teamsScanned: Object.keys(teamResults).length,
             teamsQualified: teamsQualified,
-            remainingCompetitions: remainingComps.length,
-            nextCompetition: remainingComps[0] || null,
+            remainingCompetitions: unscannedCount > 0 ? unscannedCount - 1 : 0,
+            totalCompetitions: COMPETITIONS.length,
+            nextCompetition: sortedCompetitions[1] || null,
             teams: teamsToUpsert.filter(t => t.has_5_wins)
         });
 
