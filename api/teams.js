@@ -6,8 +6,8 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Vercel Edge Cache: Cache for 10 mins, serve stale while revalidating
-  res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=59');
+  // Vercel Edge Cache: Cache for 1 min (60s) to allow live scan updates to appear quickly
+  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=59');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
