@@ -1,4 +1,4 @@
-# The Afro Index 🔴
+# Has United Won 5? 🔴
 
 **The "Has United Won 5?" Tracker**
 
@@ -8,7 +8,7 @@ On **October 5, 2024**, Manchester United fan [Frank Ilett](https://instagram.co
 
 Since then, Frank has grown a magnificent afro, amassed over 1.5 million followers, and become a symbol of long-suffering United fandom. Even players like Diogo Dalot are aware of his challenge and want to help him get that haircut!
 
-The Afro Index tracks every football team that has achieved what United hasn't — **5+ consecutive wins** since Frank's vow. It's a leaderboard of humiliation, updated automatically whenever you visit.
+This website tracks every football team that has achieved what United hasn't — **5+ consecutive wins** since Frank's vow. It's a leaderboard of humiliation, updated automatically whenever you visit.
 
 > When United finally gets 5 in a row, Frank will donate his hair to the [Little Princess Trust](https://www.littleprincesses.org.uk/) 💇‍♂️❤️
 
