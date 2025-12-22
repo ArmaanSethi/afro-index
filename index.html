@@ -268,7 +268,9 @@
                 <div class="text-left">
                     <div class="text-sm text-gray-500 mb-1">Current Form</div>
                     <div id="united-form" class="text-2xl font-mono font-bold tracking-wider">
-                        <span class="text-gray-600">Loading...</span>
+                        <span class="text-united-red">L</span><span class="text-gray-400">D</span><span
+                            class="text-neon-green">W</span><span class="text-gray-400">D</span><span
+                            class="text-neon-green">W</span>
                     </div>
                 </div>
             </div>
@@ -277,7 +279,7 @@
             <div class="flex flex-wrap justify-center gap-8 md:gap-16 mb-8">
                 <div class="text-center">
                     <div id="united-streak" class="text-3xl md:text-4xl font-black text-white font-mono">
-                        --
+                        0W
                     </div>
                     <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Current Streak</div>
                 </div>
@@ -806,9 +808,7 @@
         // Init
         updateDays();
         loadTeams();
-
-        // Slight delay for United status to avoid any initial load race conditions
-        setTimeout(loadUnitedStatus, 500);
+        loadUnitedStatus(); // Call immediately, caching handles the rest
     </script>
 </body>
 
