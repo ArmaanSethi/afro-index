@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Afro Index | Teams with 5+ Consecutive Wins</title>
+  <meta name="description" content="Tracking every team that achieved 5+ consecutive wins since Frank Ilett's famous hair vow on October 5, 2024.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'united-red': '#DA291C',
+            'neon-green': '#00ff9d',
+            'dark-bg': '#050505',
+            'dark-card': '#0a0a0a',
+            'dark-border': '#1a1a1a'
+          },
+          fontFamily: {
+            'display': ['Inter', 'sans-serif'],
+            'mono': ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    body {
+      background: #050505;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* Gradient background */
+    .hero-gradient {
+      background: radial-gradient(ellipse at top, rgba(218, 41, 28, 0.15) 0%, transparent 50%),
+                  radial-gradient(ellipse at bottom right, rgba(0, 255, 157, 0.05) 0%, transparent 40%);
+    }
+    
+    /* Glassmorphism */
+    .glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.3s ease;
+    }
+    
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(218, 41, 28, 0.3);
+      transform: translateY(-4px);
+    }
+    
+    /* Glowing text */
+    .glow-red {
+      text-shadow: 0 0 40px rgba(218, 41, 28, 0.5);
+    }
+    
+    .glow-green {
+      text-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
+    }
+    
+    /* Animated gradient border */
+    .gradient-border {
+      position: relative;
+    }
+    
+    .gradient-border::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(45deg, #DA291C, #00ff9d, #DA291C);
+      border-radius: inherit;
+      z-index: -1;
+      animation: border-rotate 3s linear infinite;
+      background-size: 200% 200%;
+    }
+    
+    @keyframes border-rotate {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* Pulse animation for scan button */
+    .pulse-glow {
+      animation: pulse-glow 2s infinite;
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(218, 41, 28, 0.4); }
+      50% { box-shadow: 0 0 40px rgba(218, 41, 28, 0.6); }
+    }
+    
+    /* Tab styles */
+    .tab-active {
+      background: rgba(218, 41, 28, 0.2);
+      border-color: rgba(218, 41, 28, 0.5);
+    }
+    
+    /* Streak badge */
+    .streak-badge {
+      background: linear-gradient(135deg, #00ff9d 0%, #00cc7d 100%);
+      animation: badge-pulse 2s infinite;
+    }
+    
+    @keyframes badge-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+    
+    /* Loading spinner */
+    .spinner {
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #DA291C;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0a0a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #DA291C;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-white">
+  <!-- Hero Section -->
+  <section class="hero-gradient min-h-screen flex flex-col">
+    <!-- Nav -->
+    <nav class="flex justify-between items-center px-6 py-4 md:px-12">
+      <div class="font-mono text-sm text-gray-500">v1.0</div>
+      <a href="https://github.com/ArmaanSethi/afro-index" target="_blank" 
+         class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+        </svg>
+      </a>
+    </nav>
+    
+    <!-- Hero Content -->
+    <div class="flex-1 flex flex-col items-center justify-center px-6 text-center">
+      <div class="mb-8">
+        <span class="inline-block px-4 py-2 rounded-full glass text-sm font-mono text-gray-400 mb-6">
+          🔴 LIVE TRACKING
+        </span>
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-4 glow-red">
+          THE <span class="text-united-red">AFRO</span> INDEX
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto">
+          Every team that's done what United can't
+        </p>
+      </div>
+      
+      <!-- Stats -->
+      <div class="flex flex-wrap justify-center gap-8 md:gap-16 mt-8">
+        <div class="text-center">
+          <div id="team-count" class="text-4xl md:text-6xl font-black text-neon-green glow-green font-mono">
+            --
+          </div>
+          <div class="text-sm text-gray-500 uppercase tracking-wider mt-2">Teams Found</div>
+        </div>
+        <div class="text-center">
+          <div id="days-count" class="text-4xl md:text-6xl font-black text-united-red glow-red font-mono">
+            --
+          </div>
+          <div class="text-sm text-gray-500 uppercase tracking-wider mt-2">Days & Counting</div>
+        </div>
+      </div>
+      
+      <!-- Scan Button (Admin) -->
+      <div class="mt-12">
+        <button id="scan-btn" 
+                class="px-8 py-4 bg-united-red hover:bg-red-700 rounded-xl font-bold text-lg 
+                       transition-all duration-300 pulse-glow flex items-center gap-3">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          Scan Random League
+        </button>
+        <p id="scan-status" class="text-sm text-gray-500 mt-3 h-6"></p>
+      </div>
+      
+      <!-- Scroll indicator -->
+      <div class="mt-16 animate-bounce">
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Leaderboard Section -->
+  <section class="py-20 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold mb-2">The Leaderboard</h2>
+          <p class="text-gray-500">Teams that achieved 5+ consecutive wins</p>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="flex gap-2 mt-6 md:mt-0">
+          <button class="tab-btn tab-active px-6 py-3 rounded-xl glass font-semibold transition-all" data-tab="football">
+            ⚽ Football
+          </button>
+          <button class="tab-btn px-6 py-3 rounded-xl glass font-semibold transition-all text-gray-500 hover:text-white" data-tab="other">
+            🏀🏈🏒 Other
+          </button>
+        </div>
+      </div>
+      
+      <!-- Football Grid -->
+      <div id="football-tab" class="tab-content">
+        <div id="teams-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <!-- Teams will be loaded here -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-20">
+          <div class="text-6xl mb-4">🔍</div>
+          <h3 class="text-xl font-semibold mb-2">No teams found yet</h3>
+          <p class="text-gray-500">Click "Scan Random League" above to start discovering teams!</p>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="loading-state" class="flex justify-center py-20">
+          <div class="spinner"></div>
+        </div>
+      </div>
+      
+      <!-- Other Sports Tab (Joke) -->
+      <div id="other-tab" class="tab-content hidden">
+        <div class="text-center py-20 glass rounded-2xl">
+          <div class="text-6xl mb-4">😅</div>
+          <h3 class="text-xl font-semibold mb-2">Coming Soon™</h3>
+          <p class="text-gray-500 max-w-md mx-auto">
+            We're tracking other sports too, but honestly... <br>
+            even most of them have achieved 5 wins in a row before United.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- About Section -->
+  <section id="about" class="py-20 px-6 md:px-12 bg-gradient-to-b from-transparent to-dark-card">
+    <div class="max-w-4xl mx-auto">
+      <div class="glass rounded-3xl p-8 md:p-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">The Story</h2>
+        
+        <div class="space-y-6 text-gray-300 leading-relaxed">
+          <p>
+            <span class="text-2xl mr-2">💇</span>
+            On <span class="text-united-red font-semibold">October 5, 2024</span>, Manchester United fan 
+            <span class="text-white font-semibold">Frank Ilett</span> made a bold vow: he would not cut 
+            his hair until United won <span class="text-neon-green font-semibold">5 games in a row</span>.
+          </p>
+          
+          <p>
+            <span class="text-2xl mr-2">⏳</span>
+            As of today, <span id="days-inline" class="text-united-red font-bold">--</span> days later, 
+            Frank is still waiting. His hair grows longer with each disappointing result.
+          </p>
+          
+          <p>
+            <span class="text-2xl mr-2">📊</span>
+            Meanwhile, we've been tracking every other team in the world that has managed to achieve 
+            this seemingly impossible feat. Spoiler alert: it's a lot of teams.
+          </p>
+          
+          <p>
+            <span class="text-2xl mr-2">🎯</span>
+            <span class="text-white font-semibold">The Afro Index</span> exists to document this journey. 
+            Every team that reaches 5 consecutive wins gets added to our leaderboard, proving that 
+            Frank's challenge really shouldn't be this hard.
+          </p>
+        </div>
+        
+        <div class="mt-10 pt-8 border-t border-white/10 text-center">
+          <p class="text-gray-500 font-mono text-sm">
+            Data sourced from API-Football • Updated daily
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="py-8 px-6 text-center border-t border-white/5">
+    <p class="text-gray-600 font-mono text-sm">
+      Vibe Coded for <span class="text-united-red">The United Strand</span> 🔴
+    </p>
+    <p class="text-gray-700 text-xs mt-2">
+      Made with ❤️ and frustration
+    </p>
+  </footer>
+
+  <script>
+    // Constants
+    const START_DATE = new Date('2024-10-05');
+    const API_BASE = '/api';
+    
+    // DOM Elements
+    const teamCountEl = document.getElementById('team-count');
+    const daysCountEl = document.getElementById('days-count');
+    const daysInlineEl = document.getElementById('days-inline');
+    const teamsGridEl = document.getElementById('teams-grid');
+    const emptyStateEl = document.getElementById('empty-state');
+    const loadingStateEl = document.getElementById('loading-state');
+    const scanBtn = document.getElementById('scan-btn');
+    const scanStatusEl = document.getElementById('scan-status');
+    
+    // Calculate days since start
+    function calculateDays() {
+      const now = new Date();
+      const diffTime = Math.abs(now - START_DATE);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    }
+    
+    // Update days display
+    function updateDays() {
+      const days = calculateDays();
+      daysCountEl.textContent = days;
+      daysInlineEl.textContent = days;
+    }
+    
+    // Render team card
+    function renderTeamCard(team) {
+      return `
+        <div class="glass-card rounded-2xl p-6 cursor-default">
+          <div class="flex items-start justify-between mb-4">
+            <img src="${team.logo}" alt="${team.name}" 
+                 class="w-16 h-16 object-contain bg-white/5 rounded-xl p-2"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>⚽</text></svg>'">
+            <span class="streak-badge px-3 py-1 rounded-full text-xs font-bold text-black">
+              5+ WINS
+            </span>
+          </div>
+          
+          <h3 class="font-bold text-lg mb-2 truncate" title="${team.name}">${team.name}</h3>
+          
+          <div class="flex items-center gap-2 text-sm text-gray-400 mb-3">
+            ${team.country_flag ? `<img src="${team.country_flag}" class="w-5 h-4 rounded" alt="">` : ''}
+            <span>${team.country_name || 'Unknown'}</span>
+          </div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-gray-500">${team.league_name || 'Unknown League'}</span>
+            <span class="font-mono text-neon-green">${team.form || ''}</span>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Fetch and render teams
+    async function loadTeams() {
+      loadingStateEl.classList.remove('hidden');
+      emptyStateEl.classList.add('hidden');
+      teamsGridEl.innerHTML = '';
+      
+      try {
+        const res = await fetch(`${API_BASE}/teams`);
+        const data = await res.json();
+        
+        loadingStateEl.classList.add('hidden');
+        
+        if (data.teams && data.teams.length > 0) {
+          teamCountEl.textContent = data.teams.length;
+          teamsGridEl.innerHTML = data.teams.map(renderTeamCard).join('');
+          emptyStateEl.classList.add('hidden');
+        } else {
+          teamCountEl.textContent = '0';
+          emptyStateEl.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Failed to load teams:', error);
+        loadingStateEl.classList.add('hidden');
+        teamCountEl.textContent = '0';
+        emptyStateEl.classList.remove('hidden');
+      }
+    }
+    
+    // Scan random league
+    async function scanLeague() {
+      scanBtn.disabled = true;
+      scanBtn.innerHTML = '<div class="spinner"></div> Scanning...';
+      scanStatusEl.textContent = '';
+      
+      try {
+        const res = await fetch(`${API_BASE}/scan`);
+        const data = await res.json();
+        
+        if (data.success) {
+          scanStatusEl.textContent = `✅ Scanned ${data.leagueName}: ${data.teamsFound} qualifying team(s)`;
+          scanStatusEl.className = 'text-sm text-neon-green mt-3 h-6';
+          loadTeams(); // Refresh the grid
+        } else {
+          scanStatusEl.textContent = `⚠️ ${data.error || 'Scan failed'}`;
+          scanStatusEl.className = 'text-sm text-yellow-500 mt-3 h-6';
+        }
+      } catch (error) {
+        scanStatusEl.textContent = `❌ Error: ${error.message}`;
+        scanStatusEl.className = 'text-sm text-red-500 mt-3 h-6';
+      }
+      
+      scanBtn.disabled = false;
+      scanBtn.innerHTML = `
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        Scan Random League
+      `;
+    }
+    
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('tab-active');
+          b.classList.add('text-gray-500');
+        });
+        btn.classList.add('tab-active');
+        btn.classList.remove('text-gray-500');
+        
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.add('hidden');
+        });
+        document.getElementById(`${btn.dataset.tab}-tab`).classList.remove('hidden');
+      });
+    });
+    
+    // Event listeners
+    scanBtn.addEventListener('click', scanLeague);
+    
+    // Init
+    updateDays();
+    loadTeams();
+  </script>
+</body>
+</html>
