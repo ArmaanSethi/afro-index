@@ -122,7 +122,7 @@ export default async function handler(req, res) {
 
         // Thresholds
         const SUPER_STALE = 12 * 60 * 60 * 1000; // 12 Hours
-        const LIVE_STALE = 20 * 60 * 1000;       // 20 Minutes
+        const LIVE_STALE = 60 * 60 * 1000;       // 60 Minutes (increased to allow breaking out of Big 5 loop)
 
         const aDiff = now - aTime;
         const bDiff = now - bTime;
