@@ -810,6 +810,46 @@
 
         searchInput.addEventListener('input', filterTeams);
 
+        // Auto-scan: trigger a background scan if data is stale (Distributed Cron)
+        const SCAN_INTERVAL_MINUTES = 60; // Scan if no scan in last 60 minutes
+
+        async function autoScan(lastScanTime) {
+            // Prevent spamming scan in same session
+            if (sessionStorage.getItem('last_scan_triggered')) {
+                console.log('Skipping auto-scan (already triggered this session)');
+                return;
+            }
+
+            if (!lastScanTime) {
+                console.log('No scan data, triggering auto-scan...');
+                triggerBackgroundScan();
+                return;
+            }
+
+            const minutesSinceLastScan = (new Date() - lastScanTime) / 60000;
+            console.log(`Last scan was ${minutesSinceLastScan.toFixed(1)} minutes ago`);
+
+            if (minutesSinceLastScan > SCAN_INTERVAL_MINUTES) {
+                console.log('Data is stale (>1h), triggering background scan for oldest league...');
+                triggerBackgroundScan();
+            }
+        }
+
+        async function triggerBackgroundScan() {
+            try {
+                sessionStorage.setItem('last_scan_triggered', 'true'); // Lock for session
+                const res = await fetch(`${API_BASE}/scan`);
+                const data = await res.json();
+                if (data.success || data.message) {
+                    console.log(`Auto-scanned: ${data.competition?.name || 'Unknown'} - ${data.teamsQualified || 0} teams qualified`);
+                    // We don't reload teams immediately to avoid jumping UI, 
+                    // user will see new data on next refresh or visit.
+                }
+            } catch (e) {
+                console.error('Auto-scan failed:', e);
+            }
+        }
+
         // Fetch and render teams
         async function loadTeams() {
             loadingStateEl.classList.remove('hidden');
@@ -864,6 +904,9 @@
                     // Update Last Updated time
                     const lastScan = new Date(data.recentScans[0].scanned_at);
                     if (lastUpdatedEl) lastUpdatedEl.textContent = lastScan.toLocaleString();
+
+                    // Trigger auto-scan if data is stale (Distributed Cron)
+                    autoScan(lastScan);
 
                     // Render grid
                     if (leaguesStatusEl) {
