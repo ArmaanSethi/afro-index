@@ -621,7 +621,7 @@
                     if (leaguesCountEl && data.leaguesScanned) {
                         leaguesCountEl.textContent = data.leaguesScanned;
                     }
-                    teamsGridEl.innerHTML = data.teams.map(renderTeamCard).join('');
+                    if (teamsGridEl) teamsGridEl.innerHTML = data.teams.map(renderTeamCard).join('');
                     emptyStateEl.classList.add('hidden');
 
                     // 🎉 Easter egg: Check if Manchester United made it!
@@ -691,9 +691,9 @@
                 }
             } catch (error) {
                 console.error('Failed to load teams:', error);
-                loadingStateEl.classList.add('hidden');
-                teamCountEl.textContent = '0';
-                emptyStateEl.classList.remove('hidden');
+                if (loadingStateEl) loadingStateEl.classList.add('hidden');
+                if (teamCountEl) teamCountEl.textContent = '0';
+                if (emptyStateEl) emptyStateEl.classList.remove('hidden');
             }
         }
 
