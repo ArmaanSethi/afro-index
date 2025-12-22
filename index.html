@@ -811,7 +811,7 @@
         searchInput.addEventListener('input', filterTeams);
 
         // Auto-scan: trigger a background scan if data is stale (Distributed Cron)
-        const SCAN_INTERVAL_MINUTES = 60; // Scan if no scan in last 60 minutes
+        const SCAN_INTERVAL_MINUTES = 2; // Scan if no scan in last 2 minutes
 
         async function autoScan(lastScanTime) {
             // Prevent spamming scan in same session

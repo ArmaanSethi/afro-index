@@ -96,19 +96,39 @@ export default async function handler(req, res) {
         }
     }
 
+    // Priority Leagues (The "Big 5")
+    const PRIORITY_LEAGUES = ['PL', 'PD', 'BL1', 'SA', 'FL1'];
+
+    // Helper to check if a league is in the priority list
+    const isPriority = (code) => PRIORITY_LEAGUES.includes(code);
+
     // Sort competitions by priority:
     // 1. Never scanned (no entry in map) - highest priority
-    // 2. Oldest scanned - next priority
+    // 2. Priority Leagues that are "stale" (> 10 mins old) - next highest
+    // 3. Oldest scanned - fallback
     const sortedCompetitions = [...COMPETITIONS].sort((a, b) => {
         const aTime = lastScanMap.get(a.code);
         const bTime = lastScanMap.get(b.code);
+        const now = new Date();
 
-        // Never scanned = highest priority (return -1 to sort first)
+        // 1. Never scanned = highest priority (return -1 to sort first)
         if (!aTime && bTime) return -1;
         if (aTime && !bTime) return 1;
         if (!aTime && !bTime) return 0;
 
-        // Both have been scanned, oldest first
+        // 2. Priority Logic
+        const aIsPriority = isPriority(a.code);
+        const bIsPriority = isPriority(b.code);
+
+        // Check staleness (10 minutes)
+        const aStale = (now - aTime) > 10 * 60 * 1000;
+        const bStale = (now - bTime) > 10 * 60 * 1000;
+
+        // If 'a' is a priority league and is stale, push it up
+        if (aIsPriority && aStale && (!bIsPriority || !bStale)) return -1;
+        if (bIsPriority && bStale && (!aIsPriority || !aStale)) return 1;
+
+        // If both are priority and stale (or neither is significant), sort by oldest time
         return aTime.getTime() - bTime.getTime();
     });
 
