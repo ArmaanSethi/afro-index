@@ -838,12 +838,7 @@
         const SCAN_INTERVAL_MINUTES = 2; // Scan if no scan in last 2 minutes
 
         async function autoScan(lastScanTime) {
-            // Prevent spamming scan in same session
-            if (sessionStorage.getItem('last_scan_triggered')) {
-                console.log('Skipping auto-scan (already triggered this session)');
-                return;
-            }
-
+            // Check if we need to scan
             if (!lastScanTime) {
                 console.log('No scan data, triggering auto-scan...');
                 triggerBackgroundScan();
@@ -854,25 +849,36 @@
             console.log(`Last scan was ${minutesSinceLastScan.toFixed(1)} minutes ago`);
 
             if (minutesSinceLastScan > SCAN_INTERVAL_MINUTES) {
-                console.log('Data is stale (>1h), triggering background scan for oldest league...');
+                console.log('Data is stale, triggering background scan for oldest/priority league...');
                 triggerBackgroundScan();
+            } else {
+                console.log('Data is fresh enough, skipping scan.');
             }
         }
 
         async function triggerBackgroundScan() {
             try {
-                sessionStorage.setItem('last_scan_triggered', 'true'); // Lock for session
+                // No session locking anymore!
                 const res = await fetch(`${API_BASE}/scan`);
                 const data = await res.json();
                 if (data.success || data.message) {
                     console.log(`Auto-scanned: ${data.competition?.name || 'Unknown'} - ${data.teamsQualified || 0} teams qualified`);
-                    // We don't reload teams immediately to avoid jumping UI, 
-                    // user will see new data on next refresh or visit.
                 }
             } catch (e) {
                 console.error('Auto-scan failed:', e);
             }
         }
+
+        // Continuous Live Update Loop (every 2 mins)
+        setInterval(() => {
+            // We don't have easy access to 'lastScanTime' here without refetching teams or storing global state.
+            // Simplest approach: trigger a 'blind' check which hits /api/scan. 
+            // /api/scan is cheap if cached, and safe if rate-limited.
+            // Better: re-call loadTeams() effectively which triggers autoScan.
+            // BUT simpler: just call triggerBackgroundScan() directly if we are "live".
+            // Actually, the safest is to fetch current state then scan.
+            loadTeams();
+        }, 120 * 1000); // Check every 2 minutes
 
         // Fetch and render teams
         async function loadTeams() {
