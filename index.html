@@ -590,8 +590,15 @@
             }
 
             // Update form display
-            if (data.form && unitedFormEl) {
-                unitedFormEl.innerHTML = renderForm(data.form);
+            if (unitedFormEl) {
+                if (typeof data.form === 'string') {
+                    if (data.form.length > 0) {
+                        unitedFormEl.innerHTML = renderForm(data.form);
+                    } else {
+                        // Empty form (0 matches found)
+                        unitedFormEl.innerHTML = '<span class="text-xs text-gray-500">No recent matches</span>';
+                    }
+                }
             }
 
             // Update streak
