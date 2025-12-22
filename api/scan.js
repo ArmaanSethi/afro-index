@@ -70,10 +70,14 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Get latest scan timestamp for each competition
+    // Cutoff time - only consider scans after constraint fix (9:50 PM PST Dec 21, 2024)
+    const cutoffTime = '2024-12-22T05:50:00Z';
+
+    // Get latest scan timestamp for each competition (after cutoff)
     const { data: scanLogs } = await supabase
         .from('scan_log')
         .select('league_id, scanned_at')
+        .gte('scanned_at', cutoffTime)
         .order('scanned_at', { ascending: false });
 
     // Build a map of league_id -> most recent scan time
