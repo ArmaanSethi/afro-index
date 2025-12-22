@@ -600,6 +600,16 @@
             }
         }
 
+        function timeAgo(dateString) {
+            if (!dateString) return 'Just now';
+            const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
+            if (seconds < 60) return 'Just now';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            return `${hours}h ago`;
+        }
+
         // Load United's current status (Stale-While-Revalidate Pattern)
         async function loadUnitedStatus() {
             // 1. Try to load from local cache IMMEDIATELY
@@ -611,6 +621,10 @@
                     const data = JSON.parse(cachedData);
                     renderUnitedData(data);
                     hasCachedData = true;
+                    // Render status immediately with cached time
+                    if (unitedStatusEl) {
+                        unitedStatusEl.innerHTML = getUnitedStatusHTML(data);
+                    }
                     console.log('United Status: Loaded from cache');
                 } catch (e) {
                     console.error('Cache parse error', e);
@@ -643,25 +657,10 @@
                 localStorage.removeItem('united_api_failure');
                 localStorage.setItem('united_data_cache', JSON.stringify(data));
                 renderUnitedData(data);
-                console.log('United Status: Updated from API');
 
                 // Update "Live" indicator
                 if (unitedStatusEl) {
-                    unitedStatusEl.innerHTML = `
-                        <div class="glass p-4 rounded-xl flex items-center justify-between border border-united-red/30">
-                            <div class="flex items-center gap-3">
-                                <img src="https://crests.football-data.org/66.png" class="w-8 h-8 object-contain">
-                                <div>
-                                    <div class="font-bold text-sm text-united-red">Manchester United</div>
-                                    <div class="text-xs text-gray-400">Live Status Check</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xs font-mono text-white">${data.currentStreak}W Streak</div>
-                                <div class="text-[10px] text-gray-400">Checked just now</div>
-                            </div>
-                        </div>
-                    `;
+                    unitedStatusEl.innerHTML = getUnitedStatusHTML(data);
                 }
 
             } catch (error) {
