@@ -25,8 +25,9 @@ export default async function handler(req, res) {
 
     try {
         // Fetch United's recent matches
+        const today = new Date().toISOString().split('T')[0];
         const response = await fetch(
-            `https://api.football-data.org/v4/teams/${UNITED_TEAM_ID}/matches?status=FINISHED&limit=20`,
+            `https://api.football-data.org/v4/teams/${UNITED_TEAM_ID}/matches?status=FINISHED&dateFrom=2024-10-05&dateTo=${today}`,
             {
                 headers: { 'X-Auth-Token': apiKey }
             }
