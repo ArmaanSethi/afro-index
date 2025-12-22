@@ -712,7 +712,7 @@
                     if (lastUpdatedEl) lastUpdatedEl.textContent = lastScan.toLocaleString();
 
                     // Trigger auto-scan if data is stale
-                    autoScan(lastScan);
+                    // autoScan(lastScan); -> Handled by Vercel Cron now
 
                     // Render grid
                     if (leaguesStatusEl) {
@@ -744,8 +744,8 @@
                         }).join('');
                     }
                 } else {
-                    // No scans yet, trigger auto-scan
-                    autoScan(null);
+                    // No scans yet
+                    console.log('No recent scans, waiting for Cron job...');
                 }
             } catch (error) {
                 console.error('Failed to load teams:', error);
@@ -772,38 +772,7 @@
             });
         });
 
-        // Auto-scan: trigger a background scan if data is stale
-        const SCAN_INTERVAL_MINUTES = 5; // Scan if no scan in last 5 minutes
 
-        async function autoScan(lastScanTime) {
-            if (!lastScanTime) {
-                console.log('No scan data, triggering auto-scan...');
-                triggerBackgroundScan();
-                return;
-            }
-
-            const minutesSinceLastScan = (new Date() - lastScanTime) / 60000;
-            console.log(`Last scan was ${minutesSinceLastScan.toFixed(1)} minutes ago`);
-
-            if (minutesSinceLastScan > SCAN_INTERVAL_MINUTES) {
-                console.log('Data is stale, triggering auto-scan...');
-                triggerBackgroundScan();
-            }
-        }
-
-        async function triggerBackgroundScan() {
-            try {
-                const res = await fetch(`${API_BASE}/scan`);
-                const data = await res.json();
-                if (data.success) {
-                    console.log(`Auto-scanned: ${data.competition.name} - ${data.teamsQualified} teams qualified`);
-                    // Reload teams to show new data
-                    loadTeams();
-                }
-            } catch (error) {
-                console.error('Auto-scan failed:', error);
-            }
-        }
 
         // Init
         updateDays();
