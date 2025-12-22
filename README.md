@@ -31,7 +31,6 @@ The Afro Index tracks every football team that has achieved what United hasn't �
 - [ ] 🔍 **Search & Filter** — Filter by country, league, or streak length
 - [ ] 🏀 **NBA / 🏈 NFL** — Expand to other sports
 - [ ] 📈 **Historical Charts** — Visualize when streaks started/ended
-- [ ] 🌐 **Custom Domain** — afroindex.com
 
 ---
 
