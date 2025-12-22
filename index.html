@@ -219,52 +219,56 @@
             </a>
         </nav>
 
-        <!-- Hero Content -->
+        <!-- Hero Content: Has United Won 5? -->
         <div class="flex flex-col items-center justify-center px-6 text-center pt-12">
-            <span class="inline-block px-4 py-2 rounded-full glass text-sm font-mono text-gray-400 mb-4">
-                🔴 LIVE TRACKING
-            </span>
 
-            <!-- Man United Crest -->
-            <img src="https://crests.football-data.org/66.png" alt="Manchester United"
-                class="w-20 h-20 mb-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-pointer"
-                title="Still waiting...">
-
-            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-3 glow-red">
-                THE <span class="text-united-red">AFRO</span> INDEX
+            <!-- The Question -->
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-400 mb-4">
+                Has United Won 5 in a Row?
             </h1>
-            <p class="text-lg md:text-xl text-gray-400 max-w-xl mx-auto mb-2">
-                Every team that's done what United can't
-            </p>
-            <a href="https://www.google.com/search?q=frank+ilett+hair+manchester+united" target="_blank"
-                class="text-xs text-gray-600 hover:text-united-red transition-colors mb-8 inline-block">
-                The Vow: Oct 5, 2024 → ???
-            </a>
 
-            <!-- Stats -->
-            <div class="flex flex-wrap justify-center gap-8 md:gap-16">
-                <div class="text-center">
-                    <div id="team-count" class="text-3xl md:text-5xl font-black text-neon-green glow-green font-mono">
-                        --
+            <!-- The Answer -->
+            <div id="united-answer" class="text-8xl md:text-[12rem] font-black text-united-red glow-red mb-4">
+                NO
+            </div>
+
+            <!-- Man United Crest + Current Form -->
+            <div class="flex items-center gap-6 mb-6">
+                <img src="https://crests.football-data.org/66.png" alt="Manchester United"
+                    class="w-16 h-16 object-contain opacity-50 grayscale">
+                <div class="text-left">
+                    <div class="text-sm text-gray-500 mb-1">Current Form</div>
+                    <div id="united-form" class="text-2xl font-mono font-bold tracking-wider">
+                        <span class="text-gray-600">Loading...</span>
                     </div>
-                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Teams Found</div>
-                </div>
-                <div class="text-center">
-                    <div id="days-count" class="text-3xl md:text-5xl font-black text-united-red glow-red font-mono">
-                        --
-                    </div>
-                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Days & Counting</div>
-                </div>
-                <div class="text-center">
-                    <div id="leagues-count" class="text-3xl md:text-5xl font-black text-white font-mono">
-                        --
-                    </div>
-                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Leagues Scanned</div>
                 </div>
             </div>
 
-            <div class="mt-8 text-xs text-gray-500 font-mono">
-                Last Updated: <span id="last-updated" class="text-gray-300">--</span>
+            <!-- Stats Row -->
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 mb-6">
+                <div class="text-center">
+                    <div id="united-streak" class="text-3xl md:text-4xl font-black text-white font-mono">
+                        --
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Current Streak</div>
+                </div>
+                <div class="text-center">
+                    <div id="days-count" class="text-3xl md:text-4xl font-black text-united-red font-mono">
+                        --
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Days Waiting</div>
+                </div>
+            </div>
+
+            <!-- Link to Frank -->
+            <a href="https://instagram.com/theunitedstrand" target="_blank"
+                class="text-sm text-gray-600 hover:text-united-red transition-colors mb-4">
+                Frank's Vow: Oct 5, 2024 → ???
+            </a>
+
+            <!-- Teaser for leaderboard -->
+            <div class="mt-4 text-gray-500">
+                Meanwhile, <span id="team-count" class="text-neon-green font-bold">--</span> teams have done it ↓
             </div>
         </div>
     </section>
@@ -390,6 +394,17 @@
             </div>
         </div>
 
+        <!-- United Status -->
+        <h4 class="text-lg font-bold mt-8 mb-4 flex items-center gap-2">
+            <img src="https://crests.football-data.org/66.png" class="w-5 h-5 object-contain opacity-50">
+            United Watch
+        </h4>
+        <div id="united-status">
+            <div class="glass p-4 rounded-xl flex items-center justify-between opacity-50 border border-united-red/30">
+                <span>Checking United's form...</span>
+            </div>
+        </div>
+
         <p class="text-xs text-gray-500 mt-6">
             We scan 12 major competitions (Free Tier Limit): Premier League, La Liga, Bundesliga, Serie A, Ligue 1,
             Eredivisie, Primeira Liga, Championship, Champions League, Euro Championship, World Cup, and Brasileirão.
@@ -427,6 +442,12 @@
         const emptyStateEl = document.getElementById('empty-state');
         const loadingStateEl = document.getElementById('loading-state');
 
+        // United-specific elements
+        const unitedAnswerEl = document.getElementById('united-answer');
+        const unitedFormEl = document.getElementById('united-form');
+        const unitedStreakEl = document.getElementById('united-streak');
+        const unitedStatusEl = document.getElementById('united-status');
+
         // Calculate days since start
         function calculateDays() {
             const now = new Date();
@@ -440,6 +461,86 @@
             const days = calculateDays();
             daysCountEl.textContent = days;
             if (daysInlineEl) daysInlineEl.textContent = days;
+        }
+
+        // Render form string with colors
+        function renderForm(formString) {
+            return formString.split('').map(char => {
+                if (char === 'W') return '<span class="text-neon-green">W</span>';
+                if (char === 'L') return '<span class="text-united-red">L</span>';
+                if (char === 'D') return '<span class="text-gray-400">D</span>';
+                return char;
+            }).join('');
+        }
+
+        // Load United's current status
+        async function loadUnitedStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/united`);
+                const data = await res.json();
+
+                if (data.hasWon5) {
+                    // THEY DID IT!
+                    unitedAnswerEl.textContent = 'YES';
+                    unitedAnswerEl.classList.remove('text-united-red');
+                    unitedAnswerEl.classList.add('text-neon-green', 'glow-green');
+                    // Trigger celebration
+                    triggerCelebration();
+                } else {
+                    unitedAnswerEl.textContent = 'NO';
+                }
+
+                // Update form display
+                if (data.form) {
+                    unitedFormEl.innerHTML = renderForm(data.form);
+                }
+
+                // Update streak
+                if (data.currentStreak !== undefined) {
+                    unitedStreakEl.textContent = `${data.currentStreak}W`;
+                }
+
+                // Update United status in Live Coverage
+                if (unitedStatusEl) {
+                    const now = new Date();
+                    unitedStatusEl.innerHTML = `
+                        <div class="glass p-4 rounded-xl flex items-center justify-between border border-united-red/30">
+                            <div class="flex items-center gap-3">
+                                <img src="https://crests.football-data.org/66.png" class="w-8 h-8 object-contain">
+                                <div>
+                                    <div class="font-bold text-sm text-united-red">Manchester United</div>
+                                    <div class="text-xs text-gray-500">${now.toLocaleTimeString()}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-mono">${renderForm(data.form || '---')}</div>
+                                <div class="text-[10px] text-gray-600">${data.currentStreak}W streak</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Failed to load United status:', error);
+                unitedFormEl.innerHTML = '<span class="text-gray-600">Error loading</span>';
+            }
+        }
+
+        // Celebration for when United finally does it
+        function triggerCelebration() {
+            document.body.innerHTML = `
+                <div class="fixed inset-0 bg-neon-green flex items-center justify-center z-50">
+                    <div class="text-center text-black p-8">
+                        <div class="text-9xl mb-8">🎉✂️🎉</div>
+                        <h1 class="text-6xl font-black mb-4">FRANK CAN CUT HIS HAIR!</h1>
+                        <p class="text-2xl mb-8">Manchester United finally won 5 in a row!</p>
+                        <p class="text-xl opacity-75">It only took ${calculateDays()} days...</p>
+                        <button onclick="location.reload()" class="mt-8 px-8 py-4 bg-black text-neon-green font-bold rounded-xl hover:scale-105 transition-transform">
+                            View The Leaderboard
+                        </button>
+                    </div>
+                </div>
+            `;
         }
 
         // League flag map (shared by team cards and scan status)
@@ -647,6 +748,7 @@
         // Init
         updateDays();
         loadTeams();
+        loadUnitedStatus();
     </script>
 </body>
 
