@@ -459,7 +459,7 @@
         // Update days display
         function updateDays() {
             const days = calculateDays();
-            daysCountEl.textContent = days;
+            if (daysCountEl) daysCountEl.textContent = days;
             if (daysInlineEl) daysInlineEl.textContent = days;
         }
 
@@ -481,22 +481,24 @@
 
                 if (data.hasWon5) {
                     // THEY DID IT!
-                    unitedAnswerEl.textContent = 'YES';
-                    unitedAnswerEl.classList.remove('text-united-red');
-                    unitedAnswerEl.classList.add('text-neon-green', 'glow-green');
+                    if (unitedAnswerEl) {
+                        unitedAnswerEl.textContent = 'YES';
+                        unitedAnswerEl.classList.remove('text-united-red');
+                        unitedAnswerEl.classList.add('text-neon-green', 'glow-green');
+                    }
                     // Trigger celebration
                     triggerCelebration();
                 } else {
-                    unitedAnswerEl.textContent = 'NO';
+                    if (unitedAnswerEl) unitedAnswerEl.textContent = 'NO';
                 }
 
                 // Update form display
-                if (data.form) {
+                if (data.form && unitedFormEl) {
                     unitedFormEl.innerHTML = renderForm(data.form);
                 }
 
                 // Update streak
-                if (data.currentStreak !== undefined) {
+                if (data.currentStreak !== undefined && unitedStreakEl) {
                     unitedStreakEl.textContent = `${data.currentStreak}W`;
                 }
 
@@ -615,8 +617,8 @@
                 loadingStateEl.classList.add('hidden');
 
                 if (data.teams && data.teams.length > 0) {
-                    teamCountEl.textContent = data.teams.length;
-                    if (data.leaguesScanned) {
+                    if (teamCountEl) teamCountEl.textContent = data.teams.length;
+                    if (leaguesCountEl && data.leaguesScanned) {
                         leaguesCountEl.textContent = data.leaguesScanned;
                     }
                     teamsGridEl.innerHTML = data.teams.map(renderTeamCard).join('');
@@ -641,7 +643,7 @@
                     }
                 } else {
                     teamsGridEl.innerHTML = '';
-                    teamCountEl.textContent = '0';
+                    if (teamCountEl) teamCountEl.textContent = '0';
                     emptyStateEl.classList.remove('hidden');
                 }
 
