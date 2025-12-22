@@ -468,10 +468,10 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    const priorityInfo = data.priorityRemaining > 0
-                        ? ` (${data.priorityRemaining} priority leagues left)`
+                    const remaining = data.remainingCompetitions > 0
+                        ? ` (${data.remainingCompetitions} competitions left)`
                         : '';
-                    scanStatusEl.innerHTML = `✅ <strong>${data.league.name}</strong>: ${data.teamsScanned} teams scanned, ${data.teamsQualified} with 5+ wins${priorityInfo}`;
+                    scanStatusEl.innerHTML = `✅ <strong>${data.competition.name}</strong>: ${data.teamsScanned} teams, ${data.teamsQualified} with 5+ wins${remaining}`;
                     scanStatusEl.className = 'text-sm text-neon-green mt-3';
                     loadTeams(); // Refresh the grid
                 } else {
