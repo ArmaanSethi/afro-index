@@ -620,6 +620,28 @@
             return `${hours}h ago`;
         }
 
+        // Helper to generate the United Status HTML
+        function getUnitedStatusHTML(data) {
+            const date = new Date(data.lastUpdated);
+            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            return `
+                <div class="glass p-4 rounded-xl flex items-center justify-between border border-united-red/30">
+                    <div class="flex items-center gap-3">
+                        <img src="https://crests.football-data.org/66.png" class="w-8 h-8 object-contain">
+                        <div>
+                            <div class="font-bold text-sm text-united-red">Manchester United</div>
+                            <div class="text-xs text-gray-500">Live Check</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs font-mono text-white">${data.currentStreak}W Streak</div>
+                        <div class="text-[10px] text-gray-400" title="${date.toLocaleString()}">${timeStr} (${timeAgo(data.lastUpdated)})</div>
+                    </div>
+                </div>
+            `;
+        }
+
         // Load United's current status (Stale-While-Revalidate Pattern)
         async function loadUnitedStatus() {
             // 1. Try to load from local cache IMMEDIATELY
