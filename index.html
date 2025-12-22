@@ -783,6 +783,7 @@
 
             // 'All' Button
             const allBtn = document.createElement('button');
+            allBtn.className = 'filter-btn'; // Essential for selection
             allBtn.dataset.league = 'all';
             allBtn.innerHTML = 'All';
             allBtn.addEventListener('click', () => {
@@ -797,8 +798,10 @@
             leagues.forEach(leagueId => {
                 const count = teams.filter(t => t.league_id === leagueId).length;
                 const btn = document.createElement('button');
+                btn.className = 'filter-btn'; // Essential for selection
                 btn.dataset.league = leagueId;
-                btn.innerHTML = `${LEAGUE_FLAGS[leagueId] || ''} ${leagueId} <span class="opacity-50 ml-1">(${count})</span>`;
+                // Use a flex-friendly structure
+                btn.innerHTML = `<span class="text-base">${LEAGUE_FLAGS[leagueId] || ''}</span> <span>${leagueId}</span> <span class="opacity-50 ml-1 text-[10px]">(${count})</span>`;
 
                 btn.addEventListener('click', () => {
                     // If 'all' was active, clear it first
