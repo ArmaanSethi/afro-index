@@ -883,7 +883,7 @@
         searchInput.addEventListener('input', filterTeams);
 
         // Auto-scan: trigger a background scan if data is stale (Distributed Cron)
-        const SCAN_INTERVAL_MINUTES = 5; // Scan if no scan in last 5 minutes
+        const SCAN_INTERVAL_MINUTES = 3; // Scan every 3 minutes to cycle Top 5 every 15 mins
 
         async function autoScan(lastScanTime) {
             // Check if we need to scan
@@ -926,7 +926,7 @@
             // BUT simpler: just call triggerBackgroundScan() directly if we are "live".
             // Actually, the safest is to fetch current state then scan.
             loadTeams();
-        }, 300 * 1000); // Check every 5 minutes
+        }, 180 * 1000); // Check every 3 minutes
 
         // Fetch and render teams
         async function loadTeams() {

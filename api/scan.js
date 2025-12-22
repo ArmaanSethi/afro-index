@@ -121,8 +121,8 @@ export default async function handler(req, res) {
         const bIsPriority = isPriority(b.code);
 
         // Thresholds
-        const SUPER_STALE = 12 * 60 * 60 * 1000; // 12 Hours
-        const LIVE_STALE = 60 * 60 * 1000;       // 60 Minutes (increased to allow breaking out of Big 5 loop)
+        const SUPER_STALE = 60 * 60 * 1000;       // 60 Minutes (Others updated hourly)
+        const LIVE_STALE = 15 * 60 * 1000;        // 15 Minutes (Top 5 updated quarterly)
 
         const aDiff = now - aTime;
         const bDiff = now - bTime;
