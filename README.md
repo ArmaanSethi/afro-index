@@ -1,16 +1,28 @@
 # The Afro Index 🔴
 
-**Live:** [afro-index.vercel.app](https://afro-index.vercel.app)
+**[afro-index.vercel.app](https://afro-index.vercel.app)**
 
-A leaderboard tracking every football team that has achieved 5+ consecutive wins since October 5, 2024 — the day Manchester United fan Frank Ilett vowed not to cut his hair until United won 5 in a row.
+## The Story
+
+On **October 5, 2024**, Manchester United fan [Frank Ilett](https://youtube.com/@TheUnitedStrand) — known as "The United Strand" — made a bold vow: **he won't cut his hair until United wins 5 matches in a row.** 
+
+Since then, Frank has grown a magnificent afro, amassed 1.5 million followers, and become a symbol of long-suffering United fandom. Even players like Diogo Dalot are aware of his challenge and want to help him get that haircut!
+
+The Afro Index tracks every football team that has achieved what United hasn't — **5+ consecutive wins** since Frank's vow. It's a leaderboard of humiliation, updated automatically whenever you visit the site.
+
+> When United finally gets 5 in a row, Frank will donate his hair to the [Little Princess Trust](https://www.littleprincesses.org.uk/) 💇‍♂️❤️
+
+---
 
 ## Features
 
-- 📊 **Live Leaderboard** — 56+ teams sorted by win streak
-- ⚽ **12 Competitions** — Premier League, La Liga, Bundesliga, Serie A, Ligue 1, Champions League, and more
-- 🔄 **Auto-Scan** — Automatically refreshes data when visitors load the page
-- 🎯 **Smart Priority** — Scans oldest-updated leagues first
-- 📱 **Dark Mode UI** — Responsive glassmorphism design
+- 📊 **Live Leaderboard** — 50+ teams sorted by who achieved 5 wins first
+- ⚽ **12 Competitions** — Top 5 European leagues, Champions League, Brasileirão, and more
+- 🔄 **Auto-Scan** — Refreshes data automatically when you visit
+- � **Easter Egg** — A special celebration awaits when United finally makes it
+- � **Day Tracking** — See how many days into Frank's vow each team achieved the streak
+
+---
 
 ## Tech Stack
 
@@ -21,37 +33,34 @@ A leaderboard tracking every football team that has achieved 5+ consecutive wins
 | Database | Supabase (PostgreSQL) |
 | API | [football-data.org](https://football-data.org) |
 
-## Quick Start
+---
+
+## Local Development
 
 ```bash
-# Clone
 git clone https://github.com/ArmaanSethi/afro-index.git
 cd afro-index
 
-# Install Vercel CLI
-npm i -g vercel
-
-# Create .env.local
+# Create .env.local with your keys
 echo "SUPABASE_URL=your_url" > .env.local
 echo "SUPABASE_SERVICE_KEY=your_key" >> .env.local
 echo "FOOTBALL_DATA_API_KEY=your_key" >> .env.local
 
 # Run locally
-vercel dev
+npx vercel dev
 ```
 
-## API Endpoints
+---
+
+## API
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /api/teams` | Returns qualifying teams sorted by streak |
-| `GET /api/scan` | Scans the highest priority competition |
-| `GET /api/scan?competition=PL` | Scans a specific competition |
+| `GET /api/teams` | Returns qualifying teams sorted by achievement date |
+| `GET /api/scan` | Scans the next league in priority queue |
 
-## Supported Competitions
-
-PL, PD, BL1, SA, FL1, DED, PPL, ELC, CL, EC, WC, BSA
+---
 
 ## License
 
-MIT
+MIT — Built with ❤️ for the United faithful.
