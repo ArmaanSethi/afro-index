@@ -389,6 +389,7 @@
         const leaguesCountEl = document.getElementById('leagues-count');
         const lastUpdatedEl = document.getElementById('last-updated');
         const leaguesStatusEl = document.getElementById('leagues-status');
+        const daysInlineEl = document.getElementById('days-inline');
         const teamsGridEl = document.getElementById('teams-grid');
         const emptyStateEl = document.getElementById('empty-state');
         const loadingStateEl = document.getElementById('loading-state');
@@ -405,6 +406,7 @@
         function updateDays() {
             const days = calculateDays();
             daysCountEl.textContent = days;
+            if (daysInlineEl) daysInlineEl.textContent = days;
         }
 
         // Render team card
