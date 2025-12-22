@@ -229,21 +229,26 @@
             background: #DA291C;
         }
 
-        /* Card Entry Animation */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
+        /* Update Flicker Animation */
+        @keyframes flashGreen {
+            0% {
+                background-color: rgba(255, 255, 255, 0.03);
+                border-color: rgba(255, 255, 255, 0.08);
             }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            50% {
+                background-color: rgba(0, 255, 157, 0.15);
+                border-color: rgba(0, 255, 157, 0.4);
+            }
+
+            100% {
+                background-color: rgba(255, 255, 255, 0.03);
+                border-color: rgba(255, 255, 255, 0.08);
             }
         }
 
-        .animate-slide-in {
-            animation: slideIn 0.5s ease-out forwards;
+        .animate-update {
+            animation: flashGreen 1.5s ease-out forwards;
         }
     </style>
 </head>
@@ -1048,7 +1053,7 @@
                             const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
                             return `
-                        <div class="glass p-4 rounded-xl flex items-center justify-between animate-slide-in" style="animation-delay: ${index * 100}ms">
+                        <div class="glass p-4 rounded-xl flex items-center justify-between animate-update" style="animation-delay: ${index * 150}ms">
                             <div class="flex items-center gap-3">
                                 <span class="text-xl">${flag}</span>
                                 <div>
