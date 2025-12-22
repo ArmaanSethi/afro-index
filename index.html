@@ -669,7 +669,7 @@
                 const lastFailure = localStorage.getItem('united_api_failure');
                 if (lastFailure) {
                     const diff = (new Date() - new Date(lastFailure)) / 1000;
-                    if (diff < 60) { // 1 minute cool-off is sufficient if we have cache
+                    if (diff < 60 && hasCachedData) { // Only cool off if we have backup data
                         // console.log('United API cooling off...');
                         return; // Skip network call, keep showing cache
                     }
