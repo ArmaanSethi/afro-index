@@ -526,11 +526,28 @@
         const unitedStreakEl = document.getElementById('united-streak');
         const unitedStatusEl = document.getElementById('united-status');
 
-        // Calculate days since start
+        // Calculate days since start (UK Time)
         function calculateDays() {
+            // Frank made the vow on Oct 5, 2024. We'll treat start of day UK time as the baseline.
+            const start = new Date('2024-10-05T00:00:00+01:00');
             const now = new Date();
-            const diffTime = Math.abs(now - START_DATE);
+
+            // Create a date object for "now" but in UK time components
+            // This is a rough way to sync everyone to the same "day number" relative to UK
+            const ukDateStr = now.toLocaleString('en-US', { timeZone: 'Europe/London' });
+            const ukNow = new Date(ukDateStr);
+
+            // Start was hardcoded as a specific instant. We should compare against "now" which is that instant?
+            // Actually, simpler: just get the difference in ms from the timestamp 
+            // BUT "days since" usually implies calendar days.
+            // Let's stick to the simple diff logic but ensure 'now' is interpreted in a consistent context if needed.
+            // Actually, the original logic `new Date() - START_DATE` uses local machine time vs a UTC-interpreted start date (if not specified).
+            // `new Date('2024-10-05')` treats it as UTC usually.
+
+            // Let's be precise:
+            const diffTime = Math.abs(ukNow - start);
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
             return diffDays;
         }
 
