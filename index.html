@@ -592,29 +592,10 @@
 
                 // Clear failure record on success
                 localStorage.removeItem('united_api_failure');
+                // Save successful data for fallback
+                localStorage.setItem('united_data_cache', JSON.stringify(data));
 
-                if (data.hasWon5) {
-                    // THEY DID IT!
-                    if (unitedAnswerEl) {
-                        unitedAnswerEl.textContent = 'YES';
-                        unitedAnswerEl.classList.remove('text-united-red');
-                        unitedAnswerEl.classList.add('text-neon-green', 'glow-green');
-                    }
-                    // Trigger celebration
-                    triggerCelebration();
-                } else {
-                    if (unitedAnswerEl) unitedAnswerEl.textContent = 'NO';
-                }
-
-                // Update form display
-                if (data.form && unitedFormEl) {
-                    unitedFormEl.innerHTML = renderForm(data.form);
-                }
-
-                // Update streak
-                if (data.currentStreak !== undefined && unitedStreakEl) {
-                    unitedStreakEl.textContent = `${data.currentStreak}W`;
-                }
+                renderUnitedData(data);
 
                 // Update United status in Live Coverage
                 if (unitedStatusEl) {
