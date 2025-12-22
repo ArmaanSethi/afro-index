@@ -24,6 +24,17 @@ The Afro Index tracks every football team that has achieved what United hasn't �
 
 ---
 
+## Roadmap
+
+- [ ] 🐦 **Twitter Bot** — Auto-tweet when a new team achieves 5+ wins
+- [ ] ⏰ **Cron Jobs** — Scheduled daily scans instead of visitor-triggered
+- [ ] 🔍 **Search & Filter** — Filter by country, league, or streak length
+- [ ] 🏀 **NBA / 🏈 NFL** — Expand to other sports
+- [ ] 📈 **Historical Charts** — Visualize when streaks started/ended
+- [ ] 🌐 **Custom Domain** — afroindex.com
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
