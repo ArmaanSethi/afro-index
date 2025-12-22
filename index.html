@@ -228,6 +228,23 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #DA291C;
         }
+
+        /* Card Entry Animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+        }
     </style>
 </head>
 
@@ -1025,13 +1042,13 @@
                             'WC': '🌍', 'BSA': '🇧🇷'
                         };
 
-                        leaguesStatusEl.innerHTML = data.recentScans.map(scan => {
+                        leaguesStatusEl.innerHTML = data.recentScans.map((scan, index) => {
                             const date = new Date(scan.scanned_at);
                             const flag = leagueFlags[scan.league_id] || '⚽';
                             const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
                             return `
-                        <div class="glass p-4 rounded-xl flex items-center justify-between">
+                        <div class="glass p-4 rounded-xl flex items-center justify-between animate-slide-in" style="animation-delay: ${index * 100}ms">
                             <div class="flex items-center gap-3">
                                 <span class="text-xl">${flag}</span>
                                 <div>
