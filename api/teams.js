@@ -34,12 +34,20 @@ export default async function handler(req, res) {
       .from('teams')
       .select('*', { count: 'exact', head: true });
 
-    // Get scan log for league coverage
-    const { data: scanLog } = await supabase
+    // Get scan log for league coverage (most recent scan per league)
+    const { data: allScans } = await supabase
       .from('scan_log')
       .select('*')
       .order('scanned_at', { ascending: false })
-      .limit(10);
+      .limit(100);
+
+    // Keep only most recent scan per league
+    const seenLeagues = new Set();
+    const scanLog = (allScans || []).filter(scan => {
+      if (seenLeagues.has(scan.league_id)) return false;
+      seenLeagues.add(scan.league_id);
+      return true;
+    });
 
     // Count unique leagues scanned (get unique league_ids)
     const { data: uniqueLeagues } = await supabase
