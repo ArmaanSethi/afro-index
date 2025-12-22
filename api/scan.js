@@ -20,26 +20,35 @@ const COMPETITIONS = [
     { code: 'BSA', name: 'Brasileirão', country: 'Brazil' },
 ];
 
-// Find 5+ consecutive wins in a sequence of results
+// Find 5+ consecutive wins in a sequence of results (with dates)
+// Returns { achievedStreak, maxConsecutive, achievedDate }
 function findFiveWinStreak(results) {
     let consecutiveWins = 0;
     let maxConsecutive = 0;
     let achievedStreak = false;
+    let achievedDate = null;
+    let streakStartIndex = 0;
 
-    for (const result of results) {
-        if (result === 'W') {
-            consecutiveWins++;
-            if (consecutiveWins >= 5) {
-                achievedStreak = true;
-                maxConsecutive = Math.max(maxConsecutive, consecutiveWins);
+    for (let i = 0; i < results.length; i++) {
+        const r = results[i];
+        if (r.result === 'W') {
+            if (consecutiveWins === 0) {
+                streakStartIndex = i;
             }
+            consecutiveWins++;
+            if (consecutiveWins >= 5 && !achievedDate) {
+                // First time hitting 5 wins - record the date of the 5th win
+                achievedStreak = true;
+                achievedDate = r.date;
+            }
+            maxConsecutive = Math.max(maxConsecutive, consecutiveWins);
         } else {
             maxConsecutive = Math.max(maxConsecutive, consecutiveWins);
             consecutiveWins = 0;
         }
     }
 
-    return { achievedStreak, maxConsecutive };
+    return { achievedStreak, maxConsecutive, achievedDate };
 }
 
 // Get today's date in YYYY-MM-DD format
@@ -210,10 +219,9 @@ export default async function handler(req, res) {
 
             // Sort by date chronologically
             team.results.sort((a, b) => new Date(a.date) - new Date(b.date));
-            const resultSequence = team.results.map(r => r.result);
 
-            // Check for 5-win streak
-            const { achievedStreak, maxConsecutive } = findFiveWinStreak(resultSequence);
+            // Check for 5-win streak (pass full results with dates)
+            const { achievedStreak, maxConsecutive, achievedDate } = findFiveWinStreak(team.results);
 
             if (achievedStreak) teamsQualified++;
 
@@ -226,9 +234,10 @@ export default async function handler(req, res) {
                 country_flag: competitionInfo.area?.flag || null,
                 league_id: targetComp.code,
                 league_name: competitionInfo.name || targetComp.name,
-                form: resultSequence.join(''),
+                form: team.results.map(r => r.result).join(''),
                 has_5_wins: achievedStreak,
                 max_streak: maxConsecutive,
+                streak_achieved_date: achievedDate ? achievedDate.split('T')[0] : null,
                 last_checked: new Date().toISOString()
             });
         }

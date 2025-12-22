@@ -423,6 +423,16 @@
         // Render team card
         function renderTeamCard(team) {
             const maxStreak = team.max_streak || 5;
+
+            // Calculate days since Frank's vow when streak was achieved
+            let achievedDayText = '';
+            if (team.streak_achieved_date) {
+                const achievedDate = new Date(team.streak_achieved_date);
+                const daysSinceStart = Math.floor((achievedDate - START_DATE) / (1000 * 60 * 60 * 24));
+                const formattedDate = achievedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                achievedDayText = `<div class="text-xs text-neon-green mt-2" title="Achieved on ${formattedDate}">✨ Day ${daysSinceStart}</div>`;
+            }
+
             return `
         <div class="glass-card rounded-2xl p-6 cursor-default hover:scale-[1.02] transition-transform">
           <div class="flex items-start justify-between mb-4">
@@ -444,6 +454,7 @@
           <div class="text-xs text-gray-500">
             ${team.league_name || 'Unknown League'}
           </div>
+          ${achievedDayText}
         </div>
       `;
         }
