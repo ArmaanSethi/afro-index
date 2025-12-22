@@ -709,7 +709,7 @@
         }
 
         let allTeams = [];
-        let activeFilter = 'all';
+        let activeFilters = new Set(['all']); // Support multiple filters
 
         // Filter Logic
         function filterTeams() {
@@ -718,7 +718,9 @@
             const filtered = allTeams.filter(team => {
                 const matchesSearch = team.name.toLowerCase().includes(query) ||
                     (team.league_name && team.league_name.toLowerCase().includes(query));
-                const matchesFilter = activeFilter === 'all' || team.league_id === activeFilter;
+
+                // Multi-select logic: if 'all' is active OR league is in the set
+                const matchesFilter = activeFilters.has('all') || activeFilters.has(team.league_id);
 
                 return matchesSearch && matchesFilter;
             });
@@ -739,73 +741,78 @@
             if (teamCountEl) teamCountEl.textContent = filtered.length;
         }
 
+        function updateFilterVisuals() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const league = btn.dataset.league;
+                const isActive = activeFilters.has(league);
+
+                // Reset classes
+                btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all border';
+
+                if (isActive) {
+                    // Active State: White background, Black text, light grey hover
+                    // Important: hover:bg-gray-200 prevents it from becoming transparent/dark on hover
+                    btn.classList.add('bg-white', 'text-black', 'border-white', 'hover:bg-gray-200');
+                } else {
+                    // Inactive State: Glassy dark, Gray text, brighter hover
+                    btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10', 'hover:bg-white/20', 'hover:text-white');
+                }
+            });
+        }
+
         // Setup Filters
         function setupFilters(teams) {
             // Extract unique leagues
             const leagues = [...new Set(teams.map(t => t.league_id))];
 
-            // Clear existing except 'All'
-            filterContainer.innerHTML = `
-                <button class="filter-btn active-filter px-4 py-2 rounded-full text-xs font-semibold bg-white text-black whitespace-nowrap transition-all" data-league="all">
-                    All
-                </button>
-            `;
+            filterContainer.innerHTML = '';
 
+            // 'All' Button
+            const allBtn = document.createElement('button');
+            allBtn.dataset.league = 'all';
+            allBtn.innerHTML = 'All';
+            allBtn.addEventListener('click', () => {
+                activeFilters.clear();
+                activeFilters.add('all');
+                updateFilterVisuals();
+                filterTeams();
+            });
+            filterContainer.appendChild(allBtn);
+
+            // League Buttons
             leagues.forEach(leagueId => {
                 const count = teams.filter(t => t.league_id === leagueId).length;
                 const btn = document.createElement('button');
-                btn.className = `filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 whitespace-nowrap transition-all`;
                 btn.dataset.league = leagueId;
                 btn.innerHTML = `${LEAGUE_FLAGS[leagueId] || ''} ${leagueId} <span class="opacity-50 ml-1">(${count})</span>`;
 
                 btn.addEventListener('click', () => {
-                    // Check if already active
-                    if (activeFilter === leagueId) {
-                        // Clicked active filter -> Deselect and revert to 'all'
-                        document.querySelectorAll('.filter-btn').forEach(b => {
-                            b.classList.remove('bg-white', 'text-black', 'active-filter');
-                            b.classList.add('bg-white/5', 'text-gray-400');
-                        });
-
-                        // Set 'All' as active visually
-                        const allBtn = filterContainer.querySelector('[data-league="all"]');
-                        if (allBtn) {
-                            allBtn.classList.remove('bg-white/5', 'text-gray-400');
-                            allBtn.classList.add('bg-white', 'text-black', 'active-filter');
-                        }
-
-                        activeFilter = 'all';
-                        filterTeams();
-                        return;
+                    // If 'all' was active, clear it first
+                    if (activeFilters.has('all')) {
+                        activeFilters.clear();
                     }
 
-                    // Update active state
-                    document.querySelectorAll('.filter-btn').forEach(b => {
-                        b.classList.remove('bg-white', 'text-black', 'active-filter');
-                        b.classList.add('bg-white/5', 'text-gray-400');
-                    });
-                    btn.classList.remove('bg-white/5', 'text-gray-400');
-                    btn.classList.add('bg-white', 'text-black', 'active-filter');
+                    // Toggle selection
+                    if (activeFilters.has(leagueId)) {
+                        activeFilters.delete(leagueId);
+                    } else {
+                        activeFilters.add(leagueId);
+                    }
 
-                    activeFilter = leagueId;
+                    // If nothing selected, revert to 'all'
+                    if (activeFilters.size === 0) {
+                        activeFilters.add('all');
+                    }
+
+                    updateFilterVisuals();
                     filterTeams();
                 });
 
                 filterContainer.appendChild(btn);
             });
 
-            // Re-bind 'All' button
-            const allBtn = filterContainer.querySelector('[data-league="all"]');
-            allBtn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(b => {
-                    b.classList.remove('bg-white', 'text-black', 'active-filter');
-                    b.classList.add('bg-white/5', 'text-gray-400');
-                });
-                allBtn.classList.remove('bg-white/5', 'text-gray-400');
-                allBtn.classList.add('bg-white', 'text-black', 'active-filter');
-                activeFilter = 'all';
-                filterTeams();
-            });
+            // Initial visual update
+            updateFilterVisuals();
         }
 
         searchInput.addEventListener('input', filterTeams);
