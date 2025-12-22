@@ -570,7 +570,41 @@
 
         // Load United's current status (with optional retry)
         async function loadUnitedStatus(retryCount = 0) {
-            // User requested NO cool-down for United. Always try to fetch.
+            // Circuit Breaker: Don't hammer the API if it's down/limited
+            const lastFailure = localStorage.getItem('united_api_failure');
+            if (lastFailure) {
+                const diff = (new Date() - new Date(lastFailure)) / 1000; // seconds
+                if (diff < 300) { // 5 minutes cool-off
+                    console.log(`United API in cool-off mode (${Math.round(300 - diff)}s remaining).`);
+
+                    // Try to serve from cache during cool-off
+                    const cachedData = localStorage.getItem('united_data_cache');
+                    if (cachedData) {
+                        try {
+                            const data = JSON.parse(cachedData);
+                            renderUnitedData(data);
+                            return;
+                        } catch (e) {
+                            console.error('Cache parse error', e);
+                        }
+                    }
+
+                    // No cache + Cool-off = Offline State
+                    if (unitedFormEl) {
+                        unitedFormEl.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                 <span class="text-gray-500 text-sm">Offline</span>
+                                 <button onclick="localStorage.removeItem('united_api_failure'); loadUnitedStatus()" class="text-[10px] uppercase tracking-wider text-white/50 hover:text-white border border-white/10 px-2 py-0.5 rounded transition-colors">
+                                    Retry
+                                 </button>
+                            </div>
+                        `;
+                    }
+                    if (unitedAnswerEl) unitedAnswerEl.textContent = '...';
+                    if (unitedStreakEl) unitedStreakEl.textContent = '-';
+                    return;
+                }
+            }
 
             try {
                 const res = await fetch(`${API_BASE}/united`);
@@ -609,6 +643,9 @@
             } catch (error) {
                 console.error('Failed to load United status:', error);
 
+                // Trip the Circuit Breaker
+                localStorage.setItem('united_api_failure', new Date().toISOString());
+
                 // Fallback: Try to load from local cache
                 const cachedData = localStorage.getItem('united_data_cache');
                 if (cachedData) {
@@ -622,24 +659,19 @@
                     }
                 }
 
-                // Final Fallback: Hardcoded defaults (So it never looks "broken")
-                console.log('Using hardcoded fallback data');
-                const FALLBACK_DATA = {
-                    hasWon5: false,
-                    currentStreak: '-',
-                    form: '-----'
-                };
-
-                renderUnitedData(FALLBACK_DATA);
-
-                // Show subtle indicator that this is not live
+                // Final Fallback: Offline State (Honest UI)
+                if (unitedAnswerEl) unitedAnswerEl.textContent = '...';
                 if (unitedFormEl) {
-                    unitedFormEl.insertAdjacentHTML('beforeend', `
-                         <div class="flex items-center gap-2 mt-1 justify-center opacity-50">
-                             <span class="text-[10px] text-gray-400">Live updates paused</span>
+                    unitedFormEl.innerHTML = `
+                        <div class="flex items-center gap-2">
+                             <span class="text-gray-500 text-sm">Offline</span>
+                             <button onclick="localStorage.removeItem('united_api_failure'); loadUnitedStatus()" class="text-[10px] uppercase tracking-wider text-white/50 hover:text-white border border-white/10 px-2 py-0.5 rounded transition-colors">
+                                Retry
+                             </button>
                         </div>
-                    `);
+                    `;
                 }
+                if (unitedStreakEl) unitedStreakEl.textContent = '-';
             }
         }
 
