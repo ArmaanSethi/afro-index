@@ -576,8 +576,20 @@
                 const diff = (new Date() - new Date(lastFailure)) / 1000; // seconds
                 if (diff < 300) { // 5 minutes cool-off
                     console.log(`United API in cool-off mode (${Math.round(300 - diff)}s remaining).`);
-                    if (unitedFormEl) unitedFormEl.innerHTML = '<span class="text-gray-500 text-sm">Offline</span>';
+                    if (unitedFormEl) {
+                        unitedFormEl.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                 <span class="text-gray-500 text-sm">Offline</span>
+                                 <button onclick="localStorage.removeItem('united_api_failure'); loadUnitedStatus()" class="text-[10px] uppercase tracking-wider text-white/50 hover:text-white border border-white/10 px-2 py-0.5 rounded transition-colors">
+                                    Retry
+                                 </button>
+                            </div>
+                        `;
+                    }
                     if (unitedAnswerEl) unitedAnswerEl.textContent = '...';
+                    if (unitedStreakEl) {
+                        unitedStreakEl.textContent = '-';
+                    }
                     return;
                 }
             }
