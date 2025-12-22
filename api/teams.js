@@ -21,14 +21,10 @@ export default async function handler(req, res) {
 
   try {
     // Get teams with 5+ wins (for display), sorted by longest streak
-    // Filter to only show teams scanned after the constraint fix (9:50 PM Dec 21, 2024)
-    const cutoffTime = '2024-12-22T05:50:00Z'; // 9:50 PM PST = 5:50 AM UTC next day
-
     const { data: winners, error: winnersError } = await supabase
       .from('teams')
       .select('*')
       .eq('has_5_wins', true)
-      .gte('last_checked', cutoffTime)
       .order('max_streak', { ascending: false });
 
     if (winnersError) throw winnersError;
