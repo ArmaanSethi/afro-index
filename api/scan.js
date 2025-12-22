@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
+// Challenge start date
+const START_DATE = '2024-10-05';
+
 // PRIORITY LEAGUES - scan these first for best ROI on API credits
-// Ordered by likelihood of having teams with 5-win streaks (top competitive leagues)
 const PRIORITY_LEAGUES = [
     { id: 39, name: 'Premier League', country: 'England' },
     { id: 140, name: 'La Liga', country: 'Spain' },
@@ -13,7 +15,7 @@ const PRIORITY_LEAGUES = [
     { id: 71, name: 'Brasileirão', country: 'Brazil' },
 ];
 
-// ALL LEAGUES - for random scanning after priorities are done
+// ALL LEAGUES
 const ALL_LEAGUES = [
     ...PRIORITY_LEAGUES,
     { id: 88, name: 'Eredivisie', country: 'Netherlands' },
@@ -22,6 +24,34 @@ const ALL_LEAGUES = [
     { id: 203, name: 'Turkish Süper Lig', country: 'Turkey' },
     { id: 113, name: 'Greek Super League', country: 'Greece' },
 ];
+
+// Find 5+ consecutive wins in a sequence of results
+function findFiveWinStreak(results) {
+    // results is array of 'W', 'D', 'L' in chronological order
+    let consecutiveWins = 0;
+    let maxConsecutive = 0;
+    let achievedStreak = false;
+
+    for (const result of results) {
+        if (result === 'W') {
+            consecutiveWins++;
+            if (consecutiveWins >= 5) {
+                achievedStreak = true;
+                maxConsecutive = Math.max(maxConsecutive, consecutiveWins);
+            }
+        } else {
+            maxConsecutive = Math.max(maxConsecutive, consecutiveWins);
+            consecutiveWins = 0;
+        }
+    }
+
+    return { achievedStreak, maxConsecutive };
+}
+
+// Get today's date in YYYY-MM-DD format
+function getTodayDate() {
+    return new Date().toISOString().split('T')[0];
+}
 
 export default async function handler(req, res) {
     // CORS headers
@@ -52,15 +82,14 @@ export default async function handler(req, res) {
 
     // Find unscanned priority leagues first
     let targetLeague = null;
-    const mode = req.query.mode || 'priority'; // 'priority' or 'random'
+    const mode = req.query.mode || 'priority';
 
     if (mode === 'priority') {
         targetLeague = PRIORITY_LEAGUES.find(l => !scannedLeagueIds.has(l.id));
     }
 
-    // If no unscanned priority leagues (or random mode), pick randomly from all
+    // If no unscanned priority leagues, pick randomly from all
     if (!targetLeague) {
-        // Filter to unscanned leagues if possible
         const unscannedLeagues = ALL_LEAGUES.filter(l => !scannedLeagueIds.has(l.id));
         const pool = unscannedLeagues.length > 0 ? unscannedLeagues : ALL_LEAGUES;
         targetLeague = pool[Math.floor(Math.random() * pool.length)];
@@ -69,13 +98,13 @@ export default async function handler(req, res) {
     // Allow override via query param
     if (req.query.league) {
         const overrideId = parseInt(req.query.league);
-        targetLeague = ALL_LEAGUES.find(l => l.id === overrideId) || { id: overrideId, name: 'Custom' };
+        targetLeague = ALL_LEAGUES.find(l => l.id === overrideId) || { id: overrideId, name: 'Custom', country: 'Unknown' };
     }
 
     try {
-        // Fetch standings from API-Football
+        // Fetch ALL fixtures for this league since Oct 5, 2024
         const response = await fetch(
-            `https://v3.football.api-sports.io/standings?league=${targetLeague.id}&season=2024`,
+            `https://v3.football.api-sports.io/fixtures?league=${targetLeague.id}&season=2024&from=${START_DATE}&to=${getTodayDate()}`,
             {
                 headers: {
                     'x-apisports-key': apiKey
@@ -93,8 +122,9 @@ export default async function handler(req, res) {
             });
         }
 
-        if (!data.response || data.response.length === 0) {
-            // Log the scan even if no data
+        const fixtures = data.response || [];
+
+        if (fixtures.length === 0) {
             await supabase.from('scan_log').insert({
                 league_id: targetLeague.id,
                 league_name: targetLeague.name,
@@ -103,48 +133,105 @@ export default async function handler(req, res) {
             });
 
             return res.status(200).json({
-                message: 'No standings data for this league/season',
+                message: 'No fixtures found for this league since Oct 5, 2024',
                 league: targetLeague,
+                fixturesAnalyzed: 0,
                 teamsScanned: 0,
                 teamsQualified: 0
             });
         }
 
-        const standings = data.response[0]?.league?.standings?.[0] || [];
-        const leagueName = data.response[0]?.league?.name || targetLeague.name;
-        const countryName = data.response[0]?.league?.country || targetLeague.country || 'Unknown';
-        const countryFlag = data.response[0]?.league?.flag || null;
+        // Build results per team from fixtures
+        // Only count finished matches (status.short === 'FT')
+        const teamResults = {}; // teamId -> { info, results: ['W', 'L', 'D', ...] }
 
+        for (const fixture of fixtures) {
+            if (fixture.fixture.status.short !== 'FT') continue; // Only finished matches
+
+            const homeTeam = fixture.teams.home;
+            const awayTeam = fixture.teams.away;
+            const homeGoals = fixture.goals.home;
+            const awayGoals = fixture.goals.away;
+            const matchDate = fixture.fixture.date;
+
+            // Initialize teams if not seen
+            if (!teamResults[homeTeam.id]) {
+                teamResults[homeTeam.id] = {
+                    id: homeTeam.id,
+                    name: homeTeam.name,
+                    logo: homeTeam.logo,
+                    results: []
+                };
+            }
+            if (!teamResults[awayTeam.id]) {
+                teamResults[awayTeam.id] = {
+                    id: awayTeam.id,
+                    name: awayTeam.name,
+                    logo: awayTeam.logo,
+                    results: []
+                };
+            }
+
+            // Determine results
+            let homeResult, awayResult;
+            if (homeGoals > awayGoals) {
+                homeResult = 'W';
+                awayResult = 'L';
+            } else if (homeGoals < awayGoals) {
+                homeResult = 'L';
+                awayResult = 'W';
+            } else {
+                homeResult = 'D';
+                awayResult = 'D';
+            }
+
+            // Add with date for sorting
+            teamResults[homeTeam.id].results.push({ date: matchDate, result: homeResult });
+            teamResults[awayTeam.id].results.push({ date: matchDate, result: awayResult });
+        }
+
+        // Sort each team's results chronologically and check for 5-win streak
+        const teamsToUpsert = [];
         let teamsQualified = 0;
-        const allTeams = [];
 
-        for (const team of standings) {
-            const form = team.form || '';
-            const has5Wins = form.includes('WWWWW');
+        // Get league info from first fixture
+        const leagueInfo = fixtures[0]?.league || {};
+        const leagueName = leagueInfo.name || targetLeague.name;
+        const countryName = leagueInfo.country || targetLeague.country;
+        const countryFlag = leagueInfo.flag || null;
 
-            if (has5Wins) teamsQualified++;
+        for (const teamId in teamResults) {
+            const team = teamResults[teamId];
 
-            const teamData = {
-                team_id: team.team.id,
-                name: team.team.name,
-                logo: team.team.logo,
+            // Sort by date chronologically
+            team.results.sort((a, b) => new Date(a.date) - new Date(b.date));
+            const resultSequence = team.results.map(r => r.result);
+
+            // Check for 5-win streak
+            const { achievedStreak, maxConsecutive } = findFiveWinStreak(resultSequence);
+
+            if (achievedStreak) teamsQualified++;
+
+            teamsToUpsert.push({
+                team_id: parseInt(teamId),
+                name: team.name,
+                logo: team.logo,
                 country_name: countryName,
                 country_flag: countryFlag,
                 league_id: targetLeague.id,
                 league_name: leagueName,
-                form: form,
-                has_5_wins: has5Wins,
+                form: resultSequence.join(''),
+                has_5_wins: achievedStreak,
+                max_streak: maxConsecutive,
                 last_checked: new Date().toISOString()
-            };
-
-            allTeams.push(teamData);
+            });
         }
 
-        // Upsert ALL teams (not just winners)
-        if (allTeams.length > 0) {
+        // Upsert all teams
+        if (teamsToUpsert.length > 0) {
             const { error } = await supabase
                 .from('teams')
-                .upsert(allTeams, {
+                .upsert(teamsToUpsert, {
                     onConflict: 'team_id',
                     ignoreDuplicates: false
                 });
@@ -158,7 +245,7 @@ export default async function handler(req, res) {
         await supabase.from('scan_log').insert({
             league_id: targetLeague.id,
             league_name: leagueName,
-            teams_scanned: standings.length,
+            teams_scanned: Object.keys(teamResults).length,
             teams_qualified: teamsQualified
         });
 
@@ -172,11 +259,12 @@ export default async function handler(req, res) {
                 name: leagueName,
                 country: countryName
             },
-            teamsScanned: standings.length,
+            fixturesAnalyzed: fixtures.filter(f => f.fixture.status.short === 'FT').length,
+            teamsScanned: Object.keys(teamResults).length,
             teamsQualified: teamsQualified,
             priorityRemaining: remainingPriority.length,
             nextPriority: remainingPriority[0] || null,
-            teams: allTeams.filter(t => t.has_5_wins) // Only return winners in response
+            teams: teamsToUpsert.filter(t => t.has_5_wins)
         });
 
     } catch (error) {

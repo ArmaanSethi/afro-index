@@ -13,8 +13,9 @@ CREATE TABLE teams (
   country_flag TEXT,
   league_id INT,
   league_name TEXT,
-  form TEXT,
-  has_5_wins BOOLEAN DEFAULT FALSE,
+  form TEXT,                    -- Full result sequence since Oct 5 (e.g., "WWLWWWWWDL")
+  has_5_wins BOOLEAN DEFAULT FALSE,  -- True if achieved 5+ consecutive wins at ANY point
+  max_streak INT DEFAULT 0,     -- Longest win streak achieved
   first_detected TIMESTAMPTZ DEFAULT NOW(),
   last_checked TIMESTAMPTZ DEFAULT NOW()
 );
