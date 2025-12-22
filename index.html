@@ -1003,7 +1003,7 @@
                                 <span class="text-xl">${flag}</span>
                                 <div>
                                     <div class="font-bold text-sm text-neon-green">${scan.league_name || scan.league_id}</div>
-                                    <div class="text-xs text-gray-500">${date.toLocaleTimeString()}</div>
+                                    <div class="text-xs text-gray-500">${timeAgo(scan.scanned_at)}</div>
                                 </div>
                             </div>
                             <div class="text-right">
