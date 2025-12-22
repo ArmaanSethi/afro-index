@@ -36,7 +36,12 @@ This website tracks every football team that has achieved what United hasn't —
 
 ---
 
-## Tech Stack
+### ⚡️ Zero-Waste Architecture
+- **Distributed Scanning**: Clients trigger scans, but Vercel caches the request for 10s, preventing API flooding.
+- **Smart Guard**: Backend logic ABORTS scans if the target league is fresh (15m/60m thresholds), ensuring $0 waste.
+- **Shared Brain**: All data is written to Supabase, so 1 user's scan updates the site for everyone instantly.
+
+## 🛠 Tech Stack
 
 | Layer | Technology |
 |-------|------------|
