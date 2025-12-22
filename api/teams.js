@@ -41,16 +41,19 @@ export default async function handler(req, res) {
       .order('scanned_at', { ascending: false })
       .limit(10);
 
-    // Count unique leagues scanned
-    const { count: leaguesScanned } = await supabase
+    // Count unique leagues scanned (get unique league_ids)
+    const { data: uniqueLeagues } = await supabase
       .from('scan_log')
-      .select('*', { count: 'exact', head: true });
+      .select('league_id')
+      .limit(100);
+
+    const uniqueLeagueIds = new Set(uniqueLeagues?.map(l => l.league_id) || []);
 
     return res.status(200).json({
       success: true,
       winnersCount: winners?.length || 0,
       totalScanned: totalScanned || 0,
-      leaguesScanned: leaguesScanned || 0,
+      leaguesScanned: uniqueLeagueIds.size,
       teams: winners || [],
       recentScans: scanLog || []
     });
