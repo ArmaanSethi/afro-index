@@ -759,6 +759,26 @@
                 btn.innerHTML = `${LEAGUE_FLAGS[leagueId] || ''} ${leagueId} <span class="opacity-50 ml-1">(${count})</span>`;
 
                 btn.addEventListener('click', () => {
+                    // Check if already active
+                    if (activeFilter === leagueId) {
+                        // Clicked active filter -> Deselect and revert to 'all'
+                        document.querySelectorAll('.filter-btn').forEach(b => {
+                            b.classList.remove('bg-white', 'text-black', 'active-filter');
+                            b.classList.add('bg-white/5', 'text-gray-400');
+                        });
+
+                        // Set 'All' as active visually
+                        const allBtn = filterContainer.querySelector('[data-league="all"]');
+                        if (allBtn) {
+                            allBtn.classList.remove('bg-white/5', 'text-gray-400');
+                            allBtn.classList.add('bg-white', 'text-black', 'active-filter');
+                        }
+
+                        activeFilter = 'all';
+                        filterTeams();
+                        return;
+                    }
+
                     // Update active state
                     document.querySelectorAll('.filter-btn').forEach(b => {
                         b.classList.remove('bg-white', 'text-black', 'active-filter');
