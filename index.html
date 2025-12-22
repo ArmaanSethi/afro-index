@@ -568,6 +568,38 @@
             }).join('');
         }
 
+        // Initialize league flags for use in various functions
+        const LEAGUE_FLAGS = {
+            'PL': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'PD': '🇪🇸', 'BL1': '🇩🇪', 'SA': '🇮🇹', 'FL1': '🇫🇷',
+            'DED': '🇳🇱', 'PPL': '🇵🇹', 'ELC': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'CL': '🏆', 'EC': '🇪🇺',
+            'WC': '🌍', 'BSA': '🇧🇷'
+        };
+
+        // Render United Data helper
+        function renderUnitedData(data) {
+            if (data.hasWon5) {
+                // THEY DID IT!
+                if (unitedAnswerEl) {
+                    unitedAnswerEl.textContent = 'YES';
+                    unitedAnswerEl.classList.remove('text-united-red');
+                    unitedAnswerEl.classList.add('text-neon-green', 'glow-green');
+                }
+                triggerCelebration();
+            } else {
+                if (unitedAnswerEl) unitedAnswerEl.textContent = 'NO';
+            }
+
+            // Update form display
+            if (data.form && unitedFormEl) {
+                unitedFormEl.innerHTML = renderForm(data.form);
+            }
+
+            // Update streak
+            if (data.currentStreak !== undefined && unitedStreakEl) {
+                unitedStreakEl.textContent = data.currentStreak;
+            }
+        }
+
         // Load United's current status (with optional retry)
         async function loadUnitedStatus(retryCount = 0) {
             // Circuit Breaker: Don't hammer the API if it's down/limited
