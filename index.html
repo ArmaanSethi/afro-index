@@ -763,7 +763,22 @@
         // Setup Filters
         function setupFilters(teams) {
             // Extract unique leagues
-            const leagues = [...new Set(teams.map(t => t.league_id))];
+            let leagues = [...new Set(teams.map(t => t.league_id))];
+
+            // Sort by Priority
+            const PRIORITY = ['CL', 'PL', 'PD', 'BL1', 'SA', 'FL1', 'WC', 'EC', 'ELC', 'DED', 'PPL', 'BSA'];
+            leagues.sort((a, b) => {
+                const idxA = PRIORITY.indexOf(a);
+                const idxB = PRIORITY.indexOf(b);
+                // If both in list, sort by index
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                // If a is in list, it comes first
+                if (idxA !== -1) return -1;
+                // If b is in list, it comes first
+                if (idxB !== -1) return 1;
+                // Otherwise alphabetical
+                return a.localeCompare(b);
+            });
 
             filterContainer.innerHTML = '';
 
