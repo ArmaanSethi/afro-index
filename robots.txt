@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://hasunitedwon5.com/sitemap.xml
