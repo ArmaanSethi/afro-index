@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Has United Won 5? | The Trek to the Barbershop</title>
+    <meta name="description"
+        content="Tracking every team that actually knows how to win 5 in a row since Frank Ilett's hair vow on Oct 5, 2024. United? Still pending.">
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔴</text></svg>">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://afro-index.vercel.app/">
+    <meta property="og:title" content="Has United Won 5? 🔴">
+    <meta property="og:description"
+        content="Every team that's done what Manchester United can't — 5 wins in a row since Frank's hair vow. 🔴">
+    <meta property="og:image" content="https://afro-index.vercel.app/og_image.jpeg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Has United Won 5? 🔴">
+    <meta name="twitter:description"
+        content="How hard can it be to win 5 in a row? Ask these 56 teams. Manchester United? Still pending. 🔴">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://hasunitedwon5.com/">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Has United Won 5?",
+        "url": "https://hasunitedwon5.com/",
+        "description": "Live tracker for Manchester United's win streak. Documenting every team that achieved 5 consecutive wins since Frank Ilett's hair vow on October 5, 2024."
+    }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'united-red': '#DA291C',
+                        'neon-green': '#00ff9d',
+                        'dark-bg': '#050505',
+                        'dark-card': '#0a0a0a',
+                        'dark-border': '#1a1a1a'
+                    },
+                    fontFamily: {
+                        'display': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: #050505;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Gradient background */
+        .hero-gradient {
+            background: radial-gradient(ellipse at top, rgba(218, 41, 28, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(0, 255, 157, 0.05) 0%, transparent 40%);
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(218, 41, 28, 0.3);
+            transform: translateY(-4px);
+        }
+
+        /* Glowing text */
+        .glow-red {
+            text-shadow: 0 0 40px rgba(218, 41, 28, 0.5);
+        }
+
+        .glow-green {
+            text-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
+        }
+
+        /* Animated gradient border */
+        .gradient-border {
+            position: relative;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, #DA291C, #00ff9d, #DA291C);
+            border-radius: inherit;
+            z-index: -1;
+            animation: border-rotate 3s linear infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes border-rotate {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Pulse animation for scan button */
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(218, 41, 28, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(218, 41, 28, 0.6);
+            }
+        }
+
+        /* Bounce animation for arrow */
+        @keyframes bounce-down {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .bounce-down {
+            animation: bounce-down 2s infinite;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Tab styles */
+        .tab-active {
+            background: rgba(218, 41, 28, 0.2);
+            border-color: rgba(218, 41, 28, 0.5);
+        }
+
+        /* Streak badge */
+        .streak-badge {
+            background: linear-gradient(135deg, #00ff9d 0%, #00cc7d 100%);
+            animation: badge-pulse 2s infinite;
+        }
+
+        @keyframes badge-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #DA291C;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #DA291C;
+        }
+
+        /* Update Flicker Animation */
+        @keyframes flashGreen {
+            0% {
+                background-color: rgba(255, 255, 255, 0.03);
+                border-color: rgba(255, 255, 255, 0.08);
+            }
+
+            50% {
+                background-color: rgba(0, 255, 157, 0.15);
+                border-color: rgba(0, 255, 157, 0.4);
+            }
+
+            100% {
+                background-color: rgba(255, 255, 255, 0.03);
+                border-color: rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        .animate-update {
+            animation: flashGreen 1.5s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-white">
+    <!-- Hero Section (Compact) -->
+    <section class="hero-gradient py-16 md:py-24">
+        <!-- Nav -->
+        <nav class="flex justify-between items-center px-6 py-4 md:px-12 absolute top-0 left-0 right-0">
+            <div class="font-mono text-sm text-gray-500">v1.0</div>
+            <a href="https://github.com/ArmaanSethi/afro-index" target="_blank"
+                class="text-gray-400 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd"
+                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                        clip-rule="evenodd" />
+                </svg>
+            </a>
+        </nav>
+
+        <!-- Hero Content: Has United Won 5? -->
+        <div class="flex flex-col items-center justify-center px-6 text-center pt-12">
+
+            <!-- The Question -->
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-400 mb-4">
+                Has United Won 5 in a Row?
+            </h1>
+
+            <!-- The Answer -->
+            <div id="united-answer"
+                class="text-8xl md:text-[12rem] lg:text-[14rem] font-black text-united-red glow-red mb-4">
+                NO
+            </div>
+
+            <!-- Man United Crest + Current Form -->
+            <div class="flex items-center gap-6 mb-6">
+                <img src="https://crests.football-data.org/66.png" alt="Manchester United"
+                    class="w-16 h-16 object-contain opacity-50 grayscale">
+                <div class="text-left">
+                    <div class="text-sm text-gray-500 mb-1">Current Form</div>
+                    <div id="united-form" class="text-2xl font-mono font-bold tracking-wider">
+                        <span class="text-gray-600 animate-pulse">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 mb-8">
+                <div class="text-center">
+                    <div id="united-streak" class="text-3xl md:text-4xl font-black text-white font-mono">
+                        --
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Current Streak</div>
+                </div>
+                <div class="text-center">
+                    <div id="days-count" class="text-3xl md:text-4xl font-black text-united-red font-mono">
+                        --
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1 text-balance">Days without a haircut
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div id="leagues-count" class="text-3xl md:text-4xl font-black text-white font-mono">
+                        --
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Leagues Scanned</div>
+                </div>
+            </div>
+
+            <!-- Link to context -->
+            <a href="https://www.google.com/search?q=frank+ilett+hair+manchester+united" target="_blank"
+                class="text-xs text-gray-600 hover:text-united-red transition-colors mb-6 uppercase tracking-[0.2em]">
+                The Vow: Oct 5, 2024 → ???
+            </a>
+
+            <!-- Teaser for leaderboard -->
+            <div class="mt-12 flex flex-col items-center gap-8">
+                <div class="text-2xl md:text-4xl font-black tracking-tight text-white glow-green">
+                    Meanwhile, <span id="team-count" class="text-neon-green">--</span> teams have shown them how it's
+                    done
+                </div>
+                <a href="#leaderboard"
+                    class="bounce-down p-6 rounded-full glass hover:bg-white/10 transition-all group scale-125 border-2 border-united-red/30">
+                    <svg class="w-8 h-8 text-united-red group-hover:text-neon-green transition-colors" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+                            d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" class="py-20 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto">
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-2">The Leaderboard</h2>
+                    <p class="text-gray-500">Teams that achieved 5+ consecutive wins</p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex gap-2 mt-6 md:mt-0">
+                    <button class="tab-btn tab-active px-6 py-3 rounded-xl glass font-semibold transition-all"
+                        data-tab="football">
+                        ⚽ Football
+                    </button>
+                    <button
+                        class="tab-btn px-6 py-3 rounded-xl glass font-semibold transition-all text-gray-500 hover:text-white"
+                        data-tab="other">
+                        🏀🏈🏒 Other
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="mb-8 p-4 glass rounded-2xl border border-white/5">
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+
+                    <!-- Search Bar -->
+                    <div class="relative w-full md:w-1/2">
+                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="search-input" placeholder="Search teams or leagues..."
+                            class="w-full pl-12 pr-4 py-3 bg-white/5 rounded-xl border border-white/10 focus:outline-none focus:border-united-red/50 focus:bg-white/10 transition-all text-white placeholder-gray-500">
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="flex gap-2 w-full md:w-1/2 overflow-x-auto pb-2 md:pb-0" id="filter-container">
+                        <button
+                            class="filter-btn active-filter px-4 py-2 rounded-full text-xs font-semibold bg-white text-black whitespace-nowrap transition-all"
+                            data-league="all">
+                            All
+                        </button>
+                        <!-- Dynamic filters go here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Football Grid -->
+            <div id="football-tab" class="tab-content">
+                <div id="teams-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Teams will be loaded here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-20">
+                    <div class="text-6xl mb-4">⚽</div>
+                    <h3 class="text-xl font-semibold mb-2">Loading teams...</h3>
+                    <p class="text-gray-500">Teams will appear here once data is loaded.</p>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading-state" class="flex justify-center py-20">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <!-- Other Sports Tab -->
+            <div id="other-tab" class="tab-content hidden">
+                <div class="text-center py-20 glass rounded-2xl">
+                    <div class="text-6xl mb-6">🏀 🏈 🏒 ⚾</div>
+                    <h3 class="text-2xl font-bold mb-3">Coming Soon</h3>
+                    <p class="text-gray-400 max-w-lg mx-auto mb-6">
+                        NBA, NFL, NHL, and MLB tracking is on the roadmap.<br>
+                        Same concept: teams that achieved 5+ consecutive wins while United waits.
+                    </p>
+                    <div class="inline-block px-4 py-2 rounded-full glass text-sm text-gray-500">
+                        <span class="text-neon-green">●</span> API infrastructure ready • Just need more API credits
+                    </div>
+                    <p class="text-gray-600 text-xs mt-6">
+                        Want this faster? <a href="https://github.com/ArmaanSethi/afro-index"
+                            class="text-united-red hover:underline">Star the repo</a> or sponsor the project!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-6 md:px-12 bg-gradient-to-b from-transparent to-dark-card">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass rounded-3xl p-8 md:p-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">The Story</h2>
+
+                <div class="space-y-6 text-gray-300 leading-relaxed">
+                    <p>
+                        <span class="text-2xl mr-2">💇</span>
+                        On <span class="text-united-red font-semibold">October 5, 2024</span>, Manchester United fan
+                        <span class="text-white font-semibold">Frank Ilett</span> made a bold vow: he would not cut
+                        his hair until United won <span class="text-neon-green font-semibold">5 games in a row</span>.
+                    </p>
+
+                    <p>
+                        <span class="text-2xl mr-2">⏳</span>
+                        As of today, <span id="days-inline" class="text-united-red font-bold">--</span> days later,
+                        Frank is still waiting. His hair grows longer with each disappointing result.
+                    </p>
+
+                    <p>
+                        <span class="text-2xl mr-2">📊</span>
+                        Meanwhile, we've been tracking every other team in the world that has managed to achieve
+                        this seemingly impossible feat. Spoiler alert: it's a lot of teams.
+                    </p>
+
+                    <p>
+                        <span class="text-2xl mr-2">🎯</span>
+                        <span class="text-white font-semibold">The Afro Index</span> exists to document this journey.
+                        Every team that reaches 5 consecutive wins gets added to our leaderboard, proving that
+                        Frank's challenge really shouldn't be this hard.
+                    </p>
+                </div>
+
+                <div class="mt-10 pt-8 border-t border-white/10 text-center">
+                    <p class="text-gray-500 font-mono text-sm">
+                        Data sourced from football-data.org • Auto-updated
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Status Section -->
+    <section class="max-w-7xl mx-auto px-6 md:px-12 pb-20">
+        <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-neon-green animate-pulse"></span>
+            Live Coverage Status
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="leagues-status">
+            <!-- Loading... -->
+            <div class="glass p-4 rounded-xl flex items-center justify-between opacity-50">
+                <span>Loading coverage data...</span>
+            </div>
+        </div>
+
+        <!-- United Status -->
+        <h4 class="text-lg font-bold mt-8 mb-4 flex items-center gap-2">
+            <img src="https://crests.football-data.org/66.png" class="w-5 h-5 object-contain opacity-50">
+            United Watch
+        </h4>
+        <div id="united-status">
+            <div class="glass p-4 rounded-xl flex items-center justify-between opacity-50 border border-united-red/30">
+                <span>Checking United's form...</span>
+            </div>
+        </div>
+
+        <p class="text-xs text-gray-500 mt-6">
+            We scan 12 major competitions (Free Tier Limit): Premier League, La Liga, Bundesliga, Serie A, Ligue 1,
+            Eredivisie, Primeira Liga, Championship, Champions League, Euro Championship, World Cup, and Brasileirão.
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 text-center border-t border-white/5">
+        <p class="text-gray-600 font-mono text-sm">
+            Built by <a href="https://twitter.com/armaan__sethi" target="_blank"
+                class="text-white hover:text-neon-green transition-colors font-bold">Armaan Sethi</a>
+            for <a href="https://instagram.com/theunitedstrand" target="_blank"
+                class="text-united-red hover:underline">The United Strand</a> 🔴
+        </p>
+        <p class="text-gray-700 text-xs mt-2">
+            <a href="https://instagram.com/theunitedstrand" target="_blank"
+                class="text-gray-500 hover:text-white">Instagram</a> •
+            <a href="https://youtube.com/@TheUnitedStrand" target="_blank"
+                class="text-gray-500 hover:text-white">YouTube</a> •
+            <a href="https://football-data.org" target="_blank" class="text-gray-500 hover:text-white">API</a>
+        </p>
+    </footer>
+
+    <script>
+        // Constants
+        const START_DATE = new Date('2024-10-05');
+        const API_BASE = '/api';
+
+        // DOM Elements
+        const searchInput = document.getElementById('search-input');
+        const filterContainer = document.getElementById('filter-container');
+        const teamCountEl = document.getElementById('team-count');
+        const daysCountEl = document.getElementById('days-count');
+        const leaguesCountEl = document.getElementById('leagues-count');
+        const lastUpdatedEl = document.getElementById('last-updated');
+        const leaguesStatusEl = document.getElementById('leagues-status');
+        const daysInlineEl = document.getElementById('days-inline');
+        const teamsGridEl = document.getElementById('teams-grid');
+        const emptyStateEl = document.getElementById('empty-state');
+        const loadingStateEl = document.getElementById('loading-state');
+
+        // United-specific elements
+        const unitedAnswerEl = document.getElementById('united-answer');
+        const unitedFormEl = document.getElementById('united-form');
+        const unitedStreakEl = document.getElementById('united-streak');
+        const unitedStatusEl = document.getElementById('united-status');
+
+        // Calculate days since start (UK Time)
+        function calculateDays() {
+            // Frank made the vow on Oct 5, 2024. We'll treat start of day UK time as the baseline.
+            const start = new Date('2024-10-05T00:00:00+01:00');
+            const now = new Date();
+
+            // Create a date object for "now" but in UK time components
+            // This is a rough way to sync everyone to the same "day number" relative to UK
+            const ukDateStr = now.toLocaleString('en-US', { timeZone: 'Europe/London' });
+            const ukNow = new Date(ukDateStr);
+
+            // Start was hardcoded as a specific instant. We should compare against "now" which is that instant?
+            // Actually, simpler: just get the difference in ms from the timestamp 
+            // BUT "days since" usually implies calendar days.
+            // Let's stick to the simple diff logic but ensure 'now' is interpreted in a consistent context if needed.
+            // Actually, the original logic `new Date() - START_DATE` uses local machine time vs a UTC-interpreted start date (if not specified).
+            // `new Date('2024-10-05')` treats it as UTC usually.
+
+            // Let's be precise:
+            const diffTime = Math.abs(ukNow - start);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            return diffDays;
+        }
+
+        // Update days display
+        function updateDays() {
+            const days = calculateDays();
+            if (daysCountEl) daysCountEl.textContent = days;
+            if (daysInlineEl) daysInlineEl.textContent = days;
+        }
+
+        // Render form string with colors
+        function renderForm(formString) {
+            return formString.split('').map(char => {
+                if (char === 'W') return '<span class="text-neon-green">W</span>';
+                if (char === 'L') return '<span class="text-united-red">L</span>';
+                if (char === 'D') return '<span class="text-gray-400">D</span>';
+                return char;
+            }).join('');
+        }
+
+        // Initialize league flags for use in various functions
+        const LEAGUE_FLAGS = {
+            'PL': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'PD': '🇪🇸', 'BL1': '🇩🇪', 'SA': '🇮🇹', 'FL1': '🇫🇷',
+            'DED': '🇳🇱', 'PPL': '🇵🇹', 'ELC': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'CL': '🏆', 'EC': '🇪🇺',
+            'WC': '🌍', 'BSA': '🇧🇷'
+        };
+
+        // Render United Data helper
+        function renderUnitedData(data) {
+            if (data.hasWon5) {
+                // THEY DID IT!
+                if (unitedAnswerEl) {
+                    unitedAnswerEl.textContent = 'YES';
+                    unitedAnswerEl.classList.remove('text-united-red');
+                    unitedAnswerEl.classList.add('text-neon-green', 'glow-green');
+                }
+                triggerCelebration();
+            } else {
+                if (unitedAnswerEl) unitedAnswerEl.textContent = 'NO';
+            }
+
+            // Update form display
+            if (unitedFormEl) {
+                if (typeof data.form === 'string') {
+                    if (data.form.length > 0) {
+                        unitedFormEl.innerHTML = renderForm(data.form);
+                    } else {
+                        // Empty form (0 matches found)
+                        unitedFormEl.innerHTML = '<span class="text-xs text-gray-500">No recent matches</span>';
+                    }
+                } else {
+                    // Fallback if form data is completely missing/malformed
+                    unitedFormEl.innerHTML = '<span class="text-xs text-gray-500">N/A</span>';
+                }
+            }
+
+            // Update streak
+            if (data.currentStreak !== undefined && unitedStreakEl) {
+                unitedStreakEl.textContent = data.currentStreak;
+            }
+        }
+
+        function timeAgo(dateString) {
+            if (!dateString) return 'Just now';
+            const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
+            if (seconds < 60) return 'Just now';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            return `${hours}h ago`;
+        }
+
+        // Helper to generate the United Status HTML
+        function getUnitedStatusHTML(data) {
+            const date = new Date(data.lastUpdated);
+            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            return `
+                <div class="glass p-4 rounded-xl flex items-center justify-between border border-united-red/30">
+                    <div class="flex items-center gap-3">
+                        <img src="https://crests.football-data.org/66.png" class="w-8 h-8 object-contain">
+                        <div>
+                            <div class="font-bold text-sm text-united-red">Manchester United</div>
+                            <div class="text-xs text-gray-500">Live Check</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs font-mono text-white">${data.currentStreak}W Streak</div>
+                        <div class="text-[10px] text-gray-400" title="${date.toLocaleString()}">${timeStr} (${timeAgo(data.lastUpdated)})</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load United's current status (Stale-While-Revalidate Pattern)
+        async function loadUnitedStatus() {
+            // 1. Try to load from local cache IMMEDIATELY
+            const cachedData = localStorage.getItem('united_data_cache');
+            let hasCachedData = false;
+
+            if (cachedData) {
+                try {
+                    const data = JSON.parse(cachedData);
+                    renderUnitedData(data);
+                    hasCachedData = true;
+                    // Render status immediately with cached time
+                    if (unitedStatusEl) {
+                        unitedStatusEl.innerHTML = getUnitedStatusHTML(data);
+                    }
+                    // console.log('United Status: Loaded from cache');
+                } catch (e) {
+                    console.error('Cache parse error', e);
+                }
+            }
+
+            // 2. Fetch fresh data from API
+            try {
+                // Determine if we should cool off (prevent spamming failed API)
+                const lastFailure = localStorage.getItem('united_api_failure');
+                if (lastFailure) {
+                    const diff = (new Date() - new Date(lastFailure)) / 1000;
+                    if (diff < 60 && hasCachedData) { // Only cool off if we have backup data
+                        // console.log('United API cooling off...');
+                        return; // Skip network call, keep showing cache
+                    }
+                }
+
+                const res = await fetch(`${API_BASE}/united`);
+
+                if (!res.ok) {
+                    // Mark failure for cool-off
+                    localStorage.setItem('united_api_failure', new Date().toISOString());
+                    throw new Error(`API error ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                // 3. On success: Update UI + Update Cache
+                localStorage.removeItem('united_api_failure');
+                localStorage.setItem('united_data_cache', JSON.stringify(data));
+                renderUnitedData(data);
+
+                // Update "Live" indicator
+                if (unitedStatusEl) {
+                    unitedStatusEl.innerHTML = getUnitedStatusHTML(data);
+                }
+
+            } catch (error) {
+                console.error('Failed to refresh United status:', error);
+
+                // If we have NO cache and the API failed, we must show Offline state
+                if (!hasCachedData) {
+                    if (unitedAnswerEl) unitedAnswerEl.textContent = '...';
+                    if (unitedFormEl) {
+                        unitedFormEl.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-500 text-sm">Offline</span>
+                                <button onclick="localStorage.removeItem('united_api_failure'); loadUnitedStatus()" class="text-[10px] uppercase tracking-wider text-white/50 hover:text-white border border-white/10 px-2 py-0.5 rounded transition-colors">
+                                Retry
+                                </button>
+                            </div>
+                        `;
+                    }
+                    if (unitedStreakEl) unitedStreakEl.textContent = '-';
+                }
+            }
+        }
+
+        // Celebration for when United finally does it
+        function triggerCelebration() {
+            document.body.innerHTML = `
+                <div class="fixed inset-0 bg-neon-green flex items-center justify-center z-50">
+                    <div class="text-center text-black p-8">
+                        <div class="text-9xl mb-8">🎉✂️🎉</div>
+                        <h1 class="text-6xl font-black mb-4">FRANK CAN CUT HIS HAIR!</h1>
+                        <p class="text-2xl mb-8">Manchester United finally won 5 in a row!</p>
+                        <p class="text-xl opacity-75">It only took ${calculateDays()} days...</p>
+                        <button onclick="location.reload()" class="mt-8 px-8 py-4 bg-black text-neon-green font-bold rounded-xl hover:scale-105 transition-transform">
+                            View The Leaderboard
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+
+
+        // Short league names for display
+        const SHORT_LEAGUE_NAMES = {
+            'Campeonato Brasileiro Série A': 'Brasileiro Série A'
+        };
+
+        function getShortLeagueName(name) {
+            return SHORT_LEAGUE_NAMES[name] || name;
+        }
+
+        // Render team card
+        function renderTeamCard(team) {
+            const maxStreak = team.max_streak || 5;
+
+            // Calculate days since Frank's vow when streak was achieved
+            let dayBadge = '';
+            if (team.streak_achieved_date) {
+                const achievedDate = new Date(team.streak_achieved_date);
+                const daysSinceStart = Math.floor((achievedDate - START_DATE) / (1000 * 60 * 60 * 24));
+                const formattedDate = achievedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                dayBadge = `<span class="px-3 py-1 rounded-full text-base font-bold bg-blue-500/20 text-blue-300" title="Achieved on ${formattedDate}">📅 Day ${daysSinceStart}</span>`;
+            }
+
+            return `
+        <div class="glass-card rounded-2xl p-6 cursor-default hover:scale-[1.02] transition-transform flex flex-col">
+          <div class="flex items-start justify-between mb-4">
+            <img src="${team.logo}" alt="${team.name}" loading="lazy"
+                 class="w-16 h-16 object-contain bg-white/5 rounded-xl p-2"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>⚽</text></svg>'">
+            ${dayBadge}
+          </div>
+          
+          <h3 class="font-bold text-lg mb-2 truncate" title="${team.name}">${team.name}</h3>
+          
+          <div class="flex items-center gap-2 text-sm text-gray-400 mb-2">
+            ${team.country_flag ? `<img src="${team.country_flag}" class="w-5 h-4 rounded" alt="">` : ''}
+            <span>${team.country_name || 'Unknown'}</span>
+          </div>
+          
+          <div class="flex justify-between items-end mt-auto">
+            <div class="flex items-center gap-2 text-xs text-gray-500">
+              <span>${LEAGUE_FLAGS[team.league_id] || '⚽'}</span>
+              <span>${getShortLeagueName(team.league_name) || 'Unknown League'}</span>
+            </div>
+            <span class="streak-badge px-3 py-1 rounded-full text-sm font-bold text-black">
+              ${maxStreak}W 🔥
+            </span>
+          </div>
+        </div>
+      `;
+        }
+
+        let allTeams = [];
+        let activeFilters = new Set(['all']); // Support multiple filters
+
+        // Filter Logic
+        function filterTeams() {
+            const query = searchInput.value.toLowerCase();
+
+            const filtered = allTeams.filter(team => {
+                const matchesSearch = team.name.toLowerCase().includes(query) ||
+                    (team.league_name && team.league_name.toLowerCase().includes(query));
+
+                // Multi-select logic: if 'all' is active OR league is in the set
+                const matchesFilter = activeFilters.has('all') || activeFilters.has(team.league_id);
+
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filtered.length > 0) {
+                teamsGridEl.innerHTML = filtered.map(renderTeamCard).join('');
+                emptyStateEl.classList.add('hidden');
+            } else {
+                teamsGridEl.innerHTML = `
+                    <div class="col-span-full text-center py-12 opacity-50">
+                        <div class="text-4xl mb-2">🔍</div>
+                        <p>No teams found matching your search</p>
+                    </div>
+                `;
+            }
+
+            // Update count
+            if (teamCountEl) teamCountEl.textContent = filtered.length;
+        }
+
+        function updateFilterVisuals() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const league = btn.dataset.league;
+                const isActive = activeFilters.has(league);
+
+                // Reset classes with better flex alignment
+                btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1.5';
+
+                if (isActive) {
+                    // Active State: White, Black text, Scale on hover (don't dim)
+                    btn.classList.add('bg-white', 'text-black', 'border-white', 'hover:scale-105', 'shadow-lg');
+                } else {
+                    // Inactive State: Glassy, Gray text, brighten on hover
+                    btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10', 'hover:bg-white/10', 'hover:text-white', 'hover:border-white/30');
+                }
+            });
+        }
+
+        // Setup Filters
+        function setupFilters(teams) {
+            // Extract unique leagues
+            let leagues = [...new Set(teams.map(t => t.league_id))];
+
+            // Sort by Priority (Domestic Leagues First)
+            const PRIORITY = ['PL', 'PD', 'BL1', 'SA', 'FL1', 'ELC', 'DED', 'PPL', 'BSA', 'CL', 'WC', 'EC'];
+            leagues.sort((a, b) => {
+                const idxA = PRIORITY.indexOf(a);
+                const idxB = PRIORITY.indexOf(b);
+                // If both in list, sort by index
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                // If a is in list, it comes first
+                if (idxA !== -1) return -1;
+                // If b is in list, it comes first
+                if (idxB !== -1) return 1;
+                // Otherwise alphabetical
+                return a.localeCompare(b);
+            });
+
+            filterContainer.innerHTML = '';
+
+            // 'All' Button
+            const allBtn = document.createElement('button');
+            allBtn.className = 'filter-btn'; // Essential for selection
+            allBtn.dataset.league = 'all';
+            allBtn.innerHTML = 'All';
+            allBtn.addEventListener('click', () => {
+                activeFilters.clear();
+                activeFilters.add('all');
+                updateFilterVisuals();
+                filterTeams();
+            });
+            filterContainer.appendChild(allBtn);
+
+            // League Buttons
+            leagues.forEach(leagueId => {
+                const count = teams.filter(t => t.league_id === leagueId).length;
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn'; // Essential for selection
+                btn.dataset.league = leagueId;
+                // Use a flex-friendly structure
+                btn.innerHTML = `<span class="text-base">${LEAGUE_FLAGS[leagueId] || ''}</span> <span>${leagueId}</span> <span class="opacity-50 ml-1 text-[10px]">(${count})</span>`;
+
+                btn.addEventListener('click', () => {
+                    // If 'all' was active, clear it first
+                    if (activeFilters.has('all')) {
+                        activeFilters.clear();
+                    }
+
+                    // Toggle selection
+                    if (activeFilters.has(leagueId)) {
+                        activeFilters.delete(leagueId);
+                    } else {
+                        activeFilters.add(leagueId);
+                    }
+
+                    // If nothing selected, revert to 'all'
+                    if (activeFilters.size === 0) {
+                        activeFilters.add('all');
+                    }
+
+                    updateFilterVisuals();
+                    filterTeams();
+                });
+
+                filterContainer.appendChild(btn);
+            });
+
+            // Initial visual update
+            updateFilterVisuals();
+        }
+
+        searchInput.addEventListener('input', filterTeams);
+
+        // Auto-scan: trigger a background scan if data is stale (Distributed Cron)
+        const SCAN_INTERVAL_MINUTES = 3; // Scan every 3 minutes to cycle Top 5 every 15 mins
+
+        async function autoScan(lastScanTime) {
+            // Check if we need to scan
+            if (!lastScanTime) {
+                triggerBackgroundScan();
+                return;
+            }
+
+            const minutesSinceLastScan = (new Date() - lastScanTime) / 60000;
+
+            if (minutesSinceLastScan > SCAN_INTERVAL_MINUTES) {
+                triggerBackgroundScan();
+            } else {
+                // Data is fresh enough
+            }
+        }
+
+        async function triggerBackgroundScan() {
+            try {
+                // No session locking anymore!
+                const res = await fetch(`${API_BASE}/scan`);
+                const data = await res.json();
+                if (data.success || data.message) {
+                    // Scan completed successfully
+                }
+            } catch (e) {
+                console.error('Auto-scan failed:', e);
+            }
+        }
+
+        // Continuous Live Update Loop (every 2 mins)
+        setInterval(() => {
+            // We don't have easy access to 'lastScanTime' here without refetching teams or storing global state.
+            // Simplest approach: trigger a 'blind' check which hits /api/scan. 
+            // /api/scan is cheap if cached, and safe if rate-limited.
+            // Better: re-call loadTeams() effectively which triggers autoScan.
+            // BUT simpler: just call triggerBackgroundScan() directly if we are "live".
+            // Actually, the safest is to fetch current state then scan.
+            loadTeams();
+        }, 180 * 1000); // Check every 3 minutes
+
+        // Fetch and render teams
+        async function loadTeams() {
+            loadingStateEl.classList.remove('hidden');
+            emptyStateEl.classList.add('hidden');
+            teamsGridEl.innerHTML = '';
+
+            try {
+                const res = await fetch(`${API_BASE}/teams`);
+                const data = await res.json();
+
+                loadingStateEl.classList.add('hidden');
+
+                if (data.teams && data.teams.length > 0) {
+                    allTeams = data.teams; // Store for filtering
+                    setupFilters(allTeams); // Generate filter pills
+
+                    if (teamCountEl) teamCountEl.textContent = data.teams.length;
+                    if (leaguesCountEl && data.leaguesScanned) {
+                        leaguesCountEl.textContent = data.leaguesScanned;
+                    }
+
+                    // Initial Render
+                    filterTeams();
+
+                    emptyStateEl.classList.add('hidden');
+
+                    // 🎉 Easter egg: Check if Manchester United made it!
+                    const unitedMadeIt = data.teams.find(t => t.team_id === 66 || t.name.includes('Manchester United'));
+                    if (unitedMadeIt) {
+                        document.body.innerHTML = `
+                            <div class="fixed inset-0 bg-united-red flex items-center justify-center z-50">
+                                <div class="text-center text-white p-8">
+                                    <div class="text-9xl mb-8">🎉✂️🎉</div>
+                                    <h1 class="text-6xl font-black mb-4">FRANK CAN CUT HIS HAIR!</h1>
+                                    <p class="text-2xl mb-8">Manchester United finally won 5 in a row!</p>
+                                    <p class="text-xl opacity-75">It only took ${calculateDays()} days...</p>
+                                    <button onclick="location.reload()" class="mt-8 px-8 py-4 bg-white text-united-red font-bold rounded-xl hover:scale-105 transition-transform">
+                                        View The Leaderboard
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    teamsGridEl.innerHTML = '';
+                    if (teamCountEl) teamCountEl.textContent = '0';
+                    emptyStateEl.classList.remove('hidden');
+                }
+
+                // Render Recent Scans
+                if (data.recentScans && data.recentScans.length > 0) {
+                    // Update Last Updated time
+                    const lastScan = new Date(data.recentScans[0].scanned_at);
+                    if (lastUpdatedEl) lastUpdatedEl.textContent = lastScan.toLocaleString();
+
+                    // Trigger auto-scan if data is stale (Distributed Cron)
+                    autoScan(lastScan);
+
+                    // Render grid
+                    if (leaguesStatusEl) {
+                        // League flag map
+                        const leagueFlags = {
+                            'PL': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'PD': '🇪🇸', 'BL1': '🇩🇪', 'SA': '🇮🇹', 'FL1': '🇫🇷',
+                            'DED': '🇳🇱', 'PPL': '🇵🇹', 'ELC': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'CL': '🏆', 'EC': '🇪🇺',
+                            'WC': '🌍', 'BSA': '🇧🇷'
+                        };
+
+                        leaguesStatusEl.innerHTML = data.recentScans.map((scan, index) => {
+                            const date = new Date(scan.scanned_at);
+                            const flag = leagueFlags[scan.league_id] || '⚽';
+                            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                            return `
+                        <div class="glass p-4 rounded-xl flex items-center justify-between animate-update" style="animation-delay: ${index * 150}ms">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xl">${flag}</span>
+                                <div>
+                                    <div class="font-bold text-sm text-neon-green">${scan.league_name || scan.league_id}</div>
+                                    <div class="text-xs text-gray-500">${timeStr} <span class="opacity-75">(${timeAgo(scan.scanned_at)})</span></div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs font-mono text-white">${scan.teams_qualified} qualified</div>
+                                <div class="text-[10px] text-gray-600">${scan.teams_scanned} scanned</div>
+                            </div>
+                        </div>
+                        `;
+                        }).join('');
+                    }
+                } else {
+                    // No scans yet
+                }
+            } catch (error) {
+                console.error('Failed to load teams:', error);
+                if (loadingStateEl) loadingStateEl.classList.add('hidden');
+                if (teamCountEl) teamCountEl.textContent = '0';
+                if (emptyStateEl) emptyStateEl.classList.remove('hidden');
+            }
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('tab-active');
+                    b.classList.add('text-gray-500');
+                });
+                btn.classList.add('tab-active');
+                btn.classList.remove('text-gray-500');
+
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.getElementById(`${btn.dataset.tab}-tab`).classList.remove('hidden');
+            });
+        });
+
+
+
+        // Init
+        updateDays();
+        loadTeams();
+        loadUnitedStatus(); // Call immediately, caching handles the rest
+    </script>
+</body>
+
+</html>
