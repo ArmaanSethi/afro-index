@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "The Afro Index - Tracking teams with 5+ consecutive wins since Oct 5, 2024",
   "private": true,
-  "scripts": {
-    "build": "mkdir -p public && cp index.html og_image.jpeg public/"
-  },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0"
   }
