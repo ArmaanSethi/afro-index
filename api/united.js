@@ -50,7 +50,6 @@ export default async function handler(req, res) {
         // Build form string (most recent first, then reverse for chronological display)
         const results = [];
         let currentStreak = 0;
-        let streakType = null;
 
         for (const match of matches) {
             const homeTeam = match.homeTeam.id;

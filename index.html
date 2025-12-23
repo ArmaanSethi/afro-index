@@ -940,16 +940,13 @@
         async function autoScan(lastScanTime) {
             // Check if we need to scan
             if (!lastScanTime) {
-                console.log('No scan data, triggering auto-scan...');
                 triggerBackgroundScan();
                 return;
             }
 
             const minutesSinceLastScan = (new Date() - lastScanTime) / 60000;
-            console.log(`Last scan was ${minutesSinceLastScan.toFixed(1)} minutes ago`);
 
             if (minutesSinceLastScan > SCAN_INTERVAL_MINUTES) {
-                console.log('Data is stale, triggering background scan for oldest/priority league...');
                 triggerBackgroundScan();
             } else {
                 // Data is fresh enough
@@ -962,7 +959,7 @@
                 const res = await fetch(`${API_BASE}/scan`);
                 const data = await res.json();
                 if (data.success || data.message) {
-                    console.log(`Auto-scanned: ${data.competition?.name || 'Unknown'} - ${data.teamsQualified || 0} teams qualified`);
+                    // Scan completed successfully
                 }
             } catch (e) {
                 console.error('Auto-scan failed:', e);
@@ -1070,7 +1067,6 @@
                         }).join('');
                     }
                 } else {
-                    // No scans yet
                     // No scans yet
                 }
             } catch (error) {
