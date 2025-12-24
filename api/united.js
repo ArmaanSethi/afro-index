@@ -73,6 +73,9 @@ export default async function handler(req, res) {
                 result,
                 date: match.utcDate,
                 opponent: homeTeam === UNITED_TEAM_ID ? match.awayTeam.name : match.homeTeam.name,
+                opponentId: homeTeam === UNITED_TEAM_ID ? match.awayTeam.id : match.homeTeam.id,
+                opponentTla: homeTeam === UNITED_TEAM_ID ? match.awayTeam.tla : match.homeTeam.tla,
+                opponentCrest: homeTeam === UNITED_TEAM_ID ? match.awayTeam.crest : match.homeTeam.crest,
                 score: `${homeGoals}-${awayGoals}`,
                 home: homeTeam === UNITED_TEAM_ID
             });
@@ -118,6 +121,8 @@ export default async function handler(req, res) {
                 endDate: streakMatches[streakMatches.length - 1]?.date,
                 matches: streakMatches.map(m => ({
                     opponent: m.opponent,
+                    opponentTla: m.opponentTla,
+                    opponentCrest: m.opponentCrest,
                     score: m.score,
                     date: m.date,
                     home: m.home

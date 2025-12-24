@@ -332,6 +332,50 @@
                 </div>
             </div>
 
+            <!-- Closest Attempt Banner -->
+            <div id="closest-attempt" class="mb-8 w-full max-w-3xl mx-auto hidden">
+                <div
+                    class="glass rounded-2xl p-6 border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10">
+                    <div class="text-center">
+                        <div class="text-xs uppercase tracking-[0.2em] text-amber-400 mb-4 font-semibold">
+                            🔥 Closest Attempt — <span id="best-streak-number" class="text-white">--</span> in a row
+                        </div>
+                        <div class="text-xs text-gray-500 mb-4" id="best-streak-dates">Loading...</div>
+
+                        <!-- 5 Circles Progress -->
+                        <div class="flex items-center justify-center gap-2 md:gap-4" id="streak-circles">
+                            <!-- Circles will be dynamically populated -->
+                            <div
+                                class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/5 border-2 border-dashed border-white/20 flex items-center justify-center">
+                                <span class="text-white/20 text-xs">1</span>
+                            </div>
+                            <div
+                                class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/5 border-2 border-dashed border-white/20 flex items-center justify-center">
+                                <span class="text-white/20 text-xs">2</span>
+                            </div>
+                            <div
+                                class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/5 border-2 border-dashed border-white/20 flex items-center justify-center">
+                                <span class="text-white/20 text-xs">3</span>
+                            </div>
+                            <div
+                                class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/5 border-2 border-dashed border-white/20 flex items-center justify-center">
+                                <span class="text-white/20 text-xs">4</span>
+                            </div>
+                            <div
+                                class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-neon-green/20 to-neon-green/5 border-2 border-neon-green/50 flex items-center justify-center">
+                                <span class="text-neon-green text-xs font-bold">5 ✂️</span>
+                            </div>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="mt-4 text-[10px] text-gray-500">
+                            <span class="text-neon-green">●</span> Win achieved • <span class="text-white/30">○</span>
+                            Win needed
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Link to context -->
             <a href="https://www.google.com/search?q=frank+ilett+hair+manchester+united" target="_blank"
                 class="text-xs text-gray-600 hover:text-united-red transition-colors mb-6 uppercase tracking-[0.2em]">
@@ -643,6 +687,100 @@
             // Update streak
             if (data.currentStreak !== undefined && unitedStreakEl) {
                 unitedStreakEl.textContent = data.currentStreak;
+            }
+
+            // Update closest attempt (best streak)
+            renderClosestAttempt(data);
+        }
+
+        // Render the "Closest Attempt" banner with 5 circles
+        function renderClosestAttempt(data) {
+            const closestAttemptEl = document.getElementById('closest-attempt');
+            const bestStreakNumberEl = document.getElementById('best-streak-number');
+            const bestStreakDatesEl = document.getElementById('best-streak-dates');
+            const streakCirclesEl = document.getElementById('streak-circles');
+
+            if (!closestAttemptEl || !data.bestStreak || data.bestStreak < 1) {
+                if (closestAttemptEl) closestAttemptEl.classList.add('hidden');
+                return;
+            }
+
+            // Show the section
+            closestAttemptEl.classList.remove('hidden');
+
+            // Update the number
+            if (bestStreakNumberEl) {
+                bestStreakNumberEl.textContent = data.bestStreak;
+            }
+
+            // Update date range
+            if (bestStreakDatesEl && data.bestStreakDetails) {
+                const startDate = new Date(data.bestStreakDetails.startDate);
+                const endDate = new Date(data.bestStreakDetails.endDate);
+
+                const formatDate = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+                if (startDate.getTime() === endDate.getTime()) {
+                    bestStreakDatesEl.textContent = formatDate(startDate);
+                } else {
+                    bestStreakDatesEl.textContent = `${formatDate(startDate)} → ${formatDate(endDate)}`;
+                }
+            }
+
+            // Render 5 circles
+            if (streakCirclesEl && data.bestStreakDetails && data.bestStreakDetails.matches) {
+                const matches = data.bestStreakDetails.matches;
+                let circlesHTML = '';
+
+                for (let i = 0; i < 5; i++) {
+                    if (i < matches.length) {
+                        // Filled circle with win info
+                        const match = matches[i];
+                        const crest = match.opponentCrest || `https://crests.football-data.org/${match.opponentId || 0}.png`;
+                        const tla = match.opponentTla || match.opponent.substring(0, 3).toUpperCase();
+                        const venue = match.home ? 'H' : 'A';
+
+                        circlesHTML += `
+                            <div class="flex flex-col items-center gap-1 group" title="${match.opponent} (${venue})">
+                                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-neon-green/30 to-neon-green/10 border-2 border-neon-green shadow-[0_0_15px_rgba(0,255,157,0.3)] flex items-center justify-center overflow-hidden transition-transform hover:scale-110">
+                                    <img src="${crest}" alt="${tla}" class="w-10 h-10 md:w-12 md:h-12 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\\'text-neon-green font-bold text-xs\\'>${tla}</span>';">
+                                </div>
+                                <div class="text-[10px] text-center">
+                                    <div class="text-neon-green font-bold">${match.score}</div>
+                                    <div class="text-gray-400">${tla} <span class="text-gray-600">(${venue})</span></div>
+                                </div>
+                            </div>
+                        `;
+                    } else if (i === 4) {
+                        // 5th circle - the goal (haircut!)
+                        circlesHTML += `
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-neon-green/20 to-neon-green/5 border-2 border-dashed border-neon-green/50 flex items-center justify-center animate-pulse">
+                                    <span class="text-2xl">✂️</span>
+                                </div>
+                                <div class="text-[10px] text-center">
+                                    <div class="text-neon-green font-bold">GOAL</div>
+                                    <div class="text-gray-500">Haircut!</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        // Empty circle - win needed
+                        circlesHTML += `
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/5 border-2 border-dashed border-white/20 flex items-center justify-center">
+                                    <span class="text-white/20 text-lg font-bold">${i + 1}</span>
+                                </div>
+                                <div class="text-[10px] text-center">
+                                    <div class="text-gray-600">—</div>
+                                    <div class="text-gray-600">Needed</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                streakCirclesEl.innerHTML = circlesHTML;
             }
         }
 
