@@ -70,6 +70,48 @@
     }
     </script>
 
+    <!-- JSON-LD Structured Data - FAQPage for rich results -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is Man United's current win streak?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Manchester United's current winning streak is tracked live on hasunitedwon5.com. As of now, they have not achieved 5 consecutive wins since Frank Ilett's hair vow began on October 5, 2024. The current streak counter is updated after every match."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Who is Frank Ilett / The United Strand?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Frank Ilett, known on social media as 'The United Strand,' is a Manchester United fan who went viral after vowing not to cut his hair until United wins 5 games in a row. His growing afro has become a symbol of United's struggles."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What is Manchester United's longest win streak this season?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Manchester United's best winning streak since Frank's vow is displayed in the 'Best Streak' section on hasunitedwon5.com. This shows how close they've come to reaching 5 consecutive wins."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How many teams have won 5 in a row since Frank Ilett's vow?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "hasunitedwon5.com tracks every team across major European leagues that has achieved 5+ consecutive wins since October 5, 2024. The full leaderboard shows exactly how many teams have accomplished what Manchester United hasn't."
+                }
+            }
+        ]
+    }
+    </script>
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -525,20 +567,22 @@
     <section id="about" class="py-20 px-6 md:px-12 bg-gradient-to-b from-transparent to-dark-card">
         <div class="max-w-4xl mx-auto">
             <div class="glass rounded-3xl p-8 md:p-12">
-                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">The Story</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">The Story of Frank Ilett's Hair Vow</h2>
 
                 <div class="space-y-6 text-gray-300 leading-relaxed">
                     <p>
                         <span class="text-2xl mr-2">💇</span>
                         On <span class="text-united-red font-semibold">October 5, 2024</span>, Manchester United fan
-                        <span class="text-white font-semibold">Frank Ilett</span> made a bold vow: he would not cut
+                        <span class="text-white font-semibold">Frank Ilett</span> (known online as <span
+                            class="text-white font-semibold">The United Strand</span>) made a bold vow: he would not cut
                         his hair until United won <span class="text-neon-green font-semibold">5 games in a row</span>.
                     </p>
 
                     <p>
                         <span class="text-2xl mr-2">⏳</span>
                         As of today, <span id="days-inline" class="text-united-red font-bold">--</span> days later,
-                        Frank is still waiting. His hair grows longer with each disappointing result.
+                        Frank is still waiting. His hair grows longer with each disappointing result, and the <span
+                            class="text-white">Man United win streak</span> remains elusive.
                     </p>
 
                     <p>
@@ -553,6 +597,46 @@
                         Every team that reaches 5 consecutive wins gets added to our leaderboard, proving that
                         Frank's challenge really shouldn't be this hard.
                     </p>
+                </div>
+
+                <!-- SEO-rich FAQ section -->
+                <div class="mt-10 pt-8 border-t border-white/10">
+                    <h3 class="text-xl font-bold mb-6 text-center text-white">Frequently Asked Questions</h3>
+
+                    <div class="space-y-4 text-sm">
+                        <details class="glass rounded-xl p-4 cursor-pointer">
+                            <summary class="font-semibold text-white">What is Man United's current win streak?</summary>
+                            <p class="mt-2 text-gray-400">Manchester United's current winning streak is tracked live on
+                                this page. As of now, they have not achieved 5 consecutive wins since Frank Ilett's hair
+                                vow began on October 5, 2024. Check the "Current Streak" counter at the top of the page
+                                for the latest Man United win streak count.</p>
+                        </details>
+
+                        <details class="glass rounded-xl p-4 cursor-pointer">
+                            <summary class="font-semibold text-white">Who is Frank Ilett / The United Strand?</summary>
+                            <p class="mt-2 text-gray-400">Frank Ilett, known on social media as "The United Strand," is
+                                a Manchester United fan who went viral after vowing not to cut his hair until United
+                                wins 5 games in a row. His growing afro has become a symbol of United's struggles and he
+                                provides daily updates on Instagram, YouTube, and Twitter.</p>
+                        </details>
+
+                        <details class="glass rounded-xl p-4 cursor-pointer">
+                            <summary class="font-semibold text-white">What is Manchester United's longest win streak
+                                this season?</summary>
+                            <p class="mt-2 text-gray-400">Manchester United's best winning streak since Frank's vow is
+                                displayed in the "Best Streak" section above. This shows how close they've come to
+                                reaching 5 consecutive wins and ending Frank Ilett's hair challenge.</p>
+                        </details>
+
+                        <details class="glass rounded-xl p-4 cursor-pointer">
+                            <summary class="font-semibold text-white">How many teams have won 5 in a row since Frank's
+                                vow?</summary>
+                            <p class="mt-2 text-gray-400">We track every team across major European leagues that has
+                                achieved 5+ consecutive wins since October 5, 2024. The full leaderboard is displayed
+                                above, showing exactly how many teams have accomplished what Manchester United hasn't.
+                            </p>
+                        </details>
+                    </div>
                 </div>
 
                 <div class="mt-10 pt-8 border-t border-white/10 text-center">
