@@ -332,43 +332,6 @@
                 </div>
             </div>
 
-            <!-- Closest Attempt Banner -->
-            <div id="closest-attempt" class="mb-8 w-full max-w-2xl mx-auto hidden">
-                <div
-                    class="glass rounded-2xl p-6 border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10">
-                    <div class="text-center">
-                        <div class="text-xs uppercase tracking-[0.2em] text-amber-400 mb-2 font-semibold">
-                            🔥 Closest Attempt
-                        </div>
-                        <div class="flex items-center justify-center gap-4">
-                            <div class="text-5xl md:text-6xl font-black text-amber-400" id="best-streak-number">
-                                --
-                            </div>
-                            <div class="text-left">
-                                <div class="text-sm text-gray-300">consecutive wins</div>
-                                <div class="text-xs text-gray-500" id="best-streak-dates">Loading...</div>
-                            </div>
-                        </div>
-                        <!-- Progress bar to 5 -->
-                        <div class="mt-4 relative">
-                            <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                                <div id="streak-progress"
-                                    class="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-1000"
-                                    style="width: 0%"></div>
-                            </div>
-                            <div class="flex justify-between text-[10px] text-gray-500 mt-1">
-                                <span>0</span>
-                                <span class="text-neon-green font-bold">5 GOAL</span>
-                            </div>
-                        </div>
-                        <!-- Streak matches preview -->
-                        <div id="best-streak-matches" class="mt-4 text-xs text-gray-400 hidden">
-                            <!-- Dynamically populated -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Link to context -->
             <a href="https://www.google.com/search?q=frank+ilett+hair+manchester+united" target="_blank"
                 class="text-xs text-gray-600 hover:text-united-red transition-colors mb-6 uppercase tracking-[0.2em]">
@@ -680,71 +643,6 @@
             // Update streak
             if (data.currentStreak !== undefined && unitedStreakEl) {
                 unitedStreakEl.textContent = data.currentStreak;
-            }
-
-            // Update closest attempt (best streak)
-            renderClosestAttempt(data);
-        }
-
-        // Render the "Closest Attempt" banner with best streak info
-        function renderClosestAttempt(data) {
-            const closestAttemptEl = document.getElementById('closest-attempt');
-            const bestStreakNumberEl = document.getElementById('best-streak-number');
-            const bestStreakDatesEl = document.getElementById('best-streak-dates');
-            const streakProgressEl = document.getElementById('streak-progress');
-            const bestStreakMatchesEl = document.getElementById('best-streak-matches');
-
-            if (!closestAttemptEl || !data.bestStreak || data.bestStreak < 1) {
-                if (closestAttemptEl) closestAttemptEl.classList.add('hidden');
-                return;
-            }
-
-            // Show the section
-            closestAttemptEl.classList.remove('hidden');
-
-            // Update the number
-            if (bestStreakNumberEl) {
-                bestStreakNumberEl.textContent = data.bestStreak;
-            }
-
-            // Update date range
-            if (bestStreakDatesEl && data.bestStreakDetails) {
-                const startDate = new Date(data.bestStreakDetails.startDate);
-                const endDate = new Date(data.bestStreakDetails.endDate);
-
-                const formatDate = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-                if (startDate.getTime() === endDate.getTime()) {
-                    bestStreakDatesEl.textContent = formatDate(startDate);
-                } else {
-                    bestStreakDatesEl.textContent = `${formatDate(startDate)} → ${formatDate(endDate)}`;
-                }
-            }
-
-            // Update progress bar (percentage to goal of 5)
-            if (streakProgressEl) {
-                const percentage = Math.min((data.bestStreak / 5) * 100, 100);
-                // Small delay for animation effect
-                setTimeout(() => {
-                    streakProgressEl.style.width = `${percentage}%`;
-                }, 100);
-            }
-
-            // Show matches in the streak
-            if (bestStreakMatchesEl && data.bestStreakDetails && data.bestStreakDetails.matches) {
-                const matches = data.bestStreakDetails.matches;
-
-                if (matches.length > 0) {
-                    const matchList = matches.map(m => {
-                        const venue = m.home ? '(H)' : '(A)';
-                        return `<span class="text-neon-green">W</span> ${m.score} vs ${m.opponent} ${venue}`;
-                    }).join(' • ');
-
-                    bestStreakMatchesEl.innerHTML = matchList;
-                    bestStreakMatchesEl.classList.remove('hidden');
-                } else {
-                    bestStreakMatchesEl.classList.add('hidden');
-                }
             }
         }
 
