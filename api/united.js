@@ -87,6 +87,44 @@ export default async function handler(req, res) {
             }
         }
 
+        // Calculate BEST (longest) win streak since Frank's vow
+        // This shows how close they got to 5!
+        let bestStreak = 0;
+        let tempStreak = 0;
+        let bestStreakEndIndex = -1;
+
+        for (let i = 0; i < results.length; i++) {
+            if (results[i].result === 'W') {
+                tempStreak++;
+                if (tempStreak > bestStreak) {
+                    bestStreak = tempStreak;
+                    bestStreakEndIndex = i;
+                }
+            } else {
+                tempStreak = 0;
+            }
+        }
+
+        // Get details about the best streak (the matches that formed it)
+        let bestStreakDetails = null;
+        if (bestStreak > 0 && bestStreakEndIndex !== -1) {
+            const startIndex = bestStreakEndIndex - bestStreak + 1;
+            const streakMatches = results.slice(startIndex, bestStreakEndIndex + 1).reverse();
+
+            // Since results are sorted most recent first, we reverse to get chronological order
+            bestStreakDetails = {
+                length: bestStreak,
+                startDate: streakMatches[0]?.date,
+                endDate: streakMatches[streakMatches.length - 1]?.date,
+                matches: streakMatches.map(m => ({
+                    opponent: m.opponent,
+                    score: m.score,
+                    date: m.date,
+                    home: m.home
+                }))
+            };
+        }
+
         // Check if they've achieved 5 in a row
         const hasWon5 = currentStreak >= 5;
 
@@ -96,6 +134,8 @@ export default async function handler(req, res) {
         return res.status(200).json({
             hasWon5,
             currentStreak,
+            bestStreak,
+            bestStreakDetails,
             form: formString,
             recentMatches: results.slice(0, 5),
             lastUpdated: new Date().toISOString()
