@@ -120,9 +120,9 @@ export default async function handler(req, res) {
         const aIsPriority = isPriority(a.code);
         const bIsPriority = isPriority(b.code);
 
-        // Thresholds
-        const SUPER_STALE = 60 * 60 * 1000;       // 60 Minutes (Others updated hourly)
-        const LIVE_STALE = 15 * 60 * 1000;        // 15 Minutes (Top 5 updated quarterly)
+        // Thresholds - reduced to scan more frequently
+        const SUPER_STALE = 8 * 60 * 60 * 1000;        // 8 Hours (Others updated every 8h)
+        const LIVE_STALE = 4 * 60 * 60 * 1000;         // 4 Hours (Top 5 updated every 4h)
 
         const aDiff = now - aTime;
         const bDiff = now - bTime;
