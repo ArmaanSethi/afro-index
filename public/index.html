@@ -115,11 +115,20 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Non-render-blocking font loading -->
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
+        rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+            rel="stylesheet">
+    </noscript>
 
     <!-- Tailwind CSS -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -1315,7 +1324,12 @@
                     if (lastUpdatedEl) lastUpdatedEl.textContent = lastScan.toLocaleString();
 
                     // Trigger auto-scan if data is stale (Distributed Cron)
-                    autoScan(lastScan);
+                    // Deferred to avoid blocking initial render
+                    if ('requestIdleCallback' in window) {
+                        requestIdleCallback(() => autoScan(lastScan), { timeout: 5000 });
+                    } else {
+                        setTimeout(() => autoScan(lastScan), 2000);
+                    }
 
                     // Render grid
                     if (leaguesStatusEl) {
