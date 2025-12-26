@@ -1237,16 +1237,13 @@
             }
         }
 
-        // Continuous Live Update Loop (every 2 mins)
+        // Background refresh loop - runs after user has been on page 3+ minutes
         setInterval(() => {
-            // We don't have easy access to 'lastScanTime' here without refetching teams or storing global state.
-            // Simplest approach: trigger a 'blind' check which hits /api/scan. 
-            // /api/scan is cheap if cached, and safe if rate-limited.
-            // Better: re-call loadTeams() effectively which triggers autoScan.
-            // BUT simpler: just call triggerBackgroundScan() directly if we are "live".
-            // Actually, the safest is to fetch current state then scan.
+            // Refresh displayed data
             loadTeams();
-        }, 180 * 1000); // Check every 3 minutes
+            // Trigger a background scan to get fresh data
+            triggerBackgroundScan();
+        }, 180 * 1000); // Every 3 minutes
 
         // Fetch and render teams
         async function loadTeams() {
