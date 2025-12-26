@@ -4,9 +4,13 @@
   "description": "The Afro Index - Tracking teams with 5+ consecutive wins since Oct 5, 2024",
   "private": true,
   "scripts": {
-    "build": "echo 'No build needed - static site'"
+    "build:css": "npx tailwindcss -i src/input.css -o public/output.css --minify",
+    "build": "npm run build:css && cp index.html public/index.html"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
   }
 }
