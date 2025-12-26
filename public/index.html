@@ -1303,13 +1303,8 @@
                     const lastScan = new Date(data.recentScans[0].scanned_at);
                     if (lastUpdatedEl) lastUpdatedEl.textContent = lastScan.toLocaleString();
 
-                    // Trigger auto-scan if data is stale (Distributed Cron)
-                    // Deferred to avoid blocking initial render
-                    if ('requestIdleCallback' in window) {
-                        requestIdleCallback(() => autoScan(lastScan), { timeout: 5000 });
-                    } else {
-                        setTimeout(() => autoScan(lastScan), 2000);
-                    }
+                    // Auto-scan disabled - cron jobs at 6AM/6PM UTC handle scanning
+                    // Keeping function for manual trigger if needed later
 
                     // Render grid
                     if (leaguesStatusEl) {
