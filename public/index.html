@@ -316,6 +316,154 @@
         .animate-update {
             animation: flashGreen 1.5s ease-out forwards;
         }
+
+        /* ===== CELEBRATION MODE STYLES ===== */
+
+        /* Confetti canvas overlay */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Screen flash effect */
+        @keyframes screenFlash {
+            0% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .screen-flash {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 9998;
+            animation: screenFlash 0.3s ease-out forwards;
+            pointer-events: none;
+        }
+
+        /* NO to YES flip animation */
+        @keyframes flipReveal {
+            0% {
+                transform: rotateX(0deg) scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: rotateX(90deg) scale(1.1);
+                opacity: 0;
+            }
+
+            51% {
+                transform: rotateX(-90deg) scale(1.1);
+                opacity: 0;
+            }
+
+            100% {
+                transform: rotateX(0deg) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .flip-reveal {
+            animation: flipReveal 0.8s ease-in-out forwards;
+            transform-style: preserve-3d;
+        }
+
+        /* Stats cascade */
+        @keyframes cascadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cascade-in {
+            opacity: 0;
+            animation: cascadeIn 0.6s ease-out forwards;
+        }
+
+        /* Victory glow pulse */
+        @keyframes victoryPulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 60px rgba(0, 255, 157, 0.8),
+                    0 0 120px rgba(0, 255, 157, 0.4);
+            }
+
+            50% {
+                text-shadow: 0 0 80px rgba(0, 255, 157, 1),
+                    0 0 160px rgba(0, 255, 157, 0.6);
+            }
+        }
+
+        .victory-glow {
+            animation: victoryPulse 2s ease-in-out infinite;
+        }
+
+        /* Celebration overlay */
+        .celebration-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 40, 20, 0.95) 100%);
+            z-index: 9990;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .celebration-overlay.hidden {
+            display: none !important;
+        }
+
+        /* Shake effect */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
     </style>
 </head>
 
@@ -691,6 +839,9 @@
         </p>
     </footer>
 
+    <!-- Confetti celebration script -->
+    <script src="/confetti.js"></script>
+
     <script>
         // Constants
         const START_DATE = new Date('2024-10-05');
@@ -1000,21 +1151,132 @@
         }
 
         // Celebration for when United finally does it
-        function triggerCelebration() {
-            document.body.innerHTML = `
-                <div class="fixed inset-0 bg-neon-green flex items-center justify-center z-50">
-                    <div class="text-center text-black p-8">
-                        <div class="text-9xl mb-8">🎉✂️🎉</div>
-                        <h1 class="text-6xl font-black mb-4">FRANK CAN CUT HIS HAIR!</h1>
-                        <p class="text-2xl mb-8">Manchester United finally won 5 in a row!</p>
-                        <p class="text-xl opacity-75">It only took ${calculateDays()} days...</p>
-                        <button onclick="location.reload()" class="mt-8 px-8 py-4 bg-black text-neon-green font-bold rounded-xl hover:scale-105 transition-transform">
-                            View The Leaderboard
+        function triggerCelebration(data = {}) {
+            // Get or set the achievement timestamp
+            let achievementTime = localStorage.getItem('united_achievement_time');
+            if (!achievementTime) {
+                achievementTime = new Date().toISOString();
+                localStorage.setItem('united_achievement_time', achievementTime);
+            }
+            const achievementDate = new Date(achievementTime);
+
+            // Format the frozen timestamp
+            const formattedDate = achievementDate.toLocaleDateString('en-GB', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            const formattedTime = achievementDate.toLocaleTimeString('en-GB', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            const daysWithoutHaircut = calculateDays();
+            const teamsFirst = data.teamsFirst || 61; // Fallback
+
+            // Create screen flash
+            const flash = document.createElement('div');
+            flash.className = 'screen-flash';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 300);
+
+            // Create confetti canvas
+            const canvas = document.createElement('canvas');
+            canvas.id = 'confetti-canvas';
+            document.body.appendChild(canvas);
+
+            // Initialize confetti (script must be loaded)
+            if (window.ConfettiCannon) {
+                const confetti = new ConfettiCannon(canvas);
+                confetti.celebrate();
+
+                // Keep confetti going for a while
+                setTimeout(() => confetti.shower(3000), 2000);
+            }
+
+            // Shake the page briefly
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 500);
+
+            // Transform the hero section
+            setTimeout(() => {
+                // Change NO to YES with flip animation
+                if (unitedAnswerEl) {
+                    unitedAnswerEl.classList.add('flip-reveal');
+                    setTimeout(() => {
+                        unitedAnswerEl.textContent = 'YES';
+                        unitedAnswerEl.classList.remove('text-united-red', 'glow-red');
+                        unitedAnswerEl.classList.add('text-neon-green', 'victory-glow');
+                    }, 400);
+                }
+            }, 200);
+
+            // Create celebration overlay with stats cascade
+            setTimeout(() => {
+                const overlay = document.createElement('div');
+                overlay.className = 'celebration-overlay';
+                overlay.id = 'celebration-overlay';
+                overlay.innerHTML = `
+                    <div class="text-center max-w-2xl mx-auto">
+                        <!-- The Big YES -->
+                        <div class="text-8xl md:text-[12rem] font-black text-neon-green victory-glow mb-4">
+                            YES
+                        </div>
+                        
+                        <!-- Subtitle -->
+                        <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 cascade-in" style="animation-delay: 0.5s">
+                            ✂️ FRANK CAN CUT HIS HAIR! ✂️
+                        </h1>
+                        
+                        <!-- Stats Cascade -->
+                        <div class="space-y-4 mb-8">
+                            <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 1.0s">
+                                <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">🗓️ Achievement Unlocked</div>
+                                <div class="text-xl md:text-2xl font-bold text-white">${formattedDate}</div>
+                                <div class="text-lg font-mono text-neon-green">${formattedTime} UK</div>
+                            </div>
+                            
+                            <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 1.4s">
+                                <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">📅 Days Without a Haircut</div>
+                                <div class="text-4xl md:text-5xl font-black text-united-red">${daysWithoutHaircut}</div>
+                            </div>
+                            
+                            <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 1.8s">
+                                <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">🏆 Teams That Did It First</div>
+                                <div class="text-3xl font-bold text-white">${teamsFirst}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Share Section -->
+                        <div class="cascade-in" style="animation-delay: 2.2s">
+                            <p class="text-gray-400 mb-4">Share this historic moment:</p>
+                            <div class="flex flex-wrap justify-center gap-3">
+                                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`🎉 MANCHESTER UNITED FINALLY WON 5 IN A ROW! ✂️\n\nFrank can cut his hair after ${daysWithoutHaircut} days!\n\n#TheUnitedStrand #MUFC`)}&url=${encodeURIComponent('https://hasunitedwon5.com')}" 
+                                   target="_blank"
+                                   class="px-6 py-3 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-bold rounded-xl transition-all hover:scale-105">
+                                    Share on X
+                                </a>
+                                <button onclick="navigator.clipboard.writeText('MANCHESTER UNITED WON 5 IN A ROW! Frank can finally cut his hair! https://hasunitedwon5.com'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Link', 2000);"
+                                        class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all hover:scale-105">
+                                    Copy Link
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Continue Button -->
+                        <button onclick="document.getElementById('celebration-overlay').classList.add('hidden')"
+                                class="cascade-in mt-8 px-8 py-4 bg-neon-green text-black font-bold rounded-xl hover:scale-105 transition-transform"
+                                style="animation-delay: 2.6s">
+                            View The Leaderboard →
                         </button>
                     </div>
-                </div>
-            `;
+                `;
+                document.body.appendChild(overlay);
+            }, 800);
         }
+
 
 
 
@@ -1358,6 +1620,15 @@
         updateDays();
         loadTeams();
         loadUnitedStatus(); // Call immediately, caching handles the rest
+
+        // Dev mode: trigger celebration with ?celebrate=true
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('celebrate') === 'true') {
+            // Simulate celebration for testing
+            setTimeout(() => {
+                triggerCelebration({ teamsFirst: 61 });
+            }, 500);
+        }
     </script>
 </body>
 

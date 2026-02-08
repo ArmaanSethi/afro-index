@@ -136,8 +136,15 @@ export default async function handler(req, res) {
         // Form string (last 5 games, most recent first)
         const formString = results.slice(0, 5).map(r => r.result).join('');
 
+        // If they achieved 5, find the date of the 5th win
+        let achievementDate = null;
+        if (hasWon5 && results.length >= 5) {
+            achievementDate = results[4].date; // 5th win (0-indexed = 4)
+        }
+
         return res.status(200).json({
             hasWon5,
+            achievementDate,
             currentStreak,
             bestStreak,
             bestStreakDetails,
