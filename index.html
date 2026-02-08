@@ -1209,9 +1209,9 @@
                         unitedAnswerEl.textContent = 'YES';
                         unitedAnswerEl.classList.remove('text-united-red', 'glow-red');
                         unitedAnswerEl.classList.add('text-neon-green', 'victory-glow');
-                    }, 400);
+                    }, 800);
                 }
-            }, 200);
+            }, 400);
 
             // Create celebration overlay with stats cascade
             setTimeout(() => {
@@ -1226,39 +1226,39 @@
                         </div>
                         
                         <!-- Subtitle -->
-                        <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 cascade-in" style="animation-delay: 0.5s">
-                            ✂️ FRANK CAN CUT HIS HAIR! ✂️
+                        <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 cascade-in" style="animation-delay: 1.0s">
+                            MANCHESTER UNITED WON 5 IN A ROW!
                         </h1>
                         
                         <!-- Stats Cascade -->
                         <div class="space-y-4 mb-8">
-                            <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 1.0s">
+                            <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 2.0s">
                                 <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">🗓️ Achievement Unlocked</div>
                                 <div class="text-xl md:text-2xl font-bold text-white">${formattedDate}</div>
                                 <div class="text-lg font-mono text-neon-green">${formattedTime} UK</div>
                             </div>
                             
-                            <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 1.4s">
-                                <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">📅 Days Without a Haircut</div>
+                            <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 2.8s">
+                                <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">📅 Days Since The Vow</div>
                                 <div class="text-4xl md:text-5xl font-black text-united-red">${daysWithoutHaircut}</div>
                             </div>
                             
-                            <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 1.8s">
+                            <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 3.6s">
                                 <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">🏆 Teams That Did It First</div>
                                 <div class="text-3xl font-bold text-white">${teamsFirst}</div>
                             </div>
                         </div>
                         
                         <!-- Share Section -->
-                        <div class="cascade-in" style="animation-delay: 2.2s">
+                        <div class="cascade-in" style="animation-delay: 4.4s">
                             <p class="text-gray-400 mb-4">Share this historic moment:</p>
                             <div class="flex flex-wrap justify-center gap-3">
-                                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`🎉 MANCHESTER UNITED FINALLY WON 5 IN A ROW! ✂️\n\nFrank can cut his hair after ${daysWithoutHaircut} days!\n\n#TheUnitedStrand #MUFC`)}&url=${encodeURIComponent('https://hasunitedwon5.com')}" 
+                                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`🎉 MANCHESTER UNITED FINALLY WON 5 IN A ROW!\n\nIt took ${daysWithoutHaircut} days since the vow began.\n\n#MUFC #ManchesterUnited`)}&url=${encodeURIComponent('https://hasunitedwon5.com')}" 
                                    target="_blank"
                                    class="px-6 py-3 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-bold rounded-xl transition-all hover:scale-105">
                                     Share on X
                                 </a>
-                                <button onclick="navigator.clipboard.writeText('MANCHESTER UNITED WON 5 IN A ROW! Frank can finally cut his hair! https://hasunitedwon5.com'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Link', 2000);"
+                                <button onclick="navigator.clipboard.writeText('MANCHESTER UNITED WON 5 IN A ROW! https://hasunitedwon5.com'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Link', 2000);"
                                         class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all hover:scale-105">
                                     Copy Link
                                 </button>
@@ -1268,13 +1268,13 @@
                         <!-- Continue Button -->
                         <button onclick="document.getElementById('celebration-overlay').classList.add('hidden')"
                                 class="cascade-in mt-8 px-8 py-4 bg-neon-green text-black font-bold rounded-xl hover:scale-105 transition-transform"
-                                style="animation-delay: 2.6s">
+                                style="animation-delay: 5.2s">
                             View The Leaderboard →
                         </button>
                     </div>
                 `;
                 document.body.appendChild(overlay);
-            }, 800);
+            }, 1600);
         }
 
 
