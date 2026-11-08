@@ -925,7 +925,10 @@
                     unitedAnswerEl.classList.remove('text-united-red');
                     unitedAnswerEl.classList.add('text-neon-green', 'glow-green');
                 }
-                triggerCelebration();
+                triggerCelebration({
+                    achievementDate: data.achievementDate,
+                    teamsFirst: allTeams.length || 72
+                });
             } else {
                 if (unitedAnswerEl) unitedAnswerEl.textContent = 'NO';
             }
@@ -1052,7 +1055,9 @@
             const minutes = Math.floor(seconds / 60);
             if (minutes < 60) return `${minutes}m ago`;
             const hours = Math.floor(minutes / 60);
-            return `${hours}h ago`;
+            if (hours < 24) return `${hours}h ago`;
+            const days = Math.floor(hours / 24);
+            return `${days}d ago`;
         }
 
         // Helper to generate the United Status HTML
@@ -1153,8 +1158,9 @@
 
         // Celebration for when United finally does it
         function triggerCelebration(data = {}) {
+            if (document.getElementById('celebration-overlay')) return;
             // Get or set the achievement timestamp
-            let achievementTime = localStorage.getItem('united_achievement_time');
+            let achievementTime = data.achievementDate || localStorage.getItem('united_achievement_time');
             if (!achievementTime) {
                 achievementTime = new Date().toISOString();
                 localStorage.setItem('united_achievement_time', achievementTime);
@@ -1553,8 +1559,14 @@
                     const lastScan = new Date(data.recentScans[0].scanned_at);
                     if (lastUpdatedEl) lastUpdatedEl.textContent = lastScan.toLocaleString();
 
-                    // Auto-scan disabled - cron jobs at 6AM/6PM UTC handle scanning
-                    // Keeping function for manual trigger if needed later
+                    // Trigger deferred background scan after page settles if data is stale (>15m)
+                    const oldestScan = data.recentScans.reduce((oldest, s) => {
+                        const t = new Date(s.scanned_at);
+                        return t < oldest ? t : oldest;
+                    }, lastScan);
+                    if ((new Date() - oldestScan) / 60000 > 15) {
+                        setTimeout(() => triggerBackgroundScan(), 3500);
+                    }
 
                     // Render grid
                     if (leaguesStatusEl) {

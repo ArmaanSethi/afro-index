@@ -2,6 +2,89 @@ import { createClient } from '@supabase/supabase-js';
 
 // Challenge start date
 const START_DATE = '2024-10-05';
+const MAX_WINDOW_DAYS = 700; // football-data.org enforces a strict 750-day max period
+
+// Cache completed historical windows in warm serverless instances
+const historicalCompetitionCache = new Map();
+
+function buildDateWindows(startDateStr, endDateStr, maxDays = MAX_WINDOW_DAYS) {
+    const windows = [];
+    const start = new Date(`${startDateStr}T00:00:00Z`);
+    const end = new Date(`${endDateStr}T00:00:00Z`);
+    const dayMs = 24 * 60 * 60 * 1000;
+
+    let cursor = start;
+    while (cursor <= end) {
+        const maxEnd = new Date(cursor.getTime() + (maxDays - 1) * dayMs);
+        const windowEnd = maxEnd < end ? maxEnd : end;
+        const from = cursor.toISOString().split('T')[0];
+        const to = windowEnd.toISOString().split('T')[0];
+        windows.push({
+            from,
+            to,
+            isHistorical: windowEnd < end
+        });
+        cursor = new Date(windowEnd.getTime() + dayMs);
+    }
+    return windows;
+}
+
+async function fetchCompetitionMatches(compCode, apiKey, today) {
+    const windows = buildDateWindows(START_DATE, today);
+    const matchMap = new Map();
+    let competitionInfo = {};
+
+    for (const win of windows) {
+        const cacheKey = `${compCode}:${win.from}:${win.to}`;
+        if (win.isHistorical && historicalCompetitionCache.has(cacheKey)) {
+            const cached = historicalCompetitionCache.get(cacheKey);
+            if (cached.competition) competitionInfo = cached.competition;
+            for (const m of cached.matches) {
+                matchMap.set(m.id, m);
+            }
+            continue;
+        }
+
+        const response = await fetch(
+            `https://api.football-data.org/v4/competitions/${compCode}/matches?dateFrom=${win.from}&dateTo=${win.to}&status=FINISHED`,
+            {
+                headers: {
+                    'X-Auth-Token': apiKey
+                }
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            return {
+                ok: false,
+                status: response.status,
+                errorText
+            };
+        }
+
+        const data = await response.json();
+        const windowMatches = data.matches || [];
+        if (data.competition) {
+            competitionInfo = data.competition;
+        }
+        if (win.isHistorical) {
+            historicalCompetitionCache.set(cacheKey, {
+                competition: competitionInfo,
+                matches: windowMatches
+            });
+        }
+        for (const m of windowMatches) {
+            matchMap.set(m.id, m);
+        }
+    }
+
+    return {
+        ok: true,
+        competition: competitionInfo,
+        matches: Array.from(matchMap.values())
+    };
+}
 
 // football-data.org competition codes (free tier)
 // See: https://www.football-data.org/documentation/api
@@ -176,28 +259,19 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Fetch all matches for this competition since Oct 5, 2024
-        const response = await fetch(
-            `https://api.football-data.org/v4/competitions/${targetComp.code}/matches?dateFrom=${START_DATE}&dateTo=${getTodayDate()}&status=FINISHED`,
-            {
-                headers: {
-                    'X-Auth-Token': apiKey
-                }
-            }
-        );
+        // Fetch all matches for this competition since Oct 5, 2024 in <=700-day chunks
+        const fetchResult = await fetchCompetitionMatches(targetComp.code, apiKey, getTodayDate());
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            return res.status(response.status).json({
+        if (!fetchResult.ok) {
+            return res.status(fetchResult.status).json({
                 error: 'football-data.org API error',
-                status: response.status,
-                details: errorText,
+                status: fetchResult.status,
+                details: fetchResult.errorText,
                 competition: targetComp
             });
         }
 
-        const data = await response.json();
-        const matches = data.matches || [];
+        const matches = fetchResult.matches;
 
         if (matches.length === 0) {
             await supabase.from('scan_log').insert({
@@ -266,7 +340,7 @@ export default async function handler(req, res) {
         const teamsToUpsert = [];
         let teamsQualified = 0;
 
-        const competitionInfo = data.competition || {};
+        const competitionInfo = fetchResult.competition || {};
 
         for (const teamId in teamResults) {
             const team = teamResults[teamId];
