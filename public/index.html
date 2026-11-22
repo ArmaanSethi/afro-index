@@ -6,17 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Has United Won 5 in a Row? | Man United Win Streak Tracker</title>
     <meta name="description"
-        content="Has Manchester United won 5 in a row yet? Live win streak tracker since Oct 5, 2024. See United's current form, best streak, and every team that's done it while they wait.">
+        content="Has Manchester United won 5 in a row yet? Live win streak tracker since Oct 5, 2024. Track current form, best streak, and every team that's done it.">
     <meta name="keywords"
         content="has united won 5, Man United win streak, Manchester United 5 in a row, United consecutive wins, Man United 5 wins, Manchester United winning streak, Frank Ilett, The United Strand, Man United current form">
     <meta name="author" content="Armaan Sethi">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#050505">
 
-    <!-- Favicon -->
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔴</text></svg>">
+    <!-- Favicon & Web App Manifest -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/united-crest.png">
+    <link rel="manifest" href="/site.webmanifest">
 
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_GB">
     <meta property="og:url" content="https://www.hasunitedwon5.com/">
     <meta property="og:site_name" content="Has United Won 5?">
     <meta property="og:title" content="Has United Won 5 in a Row? | Live Win Streak Tracker 🔴">
@@ -114,7 +118,6 @@
 
     <!-- Self-hosted fonts (preloaded for performance) -->
     <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/inter-700.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/jetbrains-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 
     <!-- Compiled Tailwind CSS (includes @font-face declarations) -->
@@ -466,16 +469,17 @@
             animation: shake 0.5s ease-in-out;
         }
     </style>
+    <noscript><style>#loading-state { display: none !important; }</style></noscript>
 </head>
 
 <body class="min-h-screen text-white">
     <!-- Hero Section (Compact) -->
     <section class="hero-gradient py-16 md:py-24">
         <!-- Nav -->
-        <nav class="flex justify-between items-center px-6 py-4 md:px-12 absolute top-0 left-0 right-0">
+        <nav aria-label="Primary navigation" class="flex justify-between items-center px-6 py-4 md:px-12 absolute top-0 left-0 right-0">
             <div class="font-mono text-sm text-gray-500">v1.0</div>
-            <a href="https://github.com/ArmaanSethi/afro-index" target="_blank"
-                class="text-gray-400 hover:text-white transition-colors" aria-label="View source code on GitHub">
+            <a href="https://github.com/ArmaanSethi/afro-index" target="_blank" rel="noopener noreferrer"
+                class="text-gray-400 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg" aria-label="View source code on GitHub">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path fill-rule="evenodd"
                         d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
@@ -500,12 +504,12 @@
 
             <!-- Man United Crest + Current Form -->
             <div class="flex items-center gap-6 mb-6">
-                <img src="/united-crest.png" alt="Manchester United"
+                <img src="/united-crest.png" alt="Manchester United" width="64" height="64"
                     class="w-16 h-16 object-contain opacity-50 grayscale">
                 <div class="text-left">
                     <div class="text-sm text-gray-500 mb-1">Current Form</div>
                     <div id="united-form" class="text-2xl font-mono font-bold tracking-wider">
-                        <span class="text-gray-600 animate-pulse">Loading...</span>
+                        <span class="text-gray-400 animate-pulse">Loading...</span>
                     </div>
                 </div>
             </div>
@@ -578,8 +582,8 @@
             </div>
 
             <!-- Link to context -->
-            <a href="https://www.google.com/search?q=frank+ilett+hair+manchester+united" target="_blank"
-                class="text-xs text-gray-600 hover:text-united-red transition-colors mb-6 uppercase tracking-[0.2em]">
+            <a href="https://www.google.com/search?q=frank+ilett+hair+manchester+united" target="_blank" rel="noopener noreferrer"
+                class="text-xs text-gray-400 hover:text-united-red transition-colors mb-6 uppercase tracking-[0.2em] rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
                 The Vow: Oct 5, 2024 → ???
             </a>
 
@@ -590,7 +594,7 @@
                     done
                 </div>
                 <a href="#leaderboard" aria-label="Scroll down to see the leaderboard"
-                    class="bounce-down p-6 rounded-full glass hover:bg-white/10 transition-all group scale-125 border-2 border-united-red/30">
+                    class="bounce-down p-6 rounded-full glass hover:bg-white/10 transition-all group scale-125 border-2 border-united-red/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
                     <svg class="w-8 h-8 text-united-red group-hover:text-neon-green transition-colors" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
@@ -612,67 +616,94 @@
                 </div>
 
                 <!-- Tabs -->
-                <div class="flex gap-2 mt-6 md:mt-0">
-                    <button class="tab-btn tab-active px-6 py-3 rounded-xl glass font-semibold transition-all"
+                <div class="flex gap-2 mt-6 md:mt-0" role="tablist" aria-label="Sports categories">
+                    <button type="button" id="tab-football" role="tab" aria-selected="true" aria-controls="football-tab"
+                        class="tab-btn tab-active px-6 py-3 rounded-xl glass font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg"
                         data-tab="football">
                         ⚽ Football
                     </button>
-                    <button
-                        class="tab-btn px-6 py-3 rounded-xl glass font-semibold transition-all text-gray-500 hover:text-white"
+                    <button type="button" id="tab-other" role="tab" aria-selected="false" aria-controls="other-tab"
+                        class="tab-btn px-6 py-3 rounded-xl glass font-semibold transition-all text-gray-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg"
                         data-tab="other">
                         🏀🏈🏒 Other
                     </button>
                 </div>
             </div>
 
-            <!-- Search & Filter Controls -->
-            <div class="mb-8 p-4 glass rounded-2xl border border-white/5">
-                <div class="flex flex-col md:flex-row gap-4 items-center">
-
-                    <!-- Search Bar -->
-                    <div class="relative w-full md:w-1/2">
-                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <input type="text" id="search-input" placeholder="Search teams or leagues..."
-                            class="w-full pl-12 pr-4 py-3 bg-white/5 rounded-xl border border-white/10 focus:outline-none focus:border-united-red/50 focus:bg-white/10 transition-all text-white placeholder-gray-500">
-                    </div>
-
-                    <!-- Filters -->
-                    <div class="flex gap-2 w-full md:w-1/2 overflow-x-auto pb-2 md:pb-0" id="filter-container">
-                        <button
-                            class="filter-btn active-filter px-4 py-2 rounded-full text-xs font-semibold bg-white text-black whitespace-nowrap transition-all"
-                            data-league="all">
-                            All
-                        </button>
-                        <!-- Dynamic filters go here -->
-                    </div>
-                </div>
-            </div>
-
             <!-- Football Grid -->
-            <div id="football-tab" class="tab-content">
+            <div id="football-tab" class="tab-content" role="tabpanel" aria-labelledby="tab-football">
+                <!-- Search, Sort & Filter Controls -->
+                <div id="leaderboard-controls" class="mb-8 p-4 glass rounded-2xl border border-white/5">
+                    <div class="flex flex-col md:flex-row gap-4 items-center">
+
+                        <!-- Search Bar -->
+                        <div class="relative w-full md:w-5/12">
+                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input type="text" id="search-input" aria-label="Search teams or leagues"
+                                placeholder="Search teams, leagues, or countries..."
+                                class="w-full pl-12 pr-10 py-3 bg-white/5 rounded-xl border border-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg focus:border-united-red/50 focus:bg-white/10 transition-all text-white placeholder-gray-400">
+                            <button type="button" id="clear-search-btn" aria-label="Clear search"
+                                class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full text-gray-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
+                                ×
+                            </button>
+                        </div>
+
+                        <!-- Sort Dropdown -->
+                        <div class="w-full md:w-auto shrink-0">
+                            <select id="sort-select" aria-label="Sort teams"
+                                class="w-full md:w-auto px-3 py-3 bg-white/5 rounded-xl border border-white/10 text-sm text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg focus:border-united-red/50 transition-all">
+                                <option value="earliest" class="bg-[#111] text-white">Earliest</option>
+                                <option value="recent" class="bg-[#111] text-white">Most Recent</option>
+                                <option value="streak" class="bg-[#111] text-white">Longest Streak</option>
+                                <option value="name" class="bg-[#111] text-white">A–Z</option>
+                            </select>
+                        </div>
+
+                        <!-- Filters -->
+                        <div class="flex gap-2 w-full md:flex-1 overflow-x-auto pb-2 md:pb-0" id="filter-container" role="group" aria-label="Filter by league">
+                            <button type="button"
+                                class="filter-btn active-filter px-4 py-2 rounded-full text-xs font-semibold bg-white text-black whitespace-nowrap transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg"
+                                data-league="all" aria-pressed="true" aria-label="Show all leagues">
+                                All
+                            </button>
+                            <!-- Dynamic filters go here -->
+                        </div>
+                    </div>
+
+                    <!-- Live Results Summary -->
+                    <div id="results-summary" aria-live="polite" class="mt-3 text-xs text-gray-400 min-h-[1rem]"></div>
+                </div>
+
                 <div id="teams-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <!-- Teams will be loaded here -->
                 </div>
 
-                <!-- Empty State -->
+                <!-- Empty / Error State -->
                 <div id="empty-state" class="hidden text-center py-20">
                     <div class="text-6xl mb-4">⚽</div>
-                    <h3 class="text-xl font-semibold mb-2">Loading teams...</h3>
-                    <p class="text-gray-500">Teams will appear here once data is loaded.</p>
+                    <h3 class="text-xl font-semibold mb-2">No qualifying teams yet</h3>
+                    <p class="text-gray-400">No teams have achieved 5+ consecutive wins yet.</p>
                 </div>
 
                 <!-- Loading State -->
                 <div id="loading-state" class="flex justify-center py-20">
                     <div class="spinner"></div>
                 </div>
+
+                <noscript>
+                    <div class="glass rounded-2xl p-6 text-center border border-white/10 my-6">
+                        <p class="text-white font-semibold mb-2">JavaScript is required for live streak updates and the interactive leaderboard.</p>
+                        <p class="text-gray-400 text-sm">Enable JavaScript to view Manchester United's live form and search qualifying teams, or read the full story and FAQ below.</p>
+                    </div>
+                </noscript>
             </div>
 
             <!-- Other Sports Tab -->
-            <div id="other-tab" class="tab-content hidden">
+            <div id="other-tab" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-other">
                 <div class="text-center py-20 glass rounded-2xl">
                     <div class="text-6xl mb-6">🏀 🏈 🏒 ⚾</div>
                     <h3 class="text-2xl font-bold mb-3">Coming Soon</h3>
@@ -680,10 +711,10 @@
                         NBA, NFL, NHL, and MLB tracking is on the roadmap.<br>
                         Same concept: teams that achieved 5+ consecutive wins while United waits.
                     </p>
-                    <div class="inline-block px-4 py-2 rounded-full glass text-sm text-gray-500">
+                    <div class="inline-block px-4 py-2 rounded-full glass text-sm text-gray-400">
                         <span class="text-neon-green">●</span> API infrastructure ready • Just need more API credits
                     </div>
-                    <p class="text-gray-600 text-xs mt-6">
+                    <p class="text-gray-400 text-xs mt-6">
                         Want this faster? <a href="https://github.com/ArmaanSethi/afro-index"
                             class="text-united-red hover:underline">Star the repo</a> or sponsor the project!
                     </p>
@@ -793,10 +824,10 @@
 
     <!-- Live Status Section -->
     <section class="max-w-7xl mx-auto px-6 md:px-12 pb-20">
-        <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-neon-green animate-pulse"></span>
             Live Coverage Status
-        </h3>
+        </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="leagues-status">
             <!-- Loading... -->
@@ -806,10 +837,10 @@
         </div>
 
         <!-- United Status -->
-        <h4 class="text-lg font-bold mt-8 mb-4 flex items-center gap-2">
-            <img src="/united-crest.png" alt="Manchester United crest" class="w-5 h-5 object-contain opacity-50">
+        <h3 class="text-lg font-bold mt-8 mb-4 flex items-center gap-2">
+            <img src="/united-crest.png" alt="Manchester United crest" width="20" height="20" class="w-5 h-5 object-contain opacity-50">
             United Watch
-        </h4>
+        </h3>
         <div id="united-status">
             <div class="glass p-4 rounded-xl flex items-center justify-between opacity-50 border border-united-red/30">
                 <span>Checking United's form...</span>
@@ -825,36 +856,39 @@
 
     <!-- Footer -->
     <footer class="py-8 px-6 text-center border-t border-white/5">
-        <p class="text-gray-600 font-mono text-sm">
-            Built by <a href="https://twitter.com/armaan__sethi" target="_blank"
+        <p class="text-gray-400 font-mono text-sm">
+            Built by <a href="https://twitter.com/armaan__sethi" target="_blank" rel="noopener noreferrer"
                 class="text-white hover:text-neon-green transition-colors font-bold">Armaan Sethi</a>
-            for <a href="https://instagram.com/theunitedstrand" target="_blank"
+            for <a href="https://instagram.com/theunitedstrand" target="_blank" rel="noopener noreferrer"
                 class="text-united-red hover:underline">The United Strand</a> 🔴
         </p>
-        <p class="text-gray-700 text-xs mt-2">
-            <a href="https://instagram.com/theunitedstrand" target="_blank"
+        <p class="text-gray-400 text-xs mt-2">
+            <a href="https://instagram.com/theunitedstrand" target="_blank" rel="noopener noreferrer"
                 class="text-gray-500 hover:text-white">Instagram</a> •
-            <a href="https://youtube.com/@TheUnitedStrand" target="_blank"
+            <a href="https://youtube.com/@TheUnitedStrand" target="_blank" rel="noopener noreferrer"
                 class="text-gray-500 hover:text-white">YouTube</a> •
-            <a href="https://football-data.org" target="_blank" class="text-gray-500 hover:text-white">API</a>
+            <a href="https://football-data.org" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-white">API</a>
         </p>
     </footer>
 
     <!-- Confetti celebration script -->
-    <script src="/confetti.js"></script>
+    <script src="/confetti.js" defer></script>
 
     <script>
         // Constants
-        const START_DATE = new Date('2024-10-05');
+        const VOW_START_UTC = Date.UTC(2024, 9, 5); // Oct 5, 2024
+        const MS_PER_DAY = 86400000;
         const API_BASE = '/api';
 
         // DOM Elements
         const searchInput = document.getElementById('search-input');
+        const clearSearchBtn = document.getElementById('clear-search-btn');
+        const sortSelect = document.getElementById('sort-select');
         const filterContainer = document.getElementById('filter-container');
+        const resultsSummaryEl = document.getElementById('results-summary');
         const teamCountEl = document.getElementById('team-count');
         const daysCountEl = document.getElementById('days-count');
         const leaguesCountEl = document.getElementById('leagues-count');
-        const lastUpdatedEl = document.getElementById('last-updated');
         const leaguesStatusEl = document.getElementById('leagues-status');
         const daysInlineEl = document.getElementById('days-inline');
         const teamsGridEl = document.getElementById('teams-grid');
@@ -867,29 +901,56 @@
         const unitedStreakEl = document.getElementById('united-streak');
         const unitedStatusEl = document.getElementById('united-status');
 
-        // Calculate days since start (UK Time)
-        function calculateDays() {
-            // Frank made the vow on Oct 5, 2024. We'll treat start of day UK time as the baseline.
-            const start = new Date('2024-10-05T00:00:00+01:00');
-            const now = new Date();
+        // Security helpers (F7)
+        function escapeHtml(val) {
+            if (val === null || val === undefined) return '';
+            return String(val)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
 
-            // Create a date object for "now" but in UK time components
-            // This is a rough way to sync everyone to the same "day number" relative to UK
-            const ukDateStr = now.toLocaleString('en-US', { timeZone: 'Europe/London' });
-            const ukNow = new Date(ukDateStr);
+        function safeUrl(url) {
+            if (typeof url !== 'string') return '';
+            const trimmed = url.trim();
+            if (!trimmed || /[\u0000-\u001f\u007f]/.test(trimmed)) return '';
+            // Allow single-slash relative root paths (e.g. /united-crest.png), reject // or /\
+            if (trimmed.startsWith('/')) {
+                if (trimmed.startsWith('//') || trimmed.startsWith('/\\')) return '';
+                return trimmed;
+            }
+            try {
+                const parsed = new URL(trimmed);
+                if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+                    return parsed.href;
+                }
+            } catch (_) {
+                return '';
+            }
+            return '';
+        }
 
-            // Start was hardcoded as a specific instant. We should compare against "now" which is that instant?
-            // Actually, simpler: just get the difference in ms from the timestamp 
-            // BUT "days since" usually implies calendar days.
-            // Let's stick to the simple diff logic but ensure 'now' is interpreted in a consistent context if needed.
-            // Actually, the original logic `new Date() - START_DATE` uses local machine time vs a UTC-interpreted start date (if not specified).
-            // `new Date('2024-10-05')` treats it as UTC usually.
+        // Convert any Date/timestamp into its Europe/London calendar date at UTC midnight
+        function getUkCalendarDateUtc(dateInput = new Date()) {
+            const d = dateInput instanceof Date ? dateInput : new Date(dateInput);
+            if (Number.isNaN(d.getTime())) return null;
+            const parts = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'Europe/London',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).format(d).split('-').map(Number);
+            if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+            return Date.UTC(parts[0], parts[1] - 1, parts[2]);
+        }
 
-            // Let's be precise:
-            const diffTime = Math.abs(ukNow - start);
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-            return diffDays;
+        // Calculate DST-safe calendar days since Frank's vow (Europe/London)
+        function calculateDays(referenceDate = new Date()) {
+            const refUtc = getUkCalendarDateUtc(referenceDate);
+            if (refUtc === null) return 0;
+            return Math.max(0, Math.floor((refUtc - VOW_START_UTC) / MS_PER_DAY));
         }
 
         // Update days display
@@ -901,36 +962,58 @@
 
         // Render form string with colors
         function renderForm(formString) {
+            if (typeof formString !== 'string') return '';
             return formString.split('').map(char => {
                 if (char === 'W') return '<span class="text-neon-green">W</span>';
                 if (char === 'L') return '<span class="text-united-red">L</span>';
                 if (char === 'D') return '<span class="text-gray-400">D</span>';
-                return char;
+                return escapeHtml(char);
             }).join('');
         }
 
-        // Initialize league flags for use in various functions
-        const LEAGUE_FLAGS = {
+        // Initialize league flags for use in various functions (null-prototype to prevent Object.prototype lookup leaks)
+        const LEAGUE_FLAGS = Object.assign(Object.create(null), {
             'PL': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'PD': '🇪🇸', 'BL1': '🇩🇪', 'SA': '🇮🇹', 'FL1': '🇫🇷',
             'DED': '🇳🇱', 'PPL': '🇵🇹', 'ELC': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'CL': '🏆', 'EC': '🇪🇺',
             'WC': '🌍', 'BSA': '🇧🇷'
-        };
+        });
+
+        // Celebration state
+        let celebrationTriggered = false;
+        let celebrationIsDemo = false;
+        let heroFlipCompleted = false;
+        let activeConfetti = null;
+        let celebrationTimers = [];
+        let celebrationKeydownHandler = null;
+        let celebrationPreviouslyFocused = null;
 
         // Render United Data helper
         function renderUnitedData(data) {
             if (data.hasWon5) {
-                // THEY DID IT!
-                if (unitedAnswerEl) {
+                // Defer 'YES' text swap to the 400ms midpoint of flip-reveal on first trigger
+                if (!celebrationTriggered) {
+                    triggerCelebration({
+                        achievementDate: data.achievementDate,
+                        teamsFirst: allTeams.length > 0 ? allTeams.length : null
+                    });
+                } else if (heroFlipCompleted && unitedAnswerEl) {
                     unitedAnswerEl.textContent = 'YES';
-                    unitedAnswerEl.classList.remove('text-united-red');
-                    unitedAnswerEl.classList.add('text-neon-green', 'glow-green');
+                    unitedAnswerEl.classList.remove('text-united-red', 'glow-red');
+                    unitedAnswerEl.classList.add('text-neon-green', 'victory-glow');
                 }
-                triggerCelebration({
-                    achievementDate: data.achievementDate,
-                    teamsFirst: allTeams.length || 72
-                });
             } else {
-                if (unitedAnswerEl) unitedAnswerEl.textContent = 'NO';
+                if (celebrationTriggered && !celebrationIsDemo) {
+                    celebrationTriggered = false;
+                    dismissCelebration();
+                }
+                if (!celebrationIsDemo) {
+                    heroFlipCompleted = false;
+                    if (unitedAnswerEl) {
+                        unitedAnswerEl.textContent = 'NO';
+                        unitedAnswerEl.classList.remove('text-neon-green', 'glow-green', 'victory-glow', 'flip-reveal');
+                        unitedAnswerEl.classList.add('text-united-red', 'glow-red');
+                    }
+                }
             }
 
             // Update form display
@@ -977,41 +1060,65 @@
                 bestStreakNumberEl.textContent = data.bestStreak;
             }
 
-            // Update date range
-            if (bestStreakDatesEl && data.bestStreakDetails) {
-                const startDate = new Date(data.bestStreakDetails.startDate);
-                const endDate = new Date(data.bestStreakDetails.endDate);
+            // Update date range (UTC to avoid local timezone drift on YYYY-MM-DD dates)
+            if (bestStreakDatesEl) {
+                if (data.bestStreakDetails) {
+                    const startDate = data.bestStreakDetails.startDate ? new Date(data.bestStreakDetails.startDate) : null;
+                    const endDate = data.bestStreakDetails.endDate ? new Date(data.bestStreakDetails.endDate) : null;
+                    const validStart = Boolean(startDate && !Number.isNaN(startDate.getTime()));
+                    const validEnd = Boolean(endDate && !Number.isNaN(endDate.getTime()));
+                    const formatDate = (d) => d.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        timeZone: 'UTC'
+                    });
 
-                const formatDate = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-                if (startDate.getTime() === endDate.getTime()) {
-                    bestStreakDatesEl.textContent = formatDate(startDate);
+                    if (validStart && validEnd) {
+                        const startFormatted = formatDate(startDate);
+                        const endFormatted = formatDate(endDate);
+                        bestStreakDatesEl.textContent = startFormatted === endFormatted
+                            ? startFormatted
+                            : `${startFormatted} → ${endFormatted}`;
+                    } else if (validStart) {
+                        bestStreakDatesEl.textContent = formatDate(startDate);
+                    } else {
+                        bestStreakDatesEl.textContent = '';
+                    }
                 } else {
-                    bestStreakDatesEl.textContent = `${formatDate(startDate)} → ${formatDate(endDate)}`;
+                    bestStreakDatesEl.textContent = '';
                 }
             }
 
             // Render 5 circles
-            if (streakCirclesEl && data.bestStreakDetails && data.bestStreakDetails.matches) {
+            if (streakCirclesEl && data.bestStreakDetails && Array.isArray(data.bestStreakDetails.matches)) {
                 const matches = data.bestStreakDetails.matches;
                 let circlesHTML = '';
 
                 for (let i = 0; i < 5; i++) {
                     if (i < matches.length) {
                         // Filled circle with win info
-                        const match = matches[i];
-                        const crest = match.opponentCrest || `https://crests.football-data.org/${match.opponentId || 0}.png`;
-                        const tla = match.opponentTla || match.opponent.substring(0, 3).toUpperCase();
+                        const match = matches[i] || {};
+                        const opponentName = String(match.opponent || 'Opponent');
+                        const rawCrest = match.opponentCrest
+                            || (match.opponentId ? `https://crests.football-data.org/${encodeURIComponent(match.opponentId)}.png` : '');
+                        const safeCrest = safeUrl(rawCrest);
+                        const tla = String(match.opponentTla || opponentName.substring(0, 3)).toUpperCase();
+                        const safeTla = escapeHtml(tla);
+                        const safeOpponent = escapeHtml(opponentName);
+                        const safeScore = escapeHtml(match.score || '');
                         const venue = match.home ? 'H' : 'A';
+                        const crestMarkup = safeCrest
+                            ? `<img src="${escapeHtml(safeCrest)}" alt="${safeTla}" width="48" height="48" data-fallback-tla="${safeTla}" class="w-10 h-10 md:w-12 md:h-12 object-contain">`
+                            : `<span class="text-neon-green font-bold text-xs">${safeTla}</span>`;
 
                         circlesHTML += `
-                            <div class="flex flex-col items-center gap-1 group" title="${match.opponent} (${venue})">
+                            <div class="flex flex-col items-center gap-1 group" title="${safeOpponent} (${venue})">
                                 <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-neon-green/30 to-neon-green/10 border-2 border-neon-green shadow-[0_0_15px_rgba(0,255,157,0.3)] flex items-center justify-center overflow-hidden transition-transform hover:scale-110">
-                                    <img src="${crest}" alt="${tla}" class="w-10 h-10 md:w-12 md:h-12 object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\\'text-neon-green font-bold text-xs\\'>${tla}</span>';">
+                                    ${crestMarkup}
                                 </div>
                                 <div class="text-[10px] text-center">
-                                    <div class="text-neon-green font-bold">${match.score}</div>
-                                    <div class="text-gray-400">${tla} <span class="text-gray-600">(${venue})</span></div>
+                                    <div class="text-neon-green font-bold">${safeScore}</div>
+                                    <div class="text-gray-400">${safeTla} <span class="text-gray-400">(${venue})</span></div>
                                 </div>
                             </div>
                         `;
@@ -1024,7 +1131,7 @@
                                 </div>
                                 <div class="text-[10px] text-center">
                                     <div class="text-neon-green font-bold">GOAL</div>
-                                    <div class="text-gray-500">Haircut!</div>
+                                    <div class="text-gray-400">Haircut!</div>
                                 </div>
                             </div>
                         `;
@@ -1036,8 +1143,8 @@
                                     <span class="text-white/20 text-lg font-bold">${i + 1}</span>
                                 </div>
                                 <div class="text-[10px] text-center">
-                                    <div class="text-gray-600">—</div>
-                                    <div class="text-gray-600">Needed</div>
+                                    <div class="text-gray-400">—</div>
+                                    <div class="text-gray-400">Needed</div>
                                 </div>
                             </div>
                         `;
@@ -1049,8 +1156,10 @@
         }
 
         function timeAgo(dateString) {
-            if (!dateString) return 'Just now';
-            const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
+            if (!dateString) return 'Unknown';
+            const ts = new Date(dateString).getTime();
+            if (Number.isNaN(ts)) return 'Unknown';
+            const seconds = Math.floor((Date.now() - ts) / 1000);
             if (seconds < 60) return 'Just now';
             const minutes = Math.floor(seconds / 60);
             if (minutes < 60) return `${minutes}m ago`;
@@ -1062,21 +1171,27 @@
 
         // Helper to generate the United Status HTML
         function getUnitedStatusHTML(data) {
-            const date = new Date(data.lastUpdated);
-            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const date = data.lastUpdated ? new Date(data.lastUpdated) : null;
+            const isValidDate = date && !Number.isNaN(date.getTime());
+            const timeStr = isValidDate
+                ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                : 'Unknown';
+            const titleStr = isValidDate ? date.toLocaleString() : 'Timestamp unavailable';
+            const agoStr = isValidDate ? ` (${timeAgo(data.lastUpdated)})` : '';
+            const safeStreak = escapeHtml(data.currentStreak ?? 0);
 
             return `
                 <div class="glass p-4 rounded-xl flex items-center justify-between border border-united-red/30">
                     <div class="flex items-center gap-3">
-                        <img src="/united-crest.png" alt="Manchester United" class="w-8 h-8 object-contain">
+                        <img src="/united-crest.png" alt="Manchester United" width="32" height="32" class="w-8 h-8 object-contain">
                         <div>
                             <div class="font-bold text-sm text-united-red">Manchester United</div>
-                            <div class="text-xs text-gray-500">Live Check</div>
+                            <div class="text-xs text-gray-400">Live Check</div>
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-xs font-mono text-white">${data.currentStreak}W Streak</div>
-                        <div class="text-[10px] text-gray-400" title="${date.toLocaleString()}">${timeStr} (${timeAgo(data.lastUpdated)})</div>
+                        <div class="text-xs font-mono text-white">${safeStreak}W Streak</div>
+                        <div class="text-[10px] text-gray-400" title="${escapeHtml(titleStr)}">${escapeHtml(timeStr)}${escapeHtml(agoStr)}</div>
                     </div>
                 </div>
             `;
@@ -1097,7 +1212,6 @@
                     if (unitedStatusEl) {
                         unitedStatusEl.innerHTML = getUnitedStatusHTML(data);
                     }
-                    // console.log('United Status: Loaded from cache');
                 } catch (e) {
                     console.error('Cache parse error', e);
                 }
@@ -1110,7 +1224,6 @@
                 if (lastFailure) {
                     const diff = (new Date() - new Date(lastFailure)) / 1000;
                     if (diff < 60 && hasCachedData) { // Only cool off if we have backup data
-                        // console.log('United API cooling off...');
                         return; // Skip network call, keep showing cache
                     }
                 }
@@ -1140,91 +1253,188 @@
 
                 // If we have NO cache and the API failed, we must show Offline state
                 if (!hasCachedData) {
+                    const retryUnited = () => {
+                        localStorage.removeItem('united_api_failure');
+                        loadUnitedStatus();
+                    };
                     if (unitedAnswerEl) unitedAnswerEl.textContent = '...';
                     if (unitedFormEl) {
                         unitedFormEl.innerHTML = `
                             <div class="flex items-center gap-2">
-                                <span class="text-gray-500 text-sm">Offline</span>
-                                <button onclick="localStorage.removeItem('united_api_failure'); loadUnitedStatus()" class="text-[10px] uppercase tracking-wider text-white/50 hover:text-white border border-white/10 px-2 py-0.5 rounded transition-colors">
-                                Retry
+                                <span class="text-gray-400 text-sm">Offline</span>
+                                <button type="button" id="united-retry-btn" class="text-[10px] uppercase tracking-wider text-white/80 hover:text-white border border-white/20 px-2 py-0.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
+                                    Retry
                                 </button>
                             </div>
                         `;
+                        const retryBtn = document.getElementById('united-retry-btn');
+                        if (retryBtn) retryBtn.addEventListener('click', retryUnited);
                     }
                     if (unitedStreakEl) unitedStreakEl.textContent = '-';
+                    if (unitedStatusEl) {
+                        unitedStatusEl.innerHTML = `
+                            <div class="glass p-4 rounded-xl flex items-center justify-between border border-united-red/30">
+                                <div class="flex items-center gap-3">
+                                    <img src="/united-crest.png" alt="Manchester United" width="32" height="32" class="w-8 h-8 object-contain opacity-50">
+                                    <div>
+                                        <div class="font-bold text-sm text-united-red">Manchester United</div>
+                                        <div class="text-xs text-gray-400">Unable to load live status</div>
+                                    </div>
+                                </div>
+                                <button type="button" id="retry-united-status-btn"
+                                    class="text-xs uppercase tracking-wider text-white/80 hover:text-white border border-white/20 px-3 py-1 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
+                                    Retry
+                                </button>
+                            </div>
+                        `;
+                        const retryStatusBtn = document.getElementById('retry-united-status-btn');
+                        if (retryStatusBtn) retryStatusBtn.addEventListener('click', retryUnited);
+                    }
+                }
+            }
+        }
+
+        function dismissCelebration() {
+            celebrationTimers.forEach(id => clearTimeout(id));
+            celebrationTimers = [];
+            if (activeConfetti) {
+                activeConfetti.destroy();
+                activeConfetti = null;
+            }
+            const canvas = document.getElementById('confetti-canvas');
+            if (canvas) canvas.remove();
+            const overlay = document.getElementById('celebration-overlay');
+            if (overlay) overlay.remove();
+            document.body.classList.remove('shake');
+            document.querySelectorAll('.screen-flash').forEach(el => el.remove());
+            if (celebrationKeydownHandler) {
+                document.removeEventListener('keydown', celebrationKeydownHandler);
+                celebrationKeydownHandler = null;
+            }
+            if (celebrationPreviouslyFocused && typeof celebrationPreviouslyFocused.focus === 'function') {
+                if (celebrationPreviouslyFocused.isConnected !== false) {
+                    celebrationPreviouslyFocused.focus();
+                }
+            }
+            celebrationPreviouslyFocused = null;
+            celebrationIsDemo = false;
+            if (celebrationTriggered) {
+                heroFlipCompleted = true;
+                if (unitedAnswerEl) {
+                    unitedAnswerEl.textContent = 'YES';
+                    unitedAnswerEl.classList.remove('text-united-red', 'glow-red');
+                    unitedAnswerEl.classList.add('text-neon-green', 'victory-glow');
                 }
             }
         }
 
         // Celebration for when United finally does it
         function triggerCelebration(data = {}) {
-            if (document.getElementById('celebration-overlay')) return;
-            // Get or set the achievement timestamp
-            let achievementTime = data.achievementDate || localStorage.getItem('united_achievement_time');
-            if (!achievementTime) {
-                achievementTime = new Date().toISOString();
-                localStorage.setItem('united_achievement_time', achievementTime);
-            }
-            const achievementDate = new Date(achievementTime);
+            if (celebrationTriggered || document.getElementById('celebration-overlay')) return;
+            celebrationTriggered = true;
+            celebrationIsDemo = Boolean(data.isDemo);
 
-            // Format the frozen timestamp
+            // Get or set the achievement timestamp (never persist in demo mode)
+            let achievementTime;
+            if (data.isDemo) {
+                achievementTime = data.achievementDate || new Date().toISOString();
+            } else {
+                achievementTime = data.achievementDate || localStorage.getItem('united_achievement_time');
+                if (!achievementTime) {
+                    achievementTime = new Date().toISOString();
+                    localStorage.setItem('united_achievement_time', achievementTime);
+                }
+            }
+            const parsedAchievement = new Date(achievementTime);
+            const achievementDate = Number.isNaN(parsedAchievement.getTime()) ? new Date() : parsedAchievement;
+
+            // Format the frozen timestamp in Europe/London
             const formattedDate = achievementDate.toLocaleDateString('en-GB', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
-                year: 'numeric'
+                year: 'numeric',
+                timeZone: 'Europe/London'
             });
             const formattedTime = achievementDate.toLocaleTimeString('en-GB', {
                 hour: '2-digit',
                 minute: '2-digit',
-                second: '2-digit'
+                second: '2-digit',
+                timeZone: 'Europe/London'
             });
 
-            const daysWithoutHaircut = calculateDays();
-            const teamsFirst = data.teamsFirst || 61; // Fallback
+            const daysWithoutHaircut = calculateDays(achievementDate);
+            const teamsFirstValue = typeof data.teamsFirst === 'number'
+                ? data.teamsFirst
+                : (allTeams.length > 0 ? allTeams.length : null);
+            const teamsFirstDisplay = teamsFirstValue !== null ? String(teamsFirstValue) : '--';
 
             // Create screen flash
             const flash = document.createElement('div');
             flash.className = 'screen-flash';
             document.body.appendChild(flash);
-            setTimeout(() => flash.remove(), 300);
+            celebrationTimers.push(setTimeout(() => flash.remove(), 300));
 
-            // Create confetti canvas
-            const canvas = document.createElement('canvas');
-            canvas.id = 'confetti-canvas';
-            document.body.appendChild(canvas);
+            // Create confetti canvas (guard against duplicates)
+            let canvas = document.getElementById('confetti-canvas');
+            if (!canvas) {
+                canvas = document.createElement('canvas');
+                canvas.id = 'confetti-canvas';
+                document.body.appendChild(canvas);
+            }
 
-            // Initialize confetti (script must be loaded)
-            if (window.ConfettiCannon) {
-                const confetti = new ConfettiCannon(canvas);
-                confetti.celebrate();
+            // Initialize confetti (handle deferred confetti.js load on cached victory)
+            const startConfetti = () => {
+                if (!celebrationTriggered || activeConfetti || !window.ConfettiCannon) return;
+                const activeCanvas = document.getElementById('confetti-canvas');
+                if (!activeCanvas) return;
+                activeConfetti = new window.ConfettiCannon(activeCanvas);
+                activeConfetti.celebrate();
 
                 // Keep confetti going for a while
-                setTimeout(() => confetti.shower(3000), 2000);
+                celebrationTimers.push(setTimeout(() => {
+                    if (activeConfetti) activeConfetti.shower(3000);
+                }, 2000));
+            };
+            if (window.ConfettiCannon) {
+                startConfetti();
+            } else {
+                document.addEventListener('DOMContentLoaded', startConfetti, { once: true });
             }
 
             // Shake the page briefly
             document.body.classList.add('shake');
-            setTimeout(() => document.body.classList.remove('shake'), 500);
+            celebrationTimers.push(setTimeout(() => document.body.classList.remove('shake'), 500));
 
-            // Transform the hero section
-            setTimeout(() => {
-                // Change NO to YES with flip animation
+            // Transform the hero section — swap to 'YES' at 400ms midpoint of 0.8s flip-reveal
+            celebrationTimers.push(setTimeout(() => {
                 if (unitedAnswerEl) {
                     unitedAnswerEl.classList.add('flip-reveal');
-                    setTimeout(() => {
+                    celebrationTimers.push(setTimeout(() => {
+                        heroFlipCompleted = true;
                         unitedAnswerEl.textContent = 'YES';
                         unitedAnswerEl.classList.remove('text-united-red', 'glow-red');
                         unitedAnswerEl.classList.add('text-neon-green', 'victory-glow');
-                    }, 800);
+                    }, 400));
                 }
-            }, 400);
+            }, 400));
 
             // Create celebration overlay with stats cascade
-            setTimeout(() => {
+            celebrationTimers.push(setTimeout(() => {
+                if (document.getElementById('celebration-overlay')) return;
+                celebrationPreviouslyFocused = document.activeElement || null;
+
+                const currentTeamsDisplay = typeof data.teamsFirst === 'number'
+                    ? String(data.teamsFirst)
+                    : (allTeams.length > 0 ? String(allTeams.length) : teamsFirstDisplay);
+
                 const overlay = document.createElement('div');
                 overlay.className = 'celebration-overlay';
                 overlay.id = 'celebration-overlay';
+                overlay.setAttribute('role', 'dialog');
+                overlay.setAttribute('aria-modal', 'true');
+                overlay.setAttribute('aria-labelledby', 'celebration-title');
+                overlay.setAttribute('tabindex', '-1');
                 overlay.innerHTML = `
                     <div class="text-center max-w-2xl mx-auto">
                         <!-- The Big YES -->
@@ -1233,26 +1443,26 @@
                         </div>
                         
                         <!-- Subtitle -->
-                        <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 cascade-in" style="animation-delay: 1.0s">
+                        <h2 id="celebration-title" class="text-3xl md:text-5xl font-bold text-white mb-8 cascade-in" style="animation-delay: 1.0s">
                             MANCHESTER UNITED WON 5 IN A ROW!
-                        </h1>
+                        </h2>
                         
                         <!-- Stats Cascade -->
                         <div class="space-y-4 mb-8">
                             <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 2.0s">
                                 <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">🗓️ Achievement Unlocked</div>
-                                <div class="text-xl md:text-2xl font-bold text-white">${formattedDate}</div>
-                                <div class="text-lg font-mono text-neon-green">${formattedTime} UK</div>
+                                <div class="text-xl md:text-2xl font-bold text-white">${escapeHtml(formattedDate)}</div>
+                                <div class="text-lg font-mono text-neon-green">${escapeHtml(formattedTime)} UK</div>
                             </div>
                             
                             <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 2.8s">
                                 <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">📅 Days Since The Vow</div>
-                                <div class="text-4xl md:text-5xl font-black text-united-red">${daysWithoutHaircut}</div>
+                                <div class="text-4xl md:text-5xl font-black text-united-red">${escapeHtml(daysWithoutHaircut)}</div>
                             </div>
                             
                             <div class="cascade-in glass rounded-xl p-4" style="animation-delay: 3.6s">
                                 <div class="text-sm text-gray-400 uppercase tracking-wider mb-1">🏆 Teams That Did It First</div>
-                                <div class="text-3xl font-bold text-white">${teamsFirst}</div>
+                                <div id="celebration-teams-first" class="text-3xl font-bold text-white">${escapeHtml(currentTeamsDisplay)}</div>
                             </div>
                         </div>
                         
@@ -1260,37 +1470,62 @@
                         <div class="cascade-in" style="animation-delay: 4.4s">
                             <p class="text-gray-400 mb-4">Share this historic moment:</p>
                             <div class="flex flex-wrap justify-center gap-3">
-                                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`🎉 MANCHESTER UNITED FINALLY WON 5 IN A ROW!\n\nIt took ${daysWithoutHaircut} days since the vow began.\n\n#MUFC #ManchesterUnited`)}&url=${encodeURIComponent('https://hasunitedwon5.com')}" 
-                                   target="_blank"
-                                   class="px-6 py-3 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-bold rounded-xl transition-all hover:scale-105">
+                                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`🎉 MANCHESTER UNITED FINALLY WON 5 IN A ROW!\n\nIt took ${daysWithoutHaircut} days since the vow began.\n\n#MUFC #ManchesterUnited`)}&url=${encodeURIComponent('https://www.hasunitedwon5.com/')}" 
+                                   target="_blank" rel="noopener noreferrer"
+                                   class="px-6 py-3 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white font-bold rounded-xl transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
                                     Share on X
                                 </a>
-                                <button onclick="navigator.clipboard.writeText('MANCHESTER UNITED WON 5 IN A ROW! https://hasunitedwon5.com'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Link', 2000);"
-                                        class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all hover:scale-105">
+                                <button type="button" id="celebration-copy-btn"
+                                        class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
                                     Copy Link
                                 </button>
                             </div>
                         </div>
                         
                         <!-- Continue Button -->
-                        <button onclick="document.getElementById('celebration-overlay').classList.add('hidden')"
-                                class="cascade-in mt-8 px-8 py-4 bg-neon-green text-black font-bold rounded-xl hover:scale-105 transition-transform"
+                        <button type="button" id="celebration-close-btn"
+                                class="cascade-in mt-8 px-8 py-4 bg-neon-green text-black font-bold rounded-xl hover:scale-105 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg"
                                 style="animation-delay: 5.2s">
                             View The Leaderboard →
                         </button>
                     </div>
                 `;
                 document.body.appendChild(overlay);
-            }, 1600);
+
+                const copyBtn = document.getElementById('celebration-copy-btn');
+                if (copyBtn) {
+                    copyBtn.addEventListener('click', () => {
+                        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                            Promise.resolve(navigator.clipboard.writeText('MANCHESTER UNITED WON 5 IN A ROW! https://www.hasunitedwon5.com/')).catch(() => {});
+                        }
+                        copyBtn.textContent = 'Copied!';
+                        celebrationTimers.push(setTimeout(() => {
+                            copyBtn.textContent = 'Copy Link';
+                        }, 2000));
+                    });
+                }
+
+                const closeBtn = document.getElementById('celebration-close-btn');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', dismissCelebration);
+                }
+
+                celebrationKeydownHandler = (e) => {
+                    if (e.key === 'Escape') {
+                        dismissCelebration();
+                    }
+                };
+                document.addEventListener('keydown', celebrationKeydownHandler);
+                if (typeof overlay.focus === 'function') {
+                    overlay.focus();
+                }
+            }, 1600));
         }
 
-
-
-
-        // Short league names for display
-        const SHORT_LEAGUE_NAMES = {
+        // Short league names for display (null-prototype to prevent Object.prototype lookup leaks)
+        const SHORT_LEAGUE_NAMES = Object.assign(Object.create(null), {
             'Campeonato Brasileiro Série A': 'Brasileiro Série A'
-        };
+        });
 
         function getShortLeagueName(name) {
             return SHORT_LEAGUE_NAMES[name] || name;
@@ -1298,37 +1533,60 @@
 
         // Render team card
         function renderTeamCard(team) {
-            const maxStreak = team.max_streak || 5;
+            const maxStreak = escapeHtml(team.max_streak || 5);
+            const safeName = escapeHtml(team.name || 'Unknown Team');
+            const safeLogo = safeUrl(team.logo);
+            const safeFlag = safeUrl(team.country_flag);
+            const safeCountry = escapeHtml(team.country_name || 'Unknown');
+            const safeLeague = escapeHtml(getShortLeagueName(team.league_name) || 'Unknown League');
+            const leagueFlag = LEAGUE_FLAGS[team.league_id] || '⚽';
 
-            // Calculate days since Frank's vow when streak was achieved
+            // Calculate days since Frank's vow when streak was achieved (UTC)
             let dayBadge = '';
             if (team.streak_achieved_date) {
                 const achievedDate = new Date(team.streak_achieved_date);
-                const daysSinceStart = Math.floor((achievedDate - START_DATE) / (1000 * 60 * 60 * 24));
-                const formattedDate = achievedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                dayBadge = `<span class="px-3 py-1 rounded-full text-base font-bold bg-blue-500/20 text-blue-300" title="Achieved on ${formattedDate}">📅 Day ${daysSinceStart}</span>`;
+                if (!Number.isNaN(achievedDate.getTime())) {
+                    const achievedUtc = Date.UTC(
+                        achievedDate.getUTCFullYear(),
+                        achievedDate.getUTCMonth(),
+                        achievedDate.getUTCDate()
+                    );
+                    const daysSinceStart = Math.max(0, Math.floor((achievedUtc - VOW_START_UTC) / MS_PER_DAY));
+                    const formattedDate = achievedDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        timeZone: 'UTC'
+                    });
+                    dayBadge = `<span class="px-3 py-1 rounded-full text-base font-bold bg-blue-500/20 text-blue-300" title="Achieved on ${escapeHtml(formattedDate)}">📅 Day ${daysSinceStart}</span>`;
+                }
             }
+
+            const logoMarkup = safeLogo
+                ? `<img src="${escapeHtml(safeLogo)}" alt="${safeName}" width="64" height="64" loading="lazy" data-fallback-icon="⚽" class="w-16 h-16 object-contain bg-white/5 rounded-xl p-2">`
+                : `<div class="w-16 h-16 bg-white/5 rounded-xl p-2 flex items-center justify-center text-3xl" aria-hidden="true">⚽</div>`;
+
+            const flagMarkup = safeFlag
+                ? `<img src="${escapeHtml(safeFlag)}" width="20" height="16" class="w-5 h-4 rounded" alt="">`
+                : '';
 
             return `
         <div class="glass-card rounded-2xl p-6 cursor-default hover:scale-[1.02] transition-transform flex flex-col">
           <div class="flex items-start justify-between mb-4">
-            <img src="${team.logo}" alt="${team.name}" loading="lazy"
-                 class="w-16 h-16 object-contain bg-white/5 rounded-xl p-2"
-                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>⚽</text></svg>'">
+            ${logoMarkup}
             ${dayBadge}
           </div>
           
-          <h3 class="font-bold text-lg mb-2 truncate" title="${team.name}">${team.name}</h3>
+          <h3 class="font-bold text-lg mb-2 truncate" title="${safeName}">${safeName}</h3>
           
           <div class="flex items-center gap-2 text-sm text-gray-400 mb-2">
-            ${team.country_flag ? `<img src="${team.country_flag}" class="w-5 h-4 rounded" alt="">` : ''}
-            <span>${team.country_name || 'Unknown'}</span>
+            ${flagMarkup}
+            <span>${safeCountry}</span>
           </div>
           
           <div class="flex justify-between items-end mt-auto">
-            <div class="flex items-center gap-2 text-xs text-gray-500">
-              <span>${LEAGUE_FLAGS[team.league_id] || '⚽'}</span>
-              <span>${getShortLeagueName(team.league_name) || 'Unknown League'}</span>
+            <div class="flex items-center gap-2 text-xs text-gray-400">
+              <span>${leagueFlag}</span>
+              <span>${safeLeague}</span>
             </div>
             <span class="streak-badge px-3 py-1 rounded-full text-sm font-bold text-black">
               ${maxStreak}W 🔥
@@ -1338,16 +1596,104 @@
       `;
         }
 
+        // Safe capturing image error fallbacks (replaces inline onerror handlers)
+        const streakCirclesContainer = document.getElementById('streak-circles');
+        if (streakCirclesContainer) {
+            streakCirclesContainer.addEventListener('error', (e) => {
+                const img = e.target;
+                if (!img || !img.tagName || img.tagName.toUpperCase() !== 'IMG' || !img.dataset || !img.dataset.fallbackTla) return;
+                const span = document.createElement('span');
+                span.className = 'text-neon-green font-bold text-xs';
+                span.textContent = img.dataset.fallbackTla;
+                img.replaceWith(span);
+            }, true);
+        }
+
+        if (teamsGridEl) {
+            teamsGridEl.addEventListener('error', (e) => {
+                const img = e.target;
+                if (!img || !img.tagName || img.tagName.toUpperCase() !== 'IMG' || !img.dataset || !img.dataset.fallbackIcon) return;
+                const fallback = document.createElement('div');
+                fallback.className = 'w-16 h-16 bg-white/5 rounded-xl p-2 flex items-center justify-center text-3xl';
+                fallback.setAttribute('aria-hidden', 'true');
+                fallback.textContent = img.dataset.fallbackIcon;
+                img.replaceWith(fallback);
+            }, true);
+        }
+
         let allTeams = [];
         let activeFilters = new Set(['all']); // Support multiple filters
 
+        function normalizeSearchText(value) {
+            return String(value ?? '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+        }
+
+        function resetSearchAndFilters() {
+            if (searchInput) searchInput.value = '';
+            activeFilters.clear();
+            activeFilters.add('all');
+            updateFilterVisuals();
+            filterTeams();
+            if (searchInput && typeof searchInput.focus === 'function') {
+                searchInput.focus();
+            }
+        }
+
+        function sortTeams(teams, mode) {
+            const sorted = [...teams];
+            const getDateMs = (t) => {
+                if (!t.streak_achieved_date) return null;
+                const ms = new Date(t.streak_achieved_date).getTime();
+                return Number.isNaN(ms) ? null : ms;
+            };
+            const cmpName = (a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, { sensitivity: 'base' });
+
+            sorted.sort((a, b) => {
+                if (mode === 'name') return cmpName(a, b);
+                if (mode === 'streak') {
+                    const diff = (Number(b.max_streak) || 0) - (Number(a.max_streak) || 0);
+                    if (diff !== 0) return diff;
+                    const da = getDateMs(a) ?? Infinity;
+                    const db = getDateMs(b) ?? Infinity;
+                    return da !== db ? da - db : cmpName(a, b);
+                }
+                if (mode === 'recent') {
+                    const da = getDateMs(a) ?? -Infinity;
+                    const db = getDateMs(b) ?? -Infinity;
+                    return db !== da ? db - da : cmpName(a, b);
+                }
+                // Default: 'earliest'
+                const da = getDateMs(a) ?? Infinity;
+                const db = getDateMs(b) ?? Infinity;
+                return da !== db ? da - db : cmpName(a, b);
+            });
+            return sorted;
+        }
+
         // Filter Logic
         function filterTeams() {
-            const query = searchInput.value.toLowerCase();
+            const rawValue = searchInput ? searchInput.value : '';
+            const query = normalizeSearchText(rawValue);
+            if (clearSearchBtn) {
+                clearSearchBtn.classList.toggle('hidden', rawValue.length === 0);
+            }
+
+            if (allTeams.length === 0) {
+                if (resultsSummaryEl) resultsSummaryEl.textContent = '';
+                return;
+            }
 
             const filtered = allTeams.filter(team => {
-                const matchesSearch = team.name.toLowerCase().includes(query) ||
-                    (team.league_name && team.league_name.toLowerCase().includes(query));
+                const matchesSearch = !query || [
+                    team.name,
+                    team.league_name,
+                    team.country_name,
+                    team.league_id
+                ].some(field => normalizeSearchText(field).includes(query));
 
                 // Multi-select logic: if 'all' is active OR league is in the set
                 const matchesFilter = activeFilters.has('all') || activeFilters.has(team.league_id);
@@ -1355,20 +1701,33 @@
                 return matchesSearch && matchesFilter;
             });
 
-            if (filtered.length > 0) {
-                teamsGridEl.innerHTML = filtered.map(renderTeamCard).join('');
-                emptyStateEl.classList.add('hidden');
+            const sortMode = sortSelect ? sortSelect.value : 'earliest';
+            const sorted = sortTeams(filtered, sortMode);
+
+            if (emptyStateEl) emptyStateEl.classList.add('hidden');
+
+            if (sorted.length > 0) {
+                teamsGridEl.innerHTML = sorted.map(renderTeamCard).join('');
             } else {
                 teamsGridEl.innerHTML = `
-                    <div class="col-span-full text-center py-12 opacity-50">
+                    <div class="col-span-full text-center py-12">
                         <div class="text-4xl mb-2">🔍</div>
-                        <p>No teams found matching your search</p>
+                        <p class="text-gray-400 mb-4">No teams found matching your search</p>
+                        <button type="button" id="reset-filters-btn"
+                            class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
+                            Reset search &amp; filters
+                        </button>
                     </div>
                 `;
+                const resetBtn = document.getElementById('reset-filters-btn');
+                if (resetBtn) resetBtn.addEventListener('click', resetSearchAndFilters);
             }
 
-            // Update count
-            if (teamCountEl) teamCountEl.textContent = filtered.length;
+            // Preserve hero #team-count strictly as allTeams.length; report filtered count in #results-summary
+            if (teamCountEl) teamCountEl.textContent = allTeams.length;
+            if (resultsSummaryEl) {
+                resultsSummaryEl.textContent = `Showing ${sorted.length} of ${allTeams.length} teams`;
+            }
         }
 
         function updateFilterVisuals() {
@@ -1376,8 +1735,10 @@
                 const league = btn.dataset.league;
                 const isActive = activeFilters.has(league);
 
-                // Reset classes with better flex alignment
-                btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1.5';
+                btn.setAttribute('aria-pressed', String(isActive));
+
+                // Reset classes with better flex alignment & focus-visible ring
+                btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg';
 
                 if (isActive) {
                     // Active State: White, Black text, Scale on hover (don't dim)
@@ -1391,31 +1752,50 @@
 
         // Setup Filters
         function setupFilters(teams) {
-            // Extract unique leagues
-            let leagues = [...new Set(teams.map(t => t.league_id))];
+            // Extract unique non-empty leagues
+            let leagues = [...new Set(teams.map(t => t.league_id).filter(Boolean))];
+            const leagueNames = new Map();
+            teams.forEach(t => {
+                if (t.league_id && t.league_name && !leagueNames.has(t.league_id)) {
+                    leagueNames.set(t.league_id, t.league_name);
+                }
+            });
+
+            // Prune stale activeFilters that no longer exist in the latest data
+            if (!activeFilters.has('all')) {
+                const validLeagues = new Set(leagues);
+                for (const leagueId of [...activeFilters]) {
+                    if (!validLeagues.has(leagueId)) {
+                        activeFilters.delete(leagueId);
+                    }
+                }
+                if (activeFilters.size === 0) {
+                    activeFilters.add('all');
+                }
+            }
 
             // Sort by Priority (Domestic Leagues First)
             const PRIORITY = ['PL', 'PD', 'BL1', 'SA', 'FL1', 'ELC', 'DED', 'PPL', 'BSA', 'CL', 'WC', 'EC'];
             leagues.sort((a, b) => {
                 const idxA = PRIORITY.indexOf(a);
                 const idxB = PRIORITY.indexOf(b);
-                // If both in list, sort by index
                 if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-                // If a is in list, it comes first
                 if (idxA !== -1) return -1;
-                // If b is in list, it comes first
                 if (idxB !== -1) return 1;
-                // Otherwise alphabetical
-                return a.localeCompare(b);
+                return String(a).localeCompare(String(b));
             });
 
+            if (!filterContainer) return;
             filterContainer.innerHTML = '';
 
             // 'All' Button
             const allBtn = document.createElement('button');
-            allBtn.className = 'filter-btn'; // Essential for selection
+            allBtn.type = 'button';
+            allBtn.className = 'filter-btn';
             allBtn.dataset.league = 'all';
-            allBtn.innerHTML = 'All';
+            allBtn.textContent = 'All';
+            allBtn.setAttribute('aria-label', 'Show all leagues');
+            allBtn.setAttribute('aria-pressed', String(activeFilters.has('all')));
             allBtn.addEventListener('click', () => {
                 activeFilters.clear();
                 activeFilters.add('all');
@@ -1427,11 +1807,14 @@
             // League Buttons
             leagues.forEach(leagueId => {
                 const count = teams.filter(t => t.league_id === leagueId).length;
+                const fullLeagueName = leagueNames.get(leagueId) || leagueId;
                 const btn = document.createElement('button');
-                btn.className = 'filter-btn'; // Essential for selection
+                btn.type = 'button';
+                btn.className = 'filter-btn';
                 btn.dataset.league = leagueId;
-                // Use a flex-friendly structure
-                btn.innerHTML = `<span class="text-base">${LEAGUE_FLAGS[leagueId] || ''}</span> <span>${leagueId}</span> <span class="opacity-50 ml-1 text-[10px]">(${count})</span>`;
+                btn.setAttribute('aria-label', `Filter by ${fullLeagueName} (${count} teams)`);
+                btn.setAttribute('aria-pressed', String(activeFilters.has(leagueId)));
+                btn.innerHTML = `<span class="text-base">${LEAGUE_FLAGS[leagueId] || ''}</span> <span>${escapeHtml(leagueId)}</span> <span class="opacity-50 ml-1 text-[10px]">(${escapeHtml(count)})</span>`;
 
                 btn.addEventListener('click', () => {
                     // If 'all' was active, clear it first
@@ -1462,151 +1845,202 @@
             updateFilterVisuals();
         }
 
-        searchInput.addEventListener('input', filterTeams);
+        if (searchInput) {
+            searchInput.addEventListener('input', filterTeams);
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && searchInput.value) {
+                    e.preventDefault();
+                    searchInput.value = '';
+                    filterTeams();
+                }
+            });
+        }
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', () => {
+                if (searchInput) {
+                    searchInput.value = '';
+                    if (typeof searchInput.focus === 'function') searchInput.focus();
+                }
+                filterTeams();
+            });
+        }
+        if (sortSelect) {
+            sortSelect.addEventListener('change', filterTeams);
+        }
 
-        // Auto-scan: trigger a background scan if data is stale (Distributed Cron)
-        const SCAN_INTERVAL_MINUTES = 3; // Scan every 3 minutes to cycle Top 5 every 15 mins
+        // Single background scan scheduler (prevents duplicate/overlapping /api/scan calls)
+        let scanTimeoutId = null;
+        let scanInFlight = false;
 
-        async function autoScan(lastScanTime) {
-            // Check if we need to scan
-            if (!lastScanTime) {
+        function scheduleBackgroundScan(delayMs = 3500) {
+            if (scanTimeoutId || scanInFlight) return;
+            scanTimeoutId = setTimeout(() => {
+                scanTimeoutId = null;
                 triggerBackgroundScan();
-                return;
-            }
-
-            const minutesSinceLastScan = (new Date() - lastScanTime) / 60000;
-
-            if (minutesSinceLastScan > SCAN_INTERVAL_MINUTES) {
-                triggerBackgroundScan();
-            } else {
-                // Data is fresh enough
-            }
+            }, delayMs);
         }
 
         async function triggerBackgroundScan() {
+            if (scanInFlight) return;
+            scanInFlight = true;
             try {
-                // No session locking anymore!
                 const res = await fetch(`${API_BASE}/scan`);
-                const data = await res.json();
-                if (data.success || data.message) {
-                    // Scan completed successfully
+                if (res.ok) {
+                    await res.json().catch(() => null);
                 }
             } catch (e) {
                 console.error('Auto-scan failed:', e);
+            } finally {
+                scanInFlight = false;
             }
         }
 
-        // Background refresh loop - runs after user has been on page 3+ minutes
+        // Background refresh loop — silent refresh without wiping grid or double-firing /api/scan
         setInterval(() => {
-            // Refresh displayed data
-            loadTeams();
-            // Trigger a background scan to get fresh data
-            triggerBackgroundScan();
+            updateDays();
+            loadTeams(true);
         }, 180 * 1000); // Every 3 minutes
 
+        function showEmptyState(mode) {
+            if (!emptyStateEl) return;
+            if (mode === 'error') {
+                emptyStateEl.innerHTML = `
+                    <div class="text-6xl mb-4">⚠️</div>
+                    <h3 class="text-xl font-semibold mb-2">Unable to load teams</h3>
+                    <p class="text-gray-400 mb-6">We couldn't reach the leaderboard right now. Please try again.</p>
+                    <button type="button" id="retry-teams-btn"
+                        class="px-5 py-2.5 rounded-xl bg-united-red hover:bg-red-700 text-white font-semibold text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
+                        Retry
+                    </button>
+                `;
+                const retryBtn = document.getElementById('retry-teams-btn');
+                if (retryBtn) retryBtn.addEventListener('click', () => loadTeams(false));
+            } else {
+                emptyStateEl.innerHTML = `
+                    <div class="text-6xl mb-4">⚽</div>
+                    <h3 class="text-xl font-semibold mb-2">No qualifying teams yet</h3>
+                    <p class="text-gray-400">No teams have achieved 5+ consecutive wins yet.</p>
+                `;
+            }
+            emptyStateEl.classList.remove('hidden');
+        }
+
         // Fetch and render teams
-        async function loadTeams() {
-            loadingStateEl.classList.remove('hidden');
-            emptyStateEl.classList.add('hidden');
-            teamsGridEl.innerHTML = '';
+        async function loadTeams(silent = false) {
+            if (!silent) {
+                if (loadingStateEl) loadingStateEl.classList.remove('hidden');
+                if (emptyStateEl) emptyStateEl.classList.add('hidden');
+                if (teamsGridEl) teamsGridEl.innerHTML = '';
+            }
 
             try {
                 const res = await fetch(`${API_BASE}/teams`);
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
                 const data = await res.json();
 
-                loadingStateEl.classList.add('hidden');
+                if (loadingStateEl) loadingStateEl.classList.add('hidden');
 
-                if (data.teams && data.teams.length > 0) {
+                if (leaguesCountEl && typeof data.leaguesScanned === 'number') {
+                    leaguesCountEl.textContent = data.leaguesScanned;
+                }
+
+                if (Array.isArray(data.teams) && data.teams.length > 0) {
                     allTeams = data.teams; // Store for filtering
                     setupFilters(allTeams); // Generate filter pills
 
-                    if (teamCountEl) teamCountEl.textContent = data.teams.length;
-                    if (leaguesCountEl && data.leaguesScanned) {
-                        leaguesCountEl.textContent = data.leaguesScanned;
-                    }
+                    if (teamCountEl) teamCountEl.textContent = allTeams.length;
+                    const celebrationTeamsEl = document.getElementById('celebration-teams-first');
+                    if (celebrationTeamsEl) celebrationTeamsEl.textContent = String(allTeams.length);
 
-                    // Initial Render
+                    // Render
                     filterTeams();
-
-                    emptyStateEl.classList.add('hidden');
-
-                    // 🎉 Easter egg: Check if Manchester United made it!
-                    const unitedMadeIt = data.teams.find(t => t.team_id === 66 || t.name.includes('Manchester United'));
-                    if (unitedMadeIt) {
-                        document.body.innerHTML = `
-                            <div class="fixed inset-0 bg-united-red flex items-center justify-center z-50">
-                                <div class="text-center text-white p-8">
-                                    <div class="text-9xl mb-8">🎉✂️🎉</div>
-                                    <h1 class="text-6xl font-black mb-4">FRANK CAN CUT HIS HAIR!</h1>
-                                    <p class="text-2xl mb-8">Manchester United finally won 5 in a row!</p>
-                                    <p class="text-xl opacity-75">It only took ${calculateDays()} days...</p>
-                                    <button onclick="location.reload()" class="mt-8 px-8 py-4 bg-white text-united-red font-bold rounded-xl hover:scale-105 transition-transform">
-                                        View The Leaderboard
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                    }
+                    if (emptyStateEl) emptyStateEl.classList.add('hidden');
                 } else {
-                    teamsGridEl.innerHTML = '';
+                    allTeams = [];
+                    setupFilters([]);
+                    if (teamsGridEl) teamsGridEl.innerHTML = '';
                     if (teamCountEl) teamCountEl.textContent = '0';
-                    emptyStateEl.classList.remove('hidden');
+                    const celebrationTeamsEl = document.getElementById('celebration-teams-first');
+                    if (celebrationTeamsEl) celebrationTeamsEl.textContent = '0';
+                    if (resultsSummaryEl) resultsSummaryEl.textContent = '';
+                    showEmptyState('empty');
                 }
 
                 // Render Recent Scans
-                if (data.recentScans && data.recentScans.length > 0) {
-                    // Update Last Updated time
-                    const lastScan = new Date(data.recentScans[0].scanned_at);
-                    if (lastUpdatedEl) lastUpdatedEl.textContent = lastScan.toLocaleString();
-
+                if (Array.isArray(data.recentScans) && data.recentScans.length > 0) {
                     // Trigger deferred background scan after page settles if data is stale (>15m)
-                    const oldestScan = data.recentScans.reduce((oldest, s) => {
-                        const t = new Date(s.scanned_at);
-                        return t < oldest ? t : oldest;
-                    }, lastScan);
-                    if ((new Date() - oldestScan) / 60000 > 15) {
-                        setTimeout(() => triggerBackgroundScan(), 3500);
+                    const validScanTimes = data.recentScans
+                        .map(s => new Date(s.scanned_at).getTime())
+                        .filter(t => !Number.isNaN(t));
+                    if (validScanTimes.length > 0) {
+                        const oldestScanMs = Math.min(...validScanTimes);
+                        if ((Date.now() - oldestScanMs) / 60000 > 15) {
+                            scheduleBackgroundScan();
+                        }
                     }
 
                     // Render grid
                     if (leaguesStatusEl) {
-                        // League flag map
-                        const leagueFlags = {
-                            'PL': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'PD': '🇪🇸', 'BL1': '🇩🇪', 'SA': '🇮🇹', 'FL1': '🇫🇷',
-                            'DED': '🇳🇱', 'PPL': '🇵🇹', 'ELC': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'CL': '🏆', 'EC': '🇪🇺',
-                            'WC': '🌍', 'BSA': '🇧🇷'
-                        };
-
                         leaguesStatusEl.innerHTML = data.recentScans.map((scan, index) => {
-                            const date = new Date(scan.scanned_at);
-                            const flag = leagueFlags[scan.league_id] || '⚽';
-                            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            const date = scan.scanned_at ? new Date(scan.scanned_at) : null;
+                            const isValidDate = date && !Number.isNaN(date.getTime());
+                            const flag = LEAGUE_FLAGS[scan.league_id] || '⚽';
+                            const timeStr = isValidDate
+                                ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                                : 'Unknown';
+                            const agoHtml = isValidDate
+                                ? ` <span class="opacity-75">(${escapeHtml(timeAgo(scan.scanned_at))})</span>`
+                                : '';
+                            const safeLeagueTitle = escapeHtml(scan.league_name || scan.league_id || 'Unknown League');
+                            const safeQualified = escapeHtml(scan.teams_qualified ?? 0);
+                            const safeScanned = escapeHtml(scan.teams_scanned ?? 0);
 
                             return `
                         <div class="glass p-4 rounded-xl flex items-center justify-between animate-update" style="animation-delay: ${index * 150}ms">
                             <div class="flex items-center gap-3">
                                 <span class="text-xl">${flag}</span>
                                 <div>
-                                    <div class="font-bold text-sm text-neon-green">${scan.league_name || scan.league_id}</div>
-                                    <div class="text-xs text-gray-500">${timeStr} <span class="opacity-75">(${timeAgo(scan.scanned_at)})</span></div>
+                                    <div class="font-bold text-sm text-neon-green">${safeLeagueTitle}</div>
+                                    <div class="text-xs text-gray-400">${escapeHtml(timeStr)}${agoHtml}</div>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="text-xs font-mono text-white">${scan.teams_qualified} qualified</div>
-                                <div class="text-[10px] text-gray-600">${scan.teams_scanned} scanned</div>
+                                <div class="text-xs font-mono text-white">${safeQualified} qualified</div>
+                                <div class="text-[10px] text-gray-400">${safeScanned} scanned</div>
                             </div>
                         </div>
                         `;
                         }).join('');
                     }
-                } else {
-                    // No scans yet
+                } else if (leaguesStatusEl) {
+                    leaguesStatusEl.innerHTML = `
+                        <div class="glass p-4 rounded-xl text-sm text-gray-400 col-span-full">
+                            No league scan data available yet.
+                        </div>
+                    `;
                 }
             } catch (error) {
                 console.error('Failed to load teams:', error);
                 if (loadingStateEl) loadingStateEl.classList.add('hidden');
-                if (teamCountEl) teamCountEl.textContent = '0';
-                if (emptyStateEl) emptyStateEl.classList.remove('hidden');
+                if (!silent || allTeams.length === 0) {
+                    if (resultsSummaryEl) resultsSummaryEl.textContent = '';
+                    showEmptyState('error');
+                    if (leaguesStatusEl) {
+                        leaguesStatusEl.innerHTML = `
+                            <div class="glass p-4 rounded-xl flex items-center justify-between col-span-full border border-united-red/30">
+                                <span class="text-sm text-gray-400">Unable to load coverage data.</span>
+                                <button type="button" id="retry-coverage-btn"
+                                    class="text-xs uppercase tracking-wider text-white/80 hover:text-white border border-white/20 px-3 py-1 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-green focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg">
+                                    Retry
+                                </button>
+                            </div>
+                        `;
+                        const retryCovBtn = document.getElementById('retry-coverage-btn');
+                        if (retryCovBtn) retryCovBtn.addEventListener('click', () => loadTeams(false));
+                    }
+                }
             }
         }
 
@@ -1615,31 +2049,35 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => {
                     b.classList.remove('tab-active');
-                    b.classList.add('text-gray-500');
+                    b.classList.add('text-gray-400');
+                    b.setAttribute('aria-selected', 'false');
                 });
                 btn.classList.add('tab-active');
-                btn.classList.remove('text-gray-500');
+                btn.classList.remove('text-gray-400');
+                btn.setAttribute('aria-selected', 'true');
 
                 document.querySelectorAll('.tab-content').forEach(content => {
                     content.classList.add('hidden');
                 });
-                document.getElementById(`${btn.dataset.tab}-tab`).classList.remove('hidden');
+                const targetTab = document.getElementById(`${btn.dataset.tab}-tab`);
+                if (targetTab) targetTab.classList.remove('hidden');
             });
         });
-
-
 
         // Init
         updateDays();
         loadTeams();
         loadUnitedStatus(); // Call immediately, caching handles the rest
 
-        // Dev mode: trigger celebration with ?celebrate=true
+        // Dev mode: trigger celebration with ?celebrate=true (localhost only, non-persistent)
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('celebrate') === 'true') {
-            // Simulate celebration for testing
+        const isLocalDev = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+        if (isLocalDev && urlParams.get('celebrate') === 'true') {
             setTimeout(() => {
-                triggerCelebration({ teamsFirst: 61 });
+                triggerCelebration({
+                    isDemo: true,
+                    teamsFirst: allTeams.length > 0 ? allTeams.length : null
+                });
             }, 500);
         }
     </script>
