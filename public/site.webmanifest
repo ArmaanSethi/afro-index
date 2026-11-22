@@ -1,0 +1,22 @@
+{
+  "name": "Has United Won 5 in a Row?",
+  "short_name": "Has United Won 5?",
+  "description": "Live win streak tracker for Manchester United's quest to win 5 consecutive games.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/united-crest.png",
+      "sizes": "200x200",
+      "type": "image/png"
+    }
+  ]
+}
