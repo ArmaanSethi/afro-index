@@ -1,0 +1,3 @@
+{
+  "install": "(npm ls --depth=0 >/dev/null 2>&1 || npm ci --no-audit --no-fund) && (command -v vercel >/dev/null 2>&1 || npm install -g vercel --no-audit --no-fund) && npm run build"
+}
