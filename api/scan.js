@@ -1,416 +1,288 @@
 import { createClient } from '@supabase/supabase-js';
+import {
+  COMPETITIONS,
+  COMPETITION_BY_CODE,
+  fetchCompetitionMatches,
+  findFiveWinStreak,
+  getMatchResult,
+  getTodayDate,
+  mergeTeamRecord,
+  selectCompetition,
+} from './_lib/football.js';
+import {
+  handlePreflightAndMethod,
+  isAuthorizedCron,
+  setNoStore,
+} from './_lib/http.js';
+import {
+  fetchExistingTeamsByLeague,
+  fetchLatestScansByLeague,
+} from './_lib/supabase.js';
 
-// Challenge start date
-const START_DATE = '2024-10-05';
-const MAX_WINDOW_DAYS = 700; // football-data.org enforces a strict 750-day max period
+export function createHandler(deps = {}) {
+  const {
+    getSupabase = (url, key) => createClient(url, key),
+    fetchImpl = (...args) => globalThis.fetch(...args),
+    now = () => Date.now(),
+    env = process.env,
+    cache = new Map(),
+  } = deps;
 
-// Cache completed historical windows in warm serverless instances
-const historicalCompetitionCache = new Map();
-
-function buildDateWindows(startDateStr, endDateStr, maxDays = MAX_WINDOW_DAYS) {
-    const windows = [];
-    const start = new Date(`${startDateStr}T00:00:00Z`);
-    const end = new Date(`${endDateStr}T00:00:00Z`);
-    const dayMs = 24 * 60 * 60 * 1000;
-
-    let cursor = start;
-    while (cursor <= end) {
-        const maxEnd = new Date(cursor.getTime() + (maxDays - 1) * dayMs);
-        const windowEnd = maxEnd < end ? maxEnd : end;
-        const from = cursor.toISOString().split('T')[0];
-        const to = windowEnd.toISOString().split('T')[0];
-        windows.push({
-            from,
-            to,
-            isHistorical: windowEnd < end
-        });
-        cursor = new Date(windowEnd.getTime() + dayMs);
-    }
-    return windows;
-}
-
-async function fetchCompetitionMatches(compCode, apiKey, today) {
-    const windows = buildDateWindows(START_DATE, today);
-    const matchMap = new Map();
-    let competitionInfo = {};
-
-    for (const win of windows) {
-        const cacheKey = `${compCode}:${win.from}:${win.to}`;
-        if (win.isHistorical && historicalCompetitionCache.has(cacheKey)) {
-            const cached = historicalCompetitionCache.get(cacheKey);
-            if (cached.competition) competitionInfo = cached.competition;
-            for (const m of cached.matches) {
-                matchMap.set(m.id, m);
-            }
-            continue;
-        }
-
-        const response = await fetch(
-            `https://api.football-data.org/v4/competitions/${compCode}/matches?dateFrom=${win.from}&dateTo=${win.to}&status=FINISHED`,
-            {
-                headers: {
-                    'X-Auth-Token': apiKey
-                }
-            }
-        );
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            return {
-                ok: false,
-                status: response.status,
-                errorText
-            };
-        }
-
-        const data = await response.json();
-        const windowMatches = data.matches || [];
-        if (data.competition) {
-            competitionInfo = data.competition;
-        }
-        if (win.isHistorical) {
-            historicalCompetitionCache.set(cacheKey, {
-                competition: competitionInfo,
-                matches: windowMatches
-            });
-        }
-        for (const m of windowMatches) {
-            matchMap.set(m.id, m);
-        }
-    }
-
-    return {
-        ok: true,
-        competition: competitionInfo,
-        matches: Array.from(matchMap.values())
-    };
-}
-
-// football-data.org competition codes (free tier)
-// See: https://www.football-data.org/documentation/api
-const COMPETITIONS = [
-    { code: 'PL', name: 'Premier League', country: 'England' },
-    { code: 'PD', name: 'La Liga', country: 'Spain' },
-    { code: 'BL1', name: 'Bundesliga', country: 'Germany' },
-    { code: 'SA', name: 'Serie A', country: 'Italy' },
-    { code: 'FL1', name: 'Ligue 1', country: 'France' },
-    { code: 'DED', name: 'Eredivisie', country: 'Netherlands' },
-    { code: 'PPL', name: 'Primeira Liga', country: 'Portugal' },
-    { code: 'ELC', name: 'Championship', country: 'England' },
-    { code: 'CL', name: 'Champions League', country: 'Europe' },
-    { code: 'EC', name: 'Euro Championship', country: 'Europe' },
-    { code: 'WC', name: 'World Cup', country: 'World' },
-    { code: 'BSA', name: 'Brasileirão', country: 'Brazil' },
-];
-
-// Find 5+ consecutive wins in a sequence of results (with dates)
-// Returns { achievedStreak, maxConsecutive, achievedDate }
-function findFiveWinStreak(results) {
-    let consecutiveWins = 0;
-    let maxConsecutive = 0;
-    let achievedStreak = false;
-    let achievedDate = null;
-    let streakStartIndex = 0;
-
-    for (let i = 0; i < results.length; i++) {
-        const r = results[i];
-        if (r.result === 'W') {
-            if (consecutiveWins === 0) {
-                streakStartIndex = i;
-            }
-            consecutiveWins++;
-            if (consecutiveWins >= 5 && !achievedDate) {
-                // First time hitting 5 wins - record the date of the 5th win
-                achievedStreak = true;
-                achievedDate = r.date;
-            }
-            maxConsecutive = Math.max(maxConsecutive, consecutiveWins);
-        } else {
-            maxConsecutive = Math.max(maxConsecutive, consecutiveWins);
-            consecutiveWins = 0;
-        }
-    }
-
-    return { achievedStreak, maxConsecutive, achievedDate };
-}
-
-// Get today's date in YYYY-MM-DD format
-function getTodayDate() {
-    return new Date().toISOString().split('T')[0];
-}
-
-export default async function handler(req, res) {
-    // CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-    // Vercel Edge Cache: Cache for 10s, but allow stale for 24h to keep data avail even if cron fails
-    res.setHeader('Cache-Control', 's-maxage=10, stale-while-revalidate=86400');
-
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
-    const apiKey = process.env.FOOTBALL_DATA_API_KEY;
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
-
-    if (!apiKey || !supabaseUrl || !supabaseKey) {
-        return res.status(500).json({
-            error: 'Missing environment variables',
-            hint: 'Need: FOOTBALL_DATA_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY'
-        });
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Get latest scan timestamp for each competition
-    const { data: scanLogs } = await supabase
-        .from('scan_log')
-        .select('league_id, scanned_at')
-        .order('scanned_at', { ascending: false });
-
-    // Build a map of league_id -> most recent scan time
-    const lastScanMap = new Map();
-    for (const log of (scanLogs || [])) {
-        if (!lastScanMap.has(log.league_id)) {
-            lastScanMap.set(log.league_id, new Date(log.scanned_at));
-        }
-    }
-
-    // Priority Leagues (The "Big 5")
-    const PRIORITY_LEAGUES = ['PL', 'PD', 'BL1', 'SA', 'FL1'];
-
-    // Helper to check if a league is in the priority list
-    const isPriority = (code) => PRIORITY_LEAGUES.includes(code);
-
-    // Sort competitions by priority:
-    // 1. Never scanned (no entry in map) - highest priority
-    // 2. Priority Leagues that are "stale" (> 10 mins old) - next highest
-    // 3. Oldest scanned - fallback
-    const sortedCompetitions = [...COMPETITIONS].sort((a, b) => {
-        const aTime = lastScanMap.get(a.code);
-        const bTime = lastScanMap.get(b.code);
-        const now = new Date();
-
-        // 1. Never scanned = highest priority (return -1 to sort first)
-        if (!aTime && bTime) return -1;
-        if (aTime && !bTime) return 1;
-        if (!aTime && !bTime) return 0;
-
-        // 2. Priority Logic
-        const aIsPriority = isPriority(a.code);
-        const bIsPriority = isPriority(b.code);
-
-        // Thresholds - reduced to scan more frequently
-        const SUPER_STALE = 8 * 60 * 60 * 1000;        // 8 Hours (Others updated every 8h)
-        const LIVE_STALE = 4 * 60 * 60 * 1000;         // 4 Hours (Top 5 updated every 4h)
-
-        const aDiff = now - aTime;
-        const bDiff = now - bTime;
-
-        const aSuperStale = aDiff > SUPER_STALE;
-        const bSuperStale = bDiff > SUPER_STALE;
-
-        // 2a. Super Stale override (prevent starvation of minor leagues)
-        if (aSuperStale && !bSuperStale) return -1;
-        if (bSuperStale && !aSuperStale) return 1;
-
-        // 2b. Priority Live Updates (only if not super stale)
-        const aLiveStale = aDiff > LIVE_STALE;
-        const bLiveStale = bDiff > LIVE_STALE;
-
-        if (aIsPriority && aLiveStale && (!bIsPriority || !bLiveStale)) return -1;
-        if (bIsPriority && bLiveStale && (!aIsPriority || !aLiveStale)) return 1;
-
-        // 3. Fallback: Oldest first
-        return aTime.getTime() - bTime.getTime();
-    });
-
-    // Pick the highest priority competition
-    let targetComp = sortedCompetitions[0];
-
-    // Strict Throttling Guard: Prevent over-scanning if the "oldest" league is still fresh
-    const lastScanTime = lastScanMap.get(targetComp.code);
-    if (lastScanTime && !req.query.competition) { // Don't block manual overrides
-        const diff = new Date() - lastScanTime;
-        const isPrio = isPriority(targetComp.code);
-        const limit = isPrio ? (15 * 60 * 1000) : (60 * 60 * 1000);
-
-        if (diff < limit) {
-            console.log(`[Scan Skipped] Best candidate ${targetComp.name} is only ${Math.round(diff / 60000)}m old (Limit: ${Math.round(limit / 60000)}m)`);
-            return res.status(200).json({
-                skipped: true,
-                message: 'Data is fresh enough',
-                scanned: false,
-                nextScanIn: Math.round((limit - diff) / 1000) + 's'
-            });
-        }
-    }
-
-    // Calculate remaining unscanned competitions
-    const unscannedCount = COMPETITIONS.filter(c => !lastScanMap.has(c.code)).length;
-
-    // Allow override via query param
-    if (req.query.competition) {
-        const override = req.query.competition.toUpperCase();
-        targetComp = COMPETITIONS.find(c => c.code === override) || { code: override, name: 'Custom', country: 'Unknown' };
+  return async function handler(req, res) {
+    if (handlePreflightAndMethod(req, res, { allowAuthorization: true })) {
+      return;
     }
 
     try {
-        // Fetch all matches for this competition since Oct 5, 2024 in <=700-day chunks
-        const fetchResult = await fetchCompetitionMatches(targetComp.code, apiKey, getTodayDate());
+      // Strictly validate optional ?competition= override before any DB or upstream calls
+      const rawCompetition = req.query?.competition;
+      let overrideComp = null;
 
-        if (!fetchResult.ok) {
-            return res.status(fetchResult.status).json({
-                error: 'football-data.org API error',
-                status: fetchResult.status,
-                details: fetchResult.errorText,
-                competition: targetComp
-            });
+      if (rawCompetition !== undefined) {
+        if (typeof rawCompetition !== 'string') {
+          setNoStore(res);
+          return res.status(400).json({
+            error: 'Invalid competition parameter',
+            allowedCompetitions: COMPETITIONS.map((c) => c.code),
+          });
         }
 
-        const matches = fetchResult.matches;
-
-        if (matches.length === 0) {
-            await supabase.from('scan_log').insert({
-                sport: 'football',
-                league_id: targetComp.code,
-                league_name: targetComp.name,
-                teams_scanned: 0,
-                teams_qualified: 0
-            });
-
-            return res.status(200).json({
-                message: 'No finished matches found for this competition since Oct 5, 2024',
-                competition: targetComp,
-                matchesAnalyzed: 0,
-                teamsScanned: 0,
-                teamsQualified: 0
-            });
+        const normalizedCode = rawCompetition.trim().toUpperCase();
+        overrideComp = COMPETITION_BY_CODE.get(normalizedCode) || null;
+        if (!overrideComp) {
+          setNoStore(res);
+          return res.status(400).json({
+            error: `Unknown competition code: ${rawCompetition}`,
+            allowedCompetitions: COMPETITIONS.map((c) => c.code),
+          });
         }
 
-        // Build results per team from matches
-        const teamResults = {}; // teamId -> { info, results: [{date, result}] }
-
-        for (const match of matches) {
-            const homeTeam = match.homeTeam;
-            const awayTeam = match.awayTeam;
-            const homeGoals = match.score?.fullTime?.home ?? 0;
-            const awayGoals = match.score?.fullTime?.away ?? 0;
-            const matchDate = match.utcDate;
-
-            // Initialize teams if not seen
-            if (!teamResults[homeTeam.id]) {
-                teamResults[homeTeam.id] = {
-                    id: homeTeam.id,
-                    name: homeTeam.name,
-                    logo: homeTeam.crest,
-                    results: []
-                };
-            }
-            if (!teamResults[awayTeam.id]) {
-                teamResults[awayTeam.id] = {
-                    id: awayTeam.id,
-                    name: awayTeam.name,
-                    logo: awayTeam.crest,
-                    results: []
-                };
-            }
-
-            // Determine results
-            let homeResult, awayResult;
-            if (homeGoals > awayGoals) {
-                homeResult = 'W';
-                awayResult = 'L';
-            } else if (homeGoals < awayGoals) {
-                homeResult = 'L';
-                awayResult = 'W';
-            } else {
-                homeResult = 'D';
-                awayResult = 'D';
-            }
-
-            teamResults[homeTeam.id].results.push({ date: matchDate, result: homeResult });
-            teamResults[awayTeam.id].results.push({ date: matchDate, result: awayResult });
+        if (env.CRON_SECRET && !isAuthorizedCron(req, env.CRON_SECRET)) {
+          setNoStore(res);
+          return res.status(401).json({ error: 'Unauthorized' });
         }
+      }
 
-        // Sort each team's results chronologically and check for 5-win streak
-        const teamsToUpsert = [];
-        let teamsQualified = 0;
+      const apiKey = env.FOOTBALL_DATA_API_KEY;
+      const supabaseUrl = env.SUPABASE_URL;
+      const supabaseKey = env.SUPABASE_SERVICE_KEY;
 
-        const competitionInfo = fetchResult.competition || {};
+      if (!apiKey || !supabaseUrl || !supabaseKey) {
+        setNoStore(res);
+        return res.status(500).json({
+          error: 'Missing environment variables',
+          hint: 'Need: FOOTBALL_DATA_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY',
+        });
+      }
 
-        for (const teamId in teamResults) {
-            const team = teamResults[teamId];
+      const supabase = getSupabase(supabaseUrl, supabaseKey);
+      const nowMs = now();
 
-            // Sort by date chronologically
-            team.results.sort((a, b) => new Date(a.date) - new Date(b.date));
+      // Get latest scan timestamp per known competition (immune to scan_log row count)
+      const latestScans = await fetchLatestScansByLeague(supabase);
+      const lastScanMap = new Map(
+        latestScans.map((log) => [log.league_id, new Date(log.scanned_at)])
+      );
 
-            // Check for 5-win streak (pass full results with dates)
-            const { achievedStreak, maxConsecutive, achievedDate } = findFiveWinStreak(team.results);
+      const { sortedCompetitions, eligible, nextScanSeconds } = selectCompetition(
+        COMPETITIONS,
+        lastScanMap,
+        nowMs
+      );
 
-            if (achievedStreak) teamsQualified++;
+      let targetComp;
+      let nextCompetition;
 
-            teamsToUpsert.push({
-                team_id: parseInt(teamId),
-                sport: 'football',
-                name: team.name,
-                logo: team.logo,
-                country_name: competitionInfo.area?.name || targetComp.country,
-                country_flag: competitionInfo.area?.flag || null,
-                league_id: targetComp.code,
-                league_name: competitionInfo.name || targetComp.name,
-                form: team.results.map(r => r.result).join(''),
-                has_5_wins: achievedStreak,
-                max_streak: maxConsecutive,
-                streak_achieved_date: achievedDate ? achievedDate.split('T')[0] : null,
-                last_checked: new Date().toISOString()
-            });
+      if (!overrideComp) {
+        if (eligible.length === 0) {
+          setNoStore(res);
+          return res.status(200).json({
+            skipped: true,
+            message: 'Data is fresh enough',
+            scanned: false,
+            nextScanIn: `${nextScanSeconds}s`,
+          });
         }
+        targetComp = eligible[0];
+        nextCompetition =
+          eligible[1] ||
+          sortedCompetitions.find((c) => c.code !== targetComp.code) ||
+          null;
+      } else {
+        targetComp = overrideComp;
+        nextCompetition =
+          eligible.find((c) => c.code !== targetComp.code) ||
+          sortedCompetitions.find((c) => c.code !== targetComp.code) ||
+          null;
+      }
 
-        // Upsert all teams
-        if (teamsToUpsert.length > 0) {
-            const { error } = await supabase
-                .from('teams')
-                .upsert(teamsToUpsert, {
-                    onConflict: 'team_id,league_id,sport',
-                    ignoreDuplicates: false
-                });
+      const unscannedCount = COMPETITIONS.filter((c) => !lastScanMap.has(c.code)).length;
+      const wasUnscanned = !lastScanMap.has(targetComp.code);
+      const remainingCompetitions = Math.max(0, unscannedCount - (wasUnscanned ? 1 : 0));
 
-            if (error) {
-                console.error('Supabase upsert error:', error);
-            }
-        }
+      const fetchResult = await fetchCompetitionMatches(
+        targetComp.code,
+        apiKey,
+        getTodayDate(nowMs),
+        { cache, fetchImpl, timeoutMs: 7000, deadlineMs: nowMs + 8500, now }
+      );
 
-        // Log the scan
-        await supabase.from('scan_log').insert({
-            sport: 'football',
-            league_id: targetComp.code,
-            league_name: competitionInfo.name || targetComp.name,
-            teams_scanned: Object.keys(teamResults).length,
-            teams_qualified: teamsQualified
+      if (!fetchResult.ok) {
+        setNoStore(res);
+        return res.status(fetchResult.status).json({
+          error: 'football-data.org API error',
+          status: fetchResult.status,
+          details: fetchResult.errorText,
+          competition: targetComp,
+        });
+      }
+
+      const matches = fetchResult.matches;
+
+      if (matches.length === 0) {
+        const { error: logError } = await supabase.from('scan_log').insert({
+          sport: 'football',
+          league_id: targetComp.code,
+          league_name: targetComp.name,
+          teams_scanned: 0,
+          teams_qualified: 0,
         });
 
+        if (logError) {
+          throw new Error(`Failed to insert scan_log: ${logError.message}`);
+        }
+
+        setNoStore(res);
         return res.status(200).json({
-            success: true,
-            competition: {
-                code: targetComp.code,
-                name: competitionInfo.name || targetComp.name,
-                country: competitionInfo.area?.name || targetComp.country
-            },
-            matchesAnalyzed: matches.length,
-            teamsScanned: Object.keys(teamResults).length,
-            teamsQualified: teamsQualified,
-            remainingCompetitions: unscannedCount > 0 ? unscannedCount - 1 : 0,
-            totalCompetitions: COMPETITIONS.length,
-            nextCompetition: sortedCompetitions[1] || null,
-            teams: teamsToUpsert.filter(t => t.has_5_wins)
+          message: 'No finished matches found for this competition since Oct 5, 2024',
+          competition: targetComp,
+          matchesAnalyzed: 0,
+          teamsScanned: 0,
+          teamsQualified: 0,
         });
+      }
 
+      // Build results per team from resolvable matches
+      const teamResults = {};
+
+      for (const match of matches) {
+        const homeTeam = match.homeTeam;
+        const awayTeam = match.awayTeam;
+        if (!homeTeam?.id || !awayTeam?.id) continue;
+
+        const homeResult = getMatchResult(match, homeTeam.id);
+        const awayResult = getMatchResult(match, awayTeam.id);
+        if (!homeResult || !awayResult) continue;
+
+        const matchDate = match.utcDate;
+
+        if (!teamResults[homeTeam.id]) {
+          teamResults[homeTeam.id] = {
+            id: homeTeam.id,
+            name: homeTeam.name,
+            logo: homeTeam.crest,
+            results: [],
+          };
+        }
+        if (!teamResults[awayTeam.id]) {
+          teamResults[awayTeam.id] = {
+            id: awayTeam.id,
+            name: awayTeam.name,
+            logo: awayTeam.crest,
+            results: [],
+          };
+        }
+
+        teamResults[homeTeam.id].results.push({ date: matchDate, result: homeResult });
+        teamResults[awayTeam.id].results.push({ date: matchDate, result: awayResult });
+      }
+
+      // Fetch existing rows for non-destructive merge
+      const existingMap = await fetchExistingTeamsByLeague(supabase, targetComp.code);
+
+      const teamsToUpsert = [];
+      const competitionInfo = fetchResult.competition || {};
+      const checkedAt = new Date(nowMs).toISOString();
+
+      for (const teamId of Object.keys(teamResults)) {
+        const team = teamResults[teamId];
+        team.results.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        const { achievedStreak, maxConsecutive, achievedDate } = findFiveWinStreak(team.results);
+        const parsedTeamId = parseInt(teamId, 10);
+
+        const incoming = {
+          team_id: parsedTeamId,
+          sport: 'football',
+          name: team.name,
+          logo: team.logo ?? null,
+          country_name: competitionInfo.area?.name || targetComp.country,
+          country_flag: competitionInfo.area?.flag || null,
+          league_id: targetComp.code,
+          league_name: competitionInfo.name || targetComp.name,
+          form: team.results.map((r) => r.result).join(''),
+          has_5_wins: achievedStreak,
+          max_streak: maxConsecutive,
+          streak_achieved_date: typeof achievedDate === 'string' ? achievedDate.split('T')[0] : null,
+          first_detected: checkedAt,
+          last_checked: checkedAt,
+        };
+
+        const merged = mergeTeamRecord(existingMap.get(parsedTeamId), incoming);
+        teamsToUpsert.push(merged);
+      }
+
+      const teamsQualified = teamsToUpsert.filter((t) => t.has_5_wins).length;
+
+      // Upsert teams first; abort before writing scan_log on any error
+      if (teamsToUpsert.length > 0) {
+        const { error: upsertError } = await supabase
+          .from('teams')
+          .upsert(teamsToUpsert, {
+            onConflict: 'team_id,league_id,sport',
+            ignoreDuplicates: false,
+            defaultToNull: false,
+          });
+
+        if (upsertError) {
+          throw new Error(`Failed to upsert teams: ${upsertError.message}`);
+        }
+      }
+
+      const { error: logError } = await supabase.from('scan_log').insert({
+        sport: 'football',
+        league_id: targetComp.code,
+        league_name: competitionInfo.name || targetComp.name,
+        teams_scanned: Object.keys(teamResults).length,
+        teams_qualified: teamsQualified,
+      });
+
+      if (logError) {
+        throw new Error(`Failed to insert scan_log: ${logError.message}`);
+      }
+
+      setNoStore(res);
+      return res.status(200).json({
+        success: true,
+        competition: {
+          code: targetComp.code,
+          name: competitionInfo.name || targetComp.name,
+          country: competitionInfo.area?.name || targetComp.country,
+        },
+        matchesAnalyzed: matches.length,
+        teamsScanned: Object.keys(teamResults).length,
+        teamsQualified,
+        remainingCompetitions,
+        totalCompetitions: COMPETITIONS.length,
+        nextCompetition,
+        teams: teamsToUpsert.filter((t) => t.has_5_wins),
+      });
     } catch (error) {
-        console.error('Scan error:', error);
-        return res.status(500).json({ error: 'Scan failed', details: error.message });
+      console.error('Scan error:', error);
+      setNoStore(res);
+      return res.status(500).json({ error: 'Scan failed', details: error.message });
     }
+  };
 }
+
+export default createHandler();

@@ -1,76 +1,85 @@
 import { createClient } from '@supabase/supabase-js';
+import {
+  handlePreflightAndMethod,
+  setNoStore,
+  setPublicCache,
+} from './_lib/http.js';
+import { fetchLatestScansByLeague } from './_lib/supabase.js';
 
-export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+const PAGE_SIZE = 1000;
 
-  // Vercel Edge Cache: Cache for 1 min (60s) to allow live scan updates to appear quickly
-  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=59');
+export function createHandler(deps = {}) {
+  const {
+    getSupabase = (url, key) => createClient(url, key),
+    env = process.env,
+  } = deps;
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  return async function handler(req, res) {
+    if (handlePreflightAndMethod(req, res)) {
+      return;
+    }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+    const supabaseUrl = env.SUPABASE_URL;
+    const supabaseKey = env.SUPABASE_SERVICE_KEY;
 
-  if (!supabaseUrl || !supabaseKey) {
-    return res.status(500).json({ error: 'Missing Supabase configuration' });
-  }
+    if (!supabaseUrl || !supabaseKey) {
+      setNoStore(res);
+      return res.status(500).json({ error: 'Missing Supabase configuration' });
+    }
 
-  const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = getSupabase(supabaseUrl, supabaseKey);
 
-  try {
-    // Get teams with 5+ wins (for display), sorted by earliest achievement date
-    const { data: winners, error: winnersError } = await supabase
-      .from('teams')
-      .select('*')
-      .eq('has_5_wins', true)
-      .order('streak_achieved_date', { ascending: true, nullsFirst: false });
+    try {
+      // Paginate winners to avoid Supabase's implicit 1000-row cap
+      const winners = [];
+      let offset = 0;
 
-    if (winnersError) throw winnersError;
+      while (true) {
+        const { data: page, error: winnersError } = await supabase
+          .from('teams')
+          .select('*')
+          .eq('has_5_wins', true)
+          .order('streak_achieved_date', { ascending: true, nullsFirst: false })
+          .order('team_id', { ascending: true })
+          .order('league_id', { ascending: true })
+          .range(offset, offset + PAGE_SIZE - 1);
 
-    // Get total teams scanned (for stats)
-    const { count: totalScanned } = await supabase
-      .from('teams')
-      .select('*', { count: 'exact', head: true });
+        if (winnersError) throw winnersError;
+        if (!page || page.length === 0) break;
 
-    // Get scan log for league coverage (most recent scan per league)
-    const { data: allScans } = await supabase
-      .from('scan_log')
-      .select('*')
-      .order('scanned_at', { ascending: false })
-      .limit(100);
+        winners.push(...page);
+        if (page.length < PAGE_SIZE) break;
+        offset += PAGE_SIZE;
+      }
 
-    // Keep only most recent scan per league
-    const seenLeagues = new Set();
-    const scanLog = (allScans || []).filter(scan => {
-      if (seenLeagues.has(scan.league_id)) return false;
-      seenLeagues.add(scan.league_id);
-      return true;
-    });
+      // Get total teams scanned (for stats)
+      const { count: totalScanned, error: countError } = await supabase
+        .from('teams')
+        .select('*', { count: 'exact', head: true });
 
-    // Count unique leagues scanned (get unique league_ids)
-    const { data: uniqueLeagues } = await supabase
-      .from('scan_log')
-      .select('league_id')
-      .limit(100);
+      if (countError) throw countError;
 
-    const uniqueLeagueIds = new Set(uniqueLeagues?.map(l => l.league_id) || []);
+      // Get latest scan per known league (immune to scan_log row count growth)
+      const recentScans = await fetchLatestScansByLeague(supabase);
 
-    return res.status(200).json({
-      success: true,
-      winnersCount: winners?.length || 0,
-      totalScanned: totalScanned || 0,
-      leaguesScanned: uniqueLeagueIds.size,
-      teams: winners || [],
-      recentScans: scanLog || []
-    });
-
-  } catch (error) {
-    console.error('Fetch teams error:', error);
-    return res.status(500).json({ error: 'Failed to fetch teams', details: error.message });
-  }
+      setPublicCache(res, { sMaxAge: 60, staleWhileRevalidate: 300 });
+      return res.status(200).json({
+        success: true,
+        winnersCount: winners.length,
+        totalScanned: totalScanned ?? 0,
+        leaguesScanned: recentScans.length,
+        teams: winners,
+        recentScans,
+      });
+    } catch (error) {
+      console.error('Fetch teams error:', error);
+      setNoStore(res);
+      return res.status(500).json({
+        error: 'Failed to fetch teams',
+        details: error.message,
+      });
+    }
+  };
 }
+
+export default createHandler();

@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env*
+
+# Deployment / tooling
+.vercel
+
+# Logs
+*.log
+npm-debug.log*
+
+# Agent workspace & Python bytecode
+.agents/teamwork/
+__pycache__/
+*.pyc
+
